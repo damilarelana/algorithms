@@ -24,6 +24,48 @@ def twoNumberSum():  # inputList param is of type list
     print("Sum is of type: ", type(testInteger))
     print("    ============    \n")
 
+    # compute the 2-element pairs
+    resultDict = computeTwoNumSum(testArray, testInteger)
+
+    # return the results
+    if checkEmptyList(resultDict[0]):
+        print("No 2-element [a, b] pairs of {0} sums up to the integer value {1}".format(testArray, testInteger))
+    else:
+        numOfPairs = len(resultDict)
+        firstPair = resultDict[0]
+        print("There are at least {0} instances of 2-element [a, b] pairs of {1}, that sum up to the integer value {2} ...".format(numOfPairs, testArray, testInteger))
+        print("{0} is one of those instances".format(firstPair))
+
+# define computeTwoNumberSum()
+# - takes in a user defined integer array tIA
+# - takes in a user defined integer value tIV
+# - set() is used in the inner loop for speed purposes
+
+
+def computeTwoNumSum(tIA: list, tIV: int):
+    listIndex = 1  # index to obtain smaller/smaller innerList as we loop
+    keyDict = 0  # key to store the matching pairs in a dictionary
+
+    resultPair = list()  # initialize placeholder for matched pairs
+
+    # initialize dict, with `index 0` being an empty list
+    # - if subsequent pairs are found, `index 0` would be overwritten
+    resultDict = {
+        keyDict: resultPair,
+    }
+
+    # loop array elements to check if they sum up to `tIV`
+    for t in tIA:
+        testDiff = tIV - t
+        innerList = tIA[listIndex:]
+        testSet = set(innerList)
+        for testDiff in testSet:
+            resultPair = [t, testDiff]
+            resultDict[keyDict] = resultPair  # append to the dictionary
+        keyDict += 1
+        listIndex += 1
+    return resultDict
+
 # define getArray()
 # - uses a try-except-finally to catch input edge-cases
 # - specifies format of user defined array
@@ -119,7 +161,7 @@ def checkEmptyList(inputArrayString: str):
 def main():
     start_time = time.time()
     twoNumberSum()
-    print("Time: %f seconds" % (time.time() - start_time))
+    print("Time: {} seconds".format((time.time() - start_time)))
 
 
 if __name__ == "__main__":
