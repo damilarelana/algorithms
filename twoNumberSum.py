@@ -47,20 +47,20 @@ def stringStripper(inputArrayString: str):
 # define checkEmptyList() function
 # - takes in an input string in an array format [1, 2, 3, 4]
 # - uses python dictionary to simulate a switch
+# - uses .strip() to remove whitespaces (and multiple edges-cases of it)
 # - checks if it is empty string ""
-# - checks if it is string "[]"" or "[, ]"" or "[,]"" or "[ ,]"" or "[ , ]"
+# - checks if it is empty string "[]" or "[,]"
+# - checks if it is whitespace edge-cases: [, ]"" or "[ ,]"" or "[ , ]" etc.
 # - returns a True (i.e. an empty list) or otherwise it returns a False
 
 
 def checkEmptyList(inputArrayString: str):
+    parsedString = stringStripper(inputArrayString)  # remove the brackets
+    parsedStringWithNoWhitespaces = parsedString.strip()
     return {
-        "[]": True,
-        "[, ]": True,
-        "[,]": True,
-        "[ ,]": True,
-        "[ , ]": True,
-        "": True,
-    }.get(inputArrayString, False)
+        "": True,  # handles empty string array of type "[]" or ""
+        ",": True,  # handles empty string array of types "[, ]" etc.
+    }.get(parsedStringWithNoWhitespaces, False)
 
 
 # define main() function
