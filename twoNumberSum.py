@@ -8,8 +8,8 @@ import time
 
 
 def twoNumberSum():  # inputList param is of type list
-    print("Use array format [1, 2, 3, 4, 5] \n")
-    inputArrayString = input("Enter an integer array: ")
+    print("Using the format [1, 2, 3, 4] or [1,2,3,4] or [1, 2,3, 4] ...")
+    inputArrayString = input("please enter an integer array: ")
     while checkEmptyList(inputArrayString):
         print("Array cannot be empty")
         inputArrayString = input("Enter an integer array: ")
@@ -27,8 +27,9 @@ def twoNumberSum():  # inputList param is of type list
 
 def inputArrayStringParser(inputString: str):  # inputString is of type string
     parsedString = stringStripper(inputString)
-    listOfString = parsedString.split(", ")  # get elements using delimiter ", "
-    listOfInt = [int(x) for x in listOfString]  # using list comprehension
+    listOfString = parsedString.split(",")  # get elements using delimiter ","
+    listOfString = [s.strip() for s in listOfString]  # remove whitespaces around each element
+    listOfInt = [int(s) for s in listOfString]  # using list comprehension
     return listOfInt  # return the integer array
 
 
