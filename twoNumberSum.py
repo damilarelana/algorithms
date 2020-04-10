@@ -42,6 +42,7 @@ def getArray():
         raise Exception("Unable to initialize the user defined array")
     finally:
         print("Successfully initialized the *user defined integer array*")
+        print("    ============    \n")
     return inputArray
 
 # define getInteger()
