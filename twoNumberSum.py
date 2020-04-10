@@ -23,16 +23,45 @@ def twoNumberSum():  # inputList param is of type list
 
 
 def inputArrayStringParser(inputString: str):  # inputString is of type string
-    inputString = inputString[1:]  # strip left bracket : 'index 0'
-    lastIndex = len(inputString) - 1
-    inputString = inputString[: lastIndex]  # strip right bracket : last Index
-    listOfString = inputString.split(", ")  # get elements using delimiter ", "
+    parsedString = stringStripper(inputString)
+    listOfString = parsedString.split(", ")  # get elements using delimiter ", "
     listOfInt = [int(x) for x in listOfString]  # using list comprehension
     return listOfInt  # return the integer array
 
 
-start_time = time.time()
-inputArray = twoNumberSum()
-print("Input Array: ", inputArray)
-print("Array is of type: ", type(inputArray))
-print("Time: %f seconds" % (time.time() - start_time))
+# define stringStripper() function
+#  * takes in an input string in an array format [1, 2, 3, 4]
+#  * strips away the brackets
+#  * returns a bare parsed string
+
+
+def stringStripper(inputArrayString: str):
+    inputArrayString = inputArrayString[1:]  # strip left bracket : 'index 0'
+    lastIndex = len(inputArrayString) - 1
+    parsedArrayString = inputArrayString[: lastIndex]  # strip right bracket : last Index
+    return parsedArrayString
+
+# define checkEmptyList() function
+# * takes in an input string in an array format [1, 2, 3, 4]
+# * checks if it is empty []
+# * checks if it is [, ] or [,] or [ ,] or [ , ]
+# * returns a boolean true or false
+
+
+def checkEmptyList(inputArrayString: str):
+    return True
+
+
+# define main() function
+# * to allow code to be run as either standalone or re-usable code
+
+def main():
+    start_time = time.time()
+    inputArray = twoNumberSum()
+    print("Input Array: ", inputArray)
+    print("Array is of type: ", type(inputArray))
+    print("Time: %f seconds" % (time.time() - start_time))
+
+
+if __name__ == "__main__":
+    main()
