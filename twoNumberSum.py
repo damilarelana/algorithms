@@ -16,11 +16,13 @@ def twoNumberSum():  # inputList param is of type list
     testArray = getArray()
     print("Test Array: ", testArray)
     print("Test Array is of type: ", type(testArray))
+    print("    ============    \n")
 
     # obtain test integer
     testInteger = getInteger()
     print("Test Sum: ", testInteger)
     print("Sum is of type: ", type(testInteger))
+    print("    ============    \n")
 
 # define getArray()
 # - uses a try-except-finally to catch input edge-cases
@@ -42,7 +44,6 @@ def getArray():
         raise Exception("Unable to initialize the user defined array")
     finally:
         print("Successfully initialized the *user defined integer array*")
-        print("    ============    \n")
     return inputArray
 
 # define getInteger()
@@ -61,7 +62,6 @@ def getInteger():
         raise Exception("Unable to initialize the user defined integer value")
     finally:
         print("Successfully initialized the *user defined integer value*")
-        print("    ============    \n")
     return inputInteger
 
 # define parseInputArrayString() function
