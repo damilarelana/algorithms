@@ -54,10 +54,12 @@ def getArray():
 
 def getInteger():
     try:
-        inputInteger = input("please enter an integer value: ")
+        inputIntegerString = input("please enter an integer value: ")
+        inputInteger = int(inputIntegerString)  # convert string to integer
         while isinstance(inputInteger, int) is False:
             print("Input must be an integer")
-            inputInteger = input("please enter an integer value: ")
+            inputIntegerString = input("please enter an integer value: ")
+            inputInteger = int(inputIntegerString)
     except ValueError:
         raise Exception("Unable to initialize the user defined integer value")
     finally:
