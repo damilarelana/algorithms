@@ -61,7 +61,7 @@ def getInteger():
         raise Exception("Unable to initialize the user defined integer value")
     finally:
         print("Successfully initialized the *user defined integer value*")
-
+        print("    ============    \n")
     return inputInteger
 
 # define parseInputArrayString() function
