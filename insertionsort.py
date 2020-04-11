@@ -8,9 +8,12 @@ loopRange = len(ulist)                      # avoids repeating len() on large li
 print("\nGiven random unsorted list (%s elements): \n%s\n" % (loopRange, ulist))
 
 #
-#start time counter
+# start time counter
 start_time = time.time()
+
+
 def insrtsort(ulist):
+    loopRange = len(ulist)
     ocount = 1                       # initialising unsorted list index to the first one to be removed from unsorted
     while ocount < loopRange:        # handles if len(ulist)=1, unsorted loop index
         icount = ocount              # re-initialising sorted list's max index to allow countdown
@@ -21,6 +24,6 @@ def insrtsort(ulist):
         ocount += 1
     return ulist
 
-lesorted = insrtsort(ulist)
-print("Insertion Sort gives: %s\n" % lesorted)
+leSorted = insrtsort(ulist)
+print("Insertion Sort gives: %s\n" % leSorted)
 print("runtime: %s seconds\n" % (time.time() - start_time))

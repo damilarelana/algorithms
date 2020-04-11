@@ -21,7 +21,7 @@ def bubblesort(rlist):
                 temp = rlist[icount+1]
                 rlist[icount+1] = rlist[icount]
                 rlist[icount] = temp
-                swapflag = True
+                swapflag = True  # this flag indicates that active bubbling is in progress for at least 1 element
             icount += 1
         # break from loop if already sorted input and sorting completion
         if not(swapflag):

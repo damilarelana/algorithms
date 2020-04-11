@@ -134,7 +134,7 @@ def bubbleSort(inputList: list):
         while iCount < (len(inputList)-1):
             if inputList[iCount] > inputList[iCount+1]:  # this sorts in ascending order
                 inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
-                swapflag = True
+                swapflag = True  # this flag indicates that active bubbling is in progress for at least 1 element
             iCount += 1
         # break from loop if already sorted input and sorting completion
         if not(swapflag):

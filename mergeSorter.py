@@ -8,6 +8,7 @@ loopRange = len(rlist)                      # avoids repeating len() on large li
 print("\nGiven random unsorted list (%s elements): \n%s\n" % (loopRange, rlist))
 start_time = time.time()                    # start time counter
 
+
 def mergeSorter(rlist):
     temploopRange = len(rlist)                                      # handles reducing elements, so can't use global
 
@@ -20,7 +21,11 @@ def mergeSorter(rlist):
         tempListOne = mergeSorter(tempListOne)                      # recursive call to mergeSorter()
         tempListTwo = mergeSorter(tempListTwo)                      # recursive call to mergeSorter()
         return sublistMerge(tempListOne,tempListTwo)
+
+
 #
+
+
 def sublistMerge(tempSubListOne, tempSubListTwo):
     tempMergedList = []                                             # initialise empty List to merge sub-Lists into
 
