@@ -69,7 +69,7 @@ def computeThreeNumSum(tIA: list, tIV: int):
         intermediateList = tIA[listIndex:]
         for i in intermediateList:
             testDiff = intermediatetIV - i
-            innerList = intermediatetIV[listIndex:]
+            innerList = intermediateList[listIndex:]
             for j in innerList:
                 if j == testDiff:
                     resultTriplet = [t, i, j]  # current matching triplet is now identified 
