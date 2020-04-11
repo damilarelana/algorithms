@@ -10,8 +10,8 @@ import time
 #       + a dict of all 3-element `[a, b]` triplets that sum up to integer value
 
 # To Test, let: 
-#  - tIV = 134
-#  - tIA = "[102, 134, 32, 100, 34, 70, 64, -9, 7, 14, 50]"
+#  - tIV = 30
+#  - tIA = "[102, 134, 32, 100, 34, 70, 64, -9, 7, 14, 50, 1, 2, 3, 12, 5, 13]"
 
 
 def threeNumSum():  # inputList param is of type list
@@ -38,7 +38,7 @@ def threeNumSum():  # inputList param is of type list
         numOfTriplets = len(resultDict)
         firstTriplet = resultDict[0]
         print("There are {0} instances of 3-element [a, b, c] triplets that sum up to {1} ...".format(numOfTriplets, testInteger))
-        print("{0} is one of those instances".format(firstTriplet))
+        print("{0} is one of those instances, in sorted form".format(firstTriplet))
 
 # define computeTwoNumberSum()
 # - takes in a user defined integer array tIA
@@ -71,12 +71,12 @@ def computeThreeNumSum(tIA: list, tIV: int):
     for t in tIA:
         intermediatetIV = tIV - t
         intermediateList = tIA[intermediateListIndex:]
-        print("Intermediate List : {}".format(intermediateList))
+        # print("Intermediate List : {}".format(intermediateList))
         innerListIndex = 1  # reset here since the new intermediateList also resets to `index 0`, hence needs a new innerList
         for i in intermediateList:
             testDiff = intermediatetIV - i
             innerList = intermediateList[innerListIndex:]
-            print("Inner List : {}".format(innerList))
+            # print("Inner List : {}".format(innerList))
             for j in innerList:
                 if j == testDiff:
                     print("... matching triplets [{0}, {1}, {2}] found!".format(t, i, j))
