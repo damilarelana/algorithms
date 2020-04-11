@@ -7,8 +7,10 @@ loopRange = len(rlist)                      # avoids repeating len() on large li
 print("\nGiven random unsorted list (%s elements): \n%s\n" % (loopRange, rlist))
 
 start_time = time.time()                    # start time counter
+
+
 def selectionSort(rlist):
-    global loopRange                        # declare loopRange as global to ensure its same within selectionSort(rlist)
+    loopRange = len(rlist) 
     if loopRange == 1:
         return rlist
     else:
@@ -26,6 +28,8 @@ def selectionSort(rlist):
             if outerCount == loopRange - 1: # i.e. only one unsorted element remains, break outer loop
                 break
         return rlist
+
+
 selectionsorted = selectionSort(rlist)
 print("Selection Sort gives: %s\n" % selectionsorted)
 print("runtime: %s seconds\n" % (time.time() - start_time))
