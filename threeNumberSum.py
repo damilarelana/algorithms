@@ -40,6 +40,34 @@ def threeNumSum():  # inputList param is of type list
         print("There are {0} instances of 3-element [a, b, c] triplets that sum up to {1} ...".format(numOfTriplets, testInteger))
         print("{0} is one of those instances, in sorted form".format(firstTriplet))
 
+    # constructor a 2-dimensional array using the dictionary values
+    two2DArray = build2DArray(resultDict)
+
+    # return the 2-d array
+    return two2DArray
+
+# define build2DArray()
+# - takes in a dictionary as argument
+# - assumes each dict values is an already sorted integer array `list`
+# - assumes the maximum value for each `list` would be element at `list[index len(list)-1]`
+# - creates a new list i.e. 2DArray with elements consisting of the previous sorted lists
+# - uses these maximum values to sort the new list
+# - used the .sort(key=lambda ...) to do the actual sorting 
+# - return the now sorted 2DArray
+
+
+def build2DArray(resultDict: dict):
+
+    # extract the `list` or `already sorted lists`
+    twoDArray = list()
+    for v in resultDict.values():
+        twoDArray.append(v)
+
+    # sort the `list` of `already sorted lists`
+    twoDArray.sort(key=lambda x: x[len(x) - 1])  # sort by last element in each list
+
+    return twoDArray
+
 # define computeTwoNumberSum()
 # - takes in a user defined integer array tIA
 # - takes in a user defined integer value tIV
@@ -206,7 +234,8 @@ def checkEmptyList(inputArrayString: str):
 
 def main():
     start_time = time.time()
-    threeNumSum()
+    twoDArray = threeNumSum()
+    print("The 2-dimensional array of matching triplets are: {0}".format(twoDArray))
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
