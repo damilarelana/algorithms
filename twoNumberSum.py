@@ -28,12 +28,12 @@ def twoNumberSum():  # inputList param is of type list
     resultDict = computeTwoNumSum(testArray, testInteger)
 
     # return the results
-    if checkEmptyList(resultDict[0]):
+    if checkEmptyList(str(resultDict[0])):  # checkEmptyList() checks if resultDict[0] is an empty list - str([]) is same as "[]"
         print("No 2-element [a, b] pairs of {0} sums up to the integer value {1}".format(testArray, testInteger))
     else:
         numOfPairs = len(resultDict)
-        firstPair = resultDict[0]
-        print("There are at least {0} instances of 2-element [a, b] pairs of {1}, that sum up to the integer value {2} ...".format(numOfPairs, testArray, testInteger))
+        firstPair = resultDict[1]
+        print("There are {0} instances of 2-element [a, b] pairs of {1}, that sum up to {2} ...".format(numOfPairs, testArray, testInteger))
         print("{0} is one of those instances".format(firstPair))
 
 # define computeTwoNumberSum()
@@ -50,6 +50,7 @@ def computeTwoNumSum(tIA: list, tIV: int):
 
     # initialize dict, with `index 0` being an empty list
     # - if subsequent pairs are found, `index 0` would be overwritten
+    # - if not pairs are found, then we still have our `empty List []` as first value
     resultDict = {
         keyDict: resultPair,
     }
@@ -61,6 +62,7 @@ def computeTwoNumSum(tIA: list, tIV: int):
         testSet = set(innerList)
         for testDiff in testSet:
             resultPair = [t, testDiff]
+            print(testDiff)
             resultDict[keyDict] = resultPair  # append to the dictionary
         keyDict += 1
         listIndex += 1
