@@ -14,13 +14,13 @@ def twoNumberSum():  # inputList param is of type list
 
     # obtain test array
     testArray = getArray()
-    print("Test Array: ", testArray)
+    print("\nTest Array: ", testArray)
     print("Test Array is of type: ", type(testArray))
     print("    ============    \n")
 
     # obtain test integer
     testInteger = getInteger()
-    print("Test Sum: ", testInteger)
+    print("\nTest Sum: ", testInteger)
     print("Sum is of type: ", type(testInteger))
     print("    ============    \n")
 
@@ -33,7 +33,7 @@ def twoNumberSum():  # inputList param is of type list
     else:
         numOfPairs = len(resultDict)
         firstPair = resultDict[0]
-        print("There are {0} instances of 2-element [a, b] pairs of {1}, that sum up to {2} ...".format(numOfPairs, testArray, testInteger))
+        print("There are {0} instances of 2-element [a, b] pairs that sum up to {1} ...".format(numOfPairs, testInteger))
         print("{0} is one of those instances".format(firstPair))
 
 # define computeTwoNumberSum()
@@ -115,7 +115,7 @@ def computeTwoNumSumOptionTwo(tIA: list, tIV: int):
 
 def getArray():
     try:
-        print("Using the format [1, 2, 3, 4] or [1,2,3,4] or [1, 2,3, 4] ...")
+        print("\nUsing the format [1, 2, 3, 4] or [1,2,3,4] or [1, 2,3, 4] ...")
         inputArrayString = input("please enter an integer array: ")
         while checkEmptyList(inputArrayString):
             print("Array cannot be empty")
