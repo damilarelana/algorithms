@@ -32,7 +32,7 @@ def twoNumberSum():  # inputList param is of type list
         print("No 2-element [a, b] pairs of {0} sums up to the integer value {1}".format(testArray, testInteger))
     else:
         numOfPairs = len(resultDict)
-        firstPair = resultDict[1]
+        firstPair = resultDict[0]
         print("There are {0} instances of 2-element [a, b] pairs of {1}, that sum up to {2} ...".format(numOfPairs, testArray, testInteger))
         print("{0} is one of those instances".format(firstPair))
 
