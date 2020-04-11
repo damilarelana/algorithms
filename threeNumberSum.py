@@ -43,13 +43,14 @@ def threeNumSum():  # inputList param is of type list
 # - then compares to determine a match with the inner element
 # - this does NOT restrict the computation to just unique elements of tIA
 #    + if an element occurs multiple times, then the [a, b, c] triplet for it would be repeated
+# - each matching triplet is sorted using bubbleSort(), before being added to the dictionary
 
 
 def computeThreeNumSum(tIA: list, tIV: int):
-    listIndex = 1  # index to obtain smaller/smaller innerList as we loop
+    listIndex = 1  # index to obtain smaller/smallest lists intermediateList/innerList as we loop
     keyDict = 0  # key to store the matching triplet in a dictionary
 
-    resultTriplet = list()  # initialize placeholder for matched pairs
+    resultTriplet = list()  # initialize placeholder for matched triplets
 
     # initialize dict, with `index 0` being an empty list
     # - if subsequent pairs are found, `index 0` would be overwritten
@@ -59,14 +60,22 @@ def computeThreeNumSum(tIA: list, tIV: int):
     }
 
     # loop array elements to check if they sum up to `tIV`
+    # - a single listIndex can be used if you think of `tIV`, `intermediateList` and `innerList` as subsets of each other
+    #   + where the length is decreasing 1 each time you go down a loop
+    #   + since you have excluded the test element `from previous loop`
+
     for t in tIA:
-        testDiff = tIV - t
-        innerList = tIA[listIndex:]
-        for i in innerList:
-            if i == testDiff:
-                resultTriplet = [t, testDiff]
-                resultDict[keyDict] = resultTriplet  # append to the dictionary
-                keyDict += 1  # increase dictionary index
+        intermediatetIV = tIV - t
+        intermediateList = tIA[listIndex:]
+        for i in intermediateList:
+            testDiff = intermediatetIV - i
+            innerList = tIA[listIndex:]
+            for j in innerList:
+                if j == testDiff:
+                    resultTriplet = [t, i, j]  # current matching triplet is now identified 
+                    resultTriplet = bubbleSort(resultTriplet)  # sort matching triplet
+                    resultDict[keyDict] = resultTriplet  # append to dict
+                    keyDict += 1  # increase dictionary index
         listIndex += 1
     return resultDict
 
@@ -77,7 +86,7 @@ def computeThreeNumSum(tIA: list, tIV: int):
 # - returns a now sorted input list
 
 
-def bubblesort(inputList: list):
+def bubbleSort(inputList: list):
     oCount = 0  # outer counter initialization
     while oCount < len(inputList):
         # handles already sorted input and sorting completion
