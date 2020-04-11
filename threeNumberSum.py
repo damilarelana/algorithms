@@ -58,7 +58,7 @@ def threeNumSum():  # inputList param is of type list
 
 def build2DArray(resultDict: dict):
 
-    # extract the `list` or `already sorted lists`
+    # extract the `list` of `already sorted lists`
     two2DArray = list()
     for v in resultDict.values():
         if bool(v) is True:
@@ -66,7 +66,7 @@ def build2DArray(resultDict: dict):
 
     # sort the `list` of `already sorted lists`
     # two2DArray.sort(key=lambda x: x[len(x) - 1])  # sort by last element in each list
-    two2DArray.sort(key=lambda x: x[0])  # sort by first element in each list
+    two2DArray.sort(key=lambda x: (x[0], x[1], x[2]))  # sort by 1st then 2nd then 3rd index of each element
 
     return two2DArray
 
@@ -236,8 +236,8 @@ def checkEmptyList(inputArrayString: str):
 
 def main():
     start_time = time.time()
-    twoDArray = threeNumSum()
-    print("The 2-dimensional array of matching triplets are: {0}".format(twoDArray))
+    two2DArray = threeNumSum()
+    print("The 2-dimensional array of matching triplets are: {0}".format(two2DArray))
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
