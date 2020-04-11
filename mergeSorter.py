@@ -9,7 +9,7 @@ print("\nGiven random unsorted list (%s elements): \n%s\n" % (loopRange, rlist))
 start_time = time.time()                    # start time counter
 
 
-def mergeSorter(rlist):
+def mergeSort(rlist):
     temploopRange = len(rlist)                                      # handles reducing elements, so can't use global
 
     if temploopRange < 2:                                           # using "<2" instead of "==", handles when rlist=[]
@@ -18,9 +18,9 @@ def mergeSorter(rlist):
         demarcationIndex = int(math.ceil(temploopRange/2))          # words for even, odd and prime temploopRange values
         tempListOne = rlist[:demarcationIndex]                      # initialize tempListOne sub-list
         tempListTwo = rlist[demarcationIndex:]                      # initialize tempListTwo sub-list
-        tempListOne = mergeSorter(tempListOne)                      # recursive call to mergeSorter()
-        tempListTwo = mergeSorter(tempListTwo)                      # recursive call to mergeSorter()
-        return sublistMerge(tempListOne,tempListTwo)
+        tempListOne = mergeSort(tempListOne)                      # recursive call to mergeSorter()
+        tempListTwo = mergeSort(tempListTwo)                      # recursive call to mergeSorter()
+        return sublistMerge(tempListOne, tempListTwo)
 
 
 #
@@ -52,6 +52,8 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
         indexSubListTwo += 1
     return tempMergedList
 #
-mergeSorted = mergeSorter(rlist)
+
+
+mergeSorted = mergeSort(rlist)
 #print("Merge Sort gives: %s\n" % mergeSorted)
 print("runtime: %s seconds\n" % (time.time() - start_time))
