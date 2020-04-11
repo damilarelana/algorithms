@@ -9,6 +9,10 @@ import time
 #       + an empty `[]`, when no 3-element triplets sums up to integer value
 #       + a dict of all 3-element `[a, b]` triplets that sum up to integer value
 
+# To Test, let: 
+#  - tIV = 134
+#  - tIA = "[102, 134, 32, 100, 34, 70, 64, -9, 7, 14, 50]"
+
 
 def threeNumSum():  # inputList param is of type list
 
@@ -47,7 +51,7 @@ def threeNumSum():  # inputList param is of type list
 
 
 def computeThreeNumSum(tIA: list, tIV: int):
-    listIndex = 1  # index to obtain smaller/smallest lists intermediateList/innerList as we loop
+    intermediateListIndex = 1  # index to obtain smaller/smallest intermediate list
     keyDict = 0  # key to store the matching triplet in a dictionary
 
     resultTriplet = list()  # initialize placeholder for matched triplets
@@ -66,17 +70,22 @@ def computeThreeNumSum(tIA: list, tIV: int):
 
     for t in tIA:
         intermediatetIV = tIV - t
-        intermediateList = tIA[listIndex:]
+        intermediateList = tIA[intermediateListIndex:]
+        print("Intermediate List : {}".format(intermediateList))
+        innerListIndex = 1  # reset here since the new intermediateList also resets to `index 0`, hence needs a new innerList
         for i in intermediateList:
             testDiff = intermediatetIV - i
-            innerList = intermediateList[listIndex:]
+            innerList = intermediateList[innerListIndex:]
+            print("Inner List : {}".format(innerList))
             for j in innerList:
                 if j == testDiff:
+                    print("... matching triplets [{0}, {1}, {2}] found!".format(t, i, j))
                     resultTriplet = [t, i, j]  # current matching triplet is now identified 
                     resultTriplet = bubbleSort(resultTriplet)  # sort matching triplet
                     resultDict[keyDict] = resultTriplet  # append to dict
                     keyDict += 1  # increase dictionary index
-        listIndex += 1
+            innerListIndex += 1  # incremented here to shrink innerList at next iteration with same intermediateList
+        intermediateListIndex += 1  # increment this so as to shrink the intermediate list at next iteration [with same ]
     return resultDict
 
 
