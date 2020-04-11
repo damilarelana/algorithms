@@ -39,7 +39,10 @@ def twoNumberSum():  # inputList param is of type list
 # define computeTwoNumberSum()
 # - takes in a user defined integer array tIA
 # - takes in a user defined integer value tIV
-# - set() is used in the inner loop for speed purposes
+# - computes difference between outer element and tIV
+# - then compares to determine a match with the inner element
+# - this does NOT restrict the computation to just unique elements of tIA
+#    + if an element occurs multiple times, then the [a, b] pair for it would be repeated
 
 
 def computeTwoNumSum(tIA: list, tIV: int):
@@ -59,14 +62,48 @@ def computeTwoNumSum(tIA: list, tIV: int):
     for t in tIA:
         testDiff = tIV - t
         innerList = tIA[listIndex:]
-        testSet = set(innerList)
-        for testDiff in testSet:
-            resultPair = [t, testDiff]
-            print(testDiff)
-            resultDict[keyDict] = resultPair  # append to the dictionary
-        keyDict += 1
+        for i in innerList:
+            if i == testDiff:
+                resultPair = [t, testDiff]
+                resultDict[keyDict] = resultPair  # append to the dictionary
+                keyDict += 1  # increase dictionary index
         listIndex += 1
     return resultDict
+
+# define computeTwoNumberSumOptionTwo()
+# - takes in a user defined integer array tIA
+# - takes in a user defined integer value tIV
+# - computes sum between outer element and inner element
+# - then compares to determine a match with tIV
+# - this does NOT restrict the computation to just unique elements of tIA
+#    + if an element occurs multiple times, then the [a, b] pair for it would be repeated
+
+
+def computeTwoNumSumOptionTwo(tIA: list, tIV: int):
+    listIndex = 1  # index to obtain smaller/smaller innerList as we loop
+    keyDict = 0  # key to store the matching pairs in a dictionary
+
+    resultPair = list()  # initialize placeholder for matched pairs
+
+    # initialize dict, with `index 0` being an empty list
+    # - if subsequent pairs are found, `index 0` would be overwritten
+    # - if not pairs are found, then we still have our `empty List []` as first value
+    resultDict = {
+        keyDict: resultPair,
+    }
+
+    # loop array elements to check if they sum up to `tIV`
+    for t in tIA:
+        innerList = tIA[listIndex:]
+        for i in innerList:
+            testSum = t + i
+            if testSum == tIV:
+                resultPair = [t, i]
+                resultDict[keyDict] = resultPair  # append to the dictionary
+                keyDict += 1  # increase dictionary index
+        listIndex += 1
+    return resultDict[0]
+
 
 # define getArray()
 # - uses a try-except-finally to catch input edge-cases
