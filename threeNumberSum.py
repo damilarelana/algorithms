@@ -59,14 +59,16 @@ def threeNumSum():  # inputList param is of type list
 def build2DArray(resultDict: dict):
 
     # extract the `list` or `already sorted lists`
-    twoDArray = list()
+    two2DArray = list()
     for v in resultDict.values():
-        twoDArray.append(v)
+        if bool(v) is True:
+            two2DArray.append(v)
 
     # sort the `list` of `already sorted lists`
-    twoDArray.sort(key=lambda x: x[len(x) - 1])  # sort by last element in each list
+    # two2DArray.sort(key=lambda x: x[len(x) - 1])  # sort by last element in each list
+    two2DArray.sort(key=lambda x: x[0])  # sort by first element in each list
 
-    return twoDArray
+    return two2DArray
 
 # define computeTwoNumberSum()
 # - takes in a user defined integer array tIA
