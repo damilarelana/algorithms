@@ -14,6 +14,7 @@ print("\nGiven random unsorted list (%s elements): \n%s\n" % (len(rlist), rlist)
 # - it 10x-100x faster than bubbleSortElegant.py
 # - sometimes marginally faster (or marginally slower) than kindaBubbleSort.py
 
+
 def hybridBubbleSort(inputList: list):
     inputListLength = len(inputList)
     oCount = 0  # outer counter initialization

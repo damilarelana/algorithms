@@ -124,20 +124,25 @@ def computeThreeNumSum(tIA: list, tIV: int):
 # - sorts it in ascending order
 # - returns a now sorted input list
 
-
 def bubbleSort(inputList: list):
     inputListLength = len(inputList)
-    oCount = 0  # initialize the outer counter i.e. which controls repetition after bubbling previous largest values
-    while oCount < len(inputList):  # this does not use rlistLength, to ensure we test all elements for largeness
-        iCount = 0   # initialize the inner counter i.e. to move one selected element through the list
+    oCount = 0  # outer counter initialization
+    while oCount < len(inputList):
+        # handles already sorted input and sorting completion
+        swapflag = False
+        iCount = 0  # inner counter initialization
         while iCount < (inputListLength - 1):
-            if inputList[iCount] > inputList[iCount+1]:
+            if inputList[iCount] > inputList[iCount+1]:  # this sorts in ascending order
                 inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
+                swapflag = True
             iCount += 1
-        oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
+        # break from loop if already sorted input and sorting completion
+        if not(swapflag):
+            break
+        oCount += 1
         inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
-
-    return inputList  # returning a now sorted input List
+    return inputList
+#
 
 # define getArray()
 # - uses a try-except-finally to catch input edge-cases
