@@ -1,12 +1,10 @@
 import random
 import time
 
-rlist = [x for x in range(0, 12276, 96)]    # Generate Random Unsorted List
+rlist = [x for x in range(0, 1227612, 96)]    # Generate Random Unsorted List
 random.shuffle(rlist)
 loopRange = len(rlist)                      # avoids repeating len() on large lists
 print("\nGiven random unsorted list (%s elements): \n%s\n" % (loopRange, rlist))
-
-start_time = time.time()                    # start time counter
 
 # selectionSort()
 # - works by:
@@ -42,6 +40,7 @@ def selectionSort(rlist):
         return rlist
 
 
+start_time = time.time()                    # start time counter
 selectionsorted = selectionSort(rlist)
 print("Selection Sort gives: %s\n" % selectionsorted)
 print("runtime: %s seconds\n" % (time.time() - start_time))

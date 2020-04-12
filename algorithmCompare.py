@@ -3,49 +3,9 @@ import time
 #
 # Generate Random Unsorted List
 #
-inputList = [x for x in range(0, 1227612, 96)]
+inputList = [x for x in range(0, 1227612, 96)]    # Generate Random Unsorted List
 random.shuffle(inputList)
 
-# elegantBubbleSort() is an elegant implementation BUT slower
-
-
-def elegantBubbleSort(inputList: list):
-    inputListLength = len(inputList)
-    oCount = 0  # initialize the outer counter i.e. which controls repetition after bubbling previous largest values
-    while oCount < len(inputList):  # this does not use rlistLength, to ensure we test all elements for largeness
-        iCount = 0   # initialize the inner counter i.e. to move one selected element through the list
-        while iCount < (inputListLength - 1):
-            if inputList[iCount] > inputList[iCount+1]:
-                inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
-            iCount += 1
-        oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
-        inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
-
-    return inputList  # returning a now sorted input List
-
-
-# kindaBubbleSort() is a less elegant solution BUT faster
-# - it uses a swap flag AND break point
-# - WITHOUT even reducing the inputListLength, after each inner loop iteration
-# - it 10x-100x faster than bubbleSortElegant.py
-# - sometimes marginally faster (or marginally slower) than bubbleSortHybrid()
-
-def kindaBubbleSort(inputList: list):
-    oCount = 0  # outer counter initialization
-    while oCount < len(inputList):
-        # handles already sorted input and sorting completion
-        swapflag = False
-        iCount = 0  # inner counter initialization
-        while iCount < (len(inputList)-1):
-            if inputList[iCount] > inputList[iCount+1]:  # this sorts in ascending order
-                inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
-                swapflag = True
-            iCount += 1
-        # break from loop if already sorted input and sorting completion
-        if not(swapflag):
-            break
-        oCount += 1
-    return inputList
 
 # hybridBubbleSort() is a combination of the two
 # - it is an hybrid in the sense that it dynamically adjusts
@@ -74,6 +34,38 @@ def hybridBubbleSort(inputList: list):
         inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
     return inputList
 
+# selectionSort()
+# - works by:
+#   + assume l[0] is minimum
+#   + saves the index of l[0] into a temporary placeholder
+#   + scans all remaining items i.e. the innerCount being always one index ahead of the outerCount
+# - sorts in an ascending order
+# - all this is happening in place
+#   + we are just using `outcounter` to implement a virtual segregation of what is sorted and unsorted
+
+
+def selectionSort(rlist):
+    loopRange = len(rlist) 
+    if loopRange == 1:
+        return rlist
+    else:
+        outerCount = 0                      # initialise outerloop counter
+        minElement = outerCount             # assume first index "0" is temporary minimum (changes with each pass)
+        while outerCount < loopRange:       # using "for ... in ... range()" would give same result
+            innerCount = outerCount + 1     # make (or reset) innerCount to current "outerCount + 1"
+            while innerCount < loopRange:   # scanning by looping over all remaining items to test new minimum
+                if rlist[innerCount] < rlist[minElement]:  # if any of the items if less than current minimum
+                    minElement = innerCount  # swaps out the index of the old with the new i.e. create new temporary minimum for remaining unsorted set
+                innerCount += 1             # increase inner counter i.e. reducing unsorted list of items
+            rlist[outerCount], rlist[minElement] = rlist[minElement], rlist[outerCount]  # confirm new minimum by swapping [temporary outerCount index with new minimum's index]
+            outerCount += 1                 # increase outer counter i.e. expanding the sorted set
+            minElement = outerCount         # reset new temporary minimum index e.g. if initial was index `0`, it would now be `1` 
+            if outerCount == loopRange - 1:  # i.e. only one unsorted element remains, break outer loop
+                break
+            # note that we CANNOT use the optimization (loopRange -= 1) since we are shifting values/index around 
+            # as such the last value after every iteration can still need to be touched
+            # this is one difference with BubbleSort() where the last index can be removed from dataset after every loop
+        return rlist
 
 #
 # checkOrderedListEquivalence() a brutal bruteforce check for whether two lists are identical
@@ -113,25 +105,25 @@ def checkOrderedListEquivalence(r: list, k: list):
 
 
 #
-# Timed execution for elegantBubbleSort()
+# Timed execution for selectionSort()
 #
 
 
 start_time = time.time()
-elegantlyBubbleSorted = elegantBubbleSort(inputList)
+selectionSorted = selectionSort(inputList)
 print(" ================ ")
-print("\n Elegant Bubble Sort gives: %s\n" % elegantlyBubbleSorted)
+print("\n Selection Sort gives: %s\n" % selectionSorted)
 print("runtime: %f seconds\n" % (time.time() - start_time))
 
 
 #
-# Timed execution for kindaBubbleSort()
+# Timed execution for mergeSort()
 #
 
 start_time = time.time()
-kindaBubblesorted = kindaBubbleSort(inputList)
+mergesorted = mergeSort(inputList)
 print(" ================ ")
-print("\n Kinda Bubble Sort gives: %s\n" % kindaBubblesorted)
+print("\n Kinda Bubble Sort gives: %s\n" % mergesorted)
 print("runtime: %f seconds\n" % (time.time() - start_time))
 
 
@@ -150,9 +142,9 @@ print("\n ================ ")
 #
 # # Check if both sorted list are equivalent
 # #
-eBSkBS = checkOrderedListEquivalence(elegantlyBubbleSorted, kindaBubblesorted)
-hBSkBS = checkOrderedListEquivalence(hybridBubblesorted, kindaBubblesorted)
-if eBSkBS and hBSkBS:
+sShBS = checkOrderedListEquivalence(selectionSorted, hybridBubblesorted)
+hBSmS = checkOrderedListEquivalence(hybridBubblesorted, mergesorted)
+if sShBS and hBSmS:
     print("\nAll algorithms give the same sorted list")
 else:
     print("\nAll algorithms did NOT give the same sorted list")
