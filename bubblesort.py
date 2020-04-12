@@ -3,31 +3,30 @@ import time
 #
 # Generate Random Unsorted List
 #
-rlist = [x for x in range(0, 12276, 96)]
-random.shuffle(rlist)
-print("\nGiven random unsorted list (%s elements): \n%s\n" % (len(rlist), rlist))
+inputList = [x for x in range(0, 12276, 96)]
+random.shuffle(inputList)
+print("\nGiven random unsorted list (%s elements): \n%s\n" % (len(inputList), inputList))
 #
 #start time counter
 #
 start_time = time.time()
-def bubblesort(rlist):
-    ocount = 0
-    while ocount < len(rlist):
-        # handles already sorted input and sorting completion
-        swapflag = False
-        icount = 0
-        while icount < (len(rlist)-1):
-            if rlist[icount] > rlist[icount+1]:
-                temp = rlist[icount+1]
-                rlist[icount+1] = rlist[icount]
-                rlist[icount] = temp
-                swapflag = True  # this flag indicates that active bubbling is in progress for at least 1 element
-            icount += 1
-        # break from loop if already sorted input and sorting completion
-        if not(swapflag):
-            break	
-        ocount += 1
-    return rlist
-bubblesorted = bubblesort(rlist)
+
+
+def bubbleSort(inputList: list):
+    inputListLength = len(inputList)
+    oCount = 0  # initialize the outer counter i.e. which controls repetition after bubbling previous largest values
+    while oCount < len(inputList):  # this does not use rlistLength, to ensure we test all elements for largeness
+        iCount = 0   # initialize the inner counter i.e. to move one selected element through the list
+        while iCount < (inputListLength - 1):
+            if inputList[iCount] > inputList[iCount+1]:
+                inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
+            iCount += 1
+        oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
+        inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
+
+    return inputList  # returning a now sorted input List
+
+
+bubblesorted = bubbleSort(inputList)
 print("Bubble Sort gives: %s\n" % bubblesorted)
 print("runtime: %s seconds\n" % (time.time() - start_time))
