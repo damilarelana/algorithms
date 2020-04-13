@@ -12,6 +12,7 @@ random.shuffle(inputList)
 hBSInputList = copy.deepcopy(inputList)
 sSInputList = copy.deepcopy(inputList)
 mSInputList = copy.deepcopy(inputList)
+iSInputList = copy.deepcopy(inputList)
 
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -138,6 +139,28 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
         indexSubListTwo += 1
     return tempMergedList
 
+# insertionSort()
+
+
+def insertionSort(ulist):
+    loopRange = len(ulist)
+    if loopRange == 1:
+        return ulist    # no point wasting CPU cycle to sort one item
+    else:
+        # we assume that element at index `0` i.e. ocount = 0, is already sorted, hence why the unsorted starts at ocount = 1
+        ocount = 1                       # initialising unsorted list index to the first one to be removed from unsorted [we ]
+        while ocount < loopRange:        # handles if len(ulist)=1, unsorted loop index
+            icount = ocount              # re-initialising sorted list's max index to allow countdown
+            while icount > 0:            # handles inner loop i.e. the `sorted list loop`. greater than zero 
+                                         # helps to ensure that when you `bring` a new element (from unsorted) to test/loop against `the sorted
+                                         # it helps to ensure that the looping down does not go beyond `index 0` within the sorted
+                if ulist[icount-1] > ulist[icount]:           # this already carters for assuming list[0] is sorted
+                    ulist[icount - 1], ulist[icount] = ulist[icount], ulist[icount-1]
+                icount -= 1 # this is different to bubbleSort i.e. where there is an increment. Here we are decreasing the unsorted set
+
+            ocount += 1 # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
+        return ulist
+
 
 #
 # checkOrderedListEquivalence() a brutal bruteforce check for whether two lists are identical
@@ -181,29 +204,43 @@ def checkOrderedListEquivalence(r: list, k: list):
 #
 
 
-start_time = time.time()
+sSStartTime = time.time()
 selectionSorted = selectionSort(sSInputList)
+sSStopTime = time.time()
 print("\nSelection Sort give [first 15 elements as]: %s" % selectionSorted[:15])
-print("runtime: %f seconds" % (time.time() - start_time))
+print("runtime: %f seconds" % (sSStopTime - sSStartTime))
 print("================================")
 
 #
 # Timed execution for mergeSort()
 #
-start_time = time.time()
+mSStartTime = time.time()
 mergesorted = mergeSort(mSInputList)
+mSStopTime = time.time()
 print("\nMerge Sort gives [first 15 elements as]: %s" % mergesorted[:15])
-print("runtime: %f seconds" % (time.time() - start_time))
+print("runtime: %f seconds" % (mSStopTime - mSStartTime))
 print("================================")
 
 #
 # Timed execution for hybridBubbleSort()
 #
-
-start_time = time.time()
+hBSStartTime = time.time()
 hybridBubblesorted = hybridBubbleSort(hBSInputList)
+hBSStopTime = time.time()
 print("\nHybrid Bubble Sort gives [first 15 elements as]: %s" % hybridBubblesorted[:15])
-print("runtime: %f seconds" % (time.time() - start_time))
+print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
+print("================================")
+
+
+#
+# Timed execution for insertionSort()
+#
+
+iSStartTime = time.time()
+insertionsorted = insertionSort(iSInputList)
+iSStopTime = time.time()
+print("\nInsertion Sort gives [first 15 elements as]: %s" % insertionsorted[:15])
+print("runtime: %f seconds" % (iSStopTime - iSStartTime))
 print("================================")
 
 
