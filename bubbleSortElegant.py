@@ -18,7 +18,7 @@ def elegantBubbleSort(inputList: list):
         while iCount < (inputListLength - 1):
             if inputList[iCount] > inputList[iCount+1]:
                 inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
-            iCount += 1
+            iCount += 1  # so as to move on the the next adjacent elements to test
         oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
         inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
 
