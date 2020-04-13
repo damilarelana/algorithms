@@ -172,6 +172,13 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
 
 
 def insertionSort(ulist):
+    # initialize dict, with `index 0` being an empty list
+    iSDictKey = 0  # key to store the matching pairs (indexTuple, valueTuple)
+    iSdataPair = list()  # initialize placeholder for matched pairs
+    iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        keyDict: resultPair,
+    }
+
     loopRange = len(ulist)
     if loopRange == 1:
         return ulist    # no point wasting CPU cycle to sort one item
@@ -188,6 +195,32 @@ def insertionSort(ulist):
                 icount -= 1 # this is different to bubbleSort i.e. where there is an increment. Here we are decreasing the unsorted set
             ocount += 1 # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
         return ulist
+
+
+# getPlotData()
+#  - takes in an array state while sorting
+#  - takes in plot data dictionary, meant to be updated
+#  - uses a `[list comprehension]` and `enumerate()` to generate the required current state of the array i.e. cStateOfArray
+#  - uses zip() to take in the new iterable `cStateOfArray`
+#  - zip() unzips the dereferenced pointer to `cStateOfArray` (i.e. *cStateOfArray)
+#        + to separate `indexTuple` and `valueTuple` required by matplotlib's `plt`
+#  - save the `indexTuple` and `valueTuple` into a 2-element list
+#  - save the 2-element list into dictionary, with specific key value
+#  - increment the dictionary key value
+#  - repeat the saving process
+#  - does not return anything as it is working on the array and dictionary in-place
+
+
+def getPlotData(arrayWhileSorting: list, dictKey: int, dataPair: list, plotDataDict: dict):
+
+    cStateOfArray = [(index, value) for index, value in enumerate(arrayWhileSorting)]  # generate current state of the array
+    indexTuple, valueTuple = zip(*cStateOfArray)
+
+    resultTriplet = [t, i, j]  # current matching triplet is now identified 
+    resultTriplet = bubbleSort(resultTriplet)  # sort matching triplet
+    resultDict[keyDict] = resultTriplet  # append to dict
+    keyDict += 1  # increase dictionary index
+
 
 #
 # createAnimation()
