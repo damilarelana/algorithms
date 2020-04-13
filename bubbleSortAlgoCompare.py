@@ -3,7 +3,7 @@ import time
 #
 # Generate Random Unsorted List
 #
-inputList = [x for x in range(0, 122761291, 96)]
+inputList = [x for x in range(0, 1227632, 96)]
 random.shuffle(inputList)
 
 # elegantBubbleSort() is an elegant implementation BUT slower
