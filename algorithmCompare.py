@@ -281,7 +281,7 @@ sShBS = checkOrderedListEquivalence(selectionSorted, hybridBubblesorted)
 hBSmS = checkOrderedListEquivalence(hybridBubblesorted, mergesorted)
 hBSiS = checkOrderedListEquivalence(hybridBubblesorted, insertionsorted)
 hBSeBS = checkOrderedListEquivalence(hybridBubblesorted, elegantBubblesorted)
-if sShBS and hBSmS:
+if sShBS and hBSmS and hBSiS and hBSeBS:
     print("\nAll algorithms give the same sorted list")
 else:
     print("\nAll algorithms did NOT give the same sorted list")
