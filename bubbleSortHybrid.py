@@ -3,9 +3,9 @@ import time
 #
 # Generate Random Unsorted List
 #
-rlist = [x for x in range(0, 12276, 96)]
+rlist = [x for x in range(0, 12276854, 96)]
 random.shuffle(rlist)
-print("\nGiven random unsorted list (%s elements): \n%s\n" % (len(rlist), rlist))
+print("\nGiven random unsorted list (with %s elements): \n%s\n" % (len(rlist), rlist))
 
 # hybridBubbleSort() is a combination of the bubbleSortElegant.py and bubbleSortKinda.py
 # - it is an hybrid in the sense that it dynamically adjusts
@@ -41,5 +41,5 @@ def hybridBubbleSort(inputList: list):
 start_time = time.time()
 hybridBubblesorted = hybridBubbleSort(rlist)
 print(" ================ ")
-print("\n Hybrid Bubble Sort gives: %s\n" % hybridBubblesorted)
+print("\nHybrid Bubble Sort gives [first 15 elements as]: %s\n" % hybridBubblesorted[:15])
 print("runtime: %f seconds\n" % (time.time() - start_time))
