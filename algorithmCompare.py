@@ -1,10 +1,19 @@
 import random
 import time
+import math
 #
 # Generate Random Unsorted List
 #
-inputList = [x for x in range(0, 12276, 96)]    # Generate Random Unsorted List
+inputList = [x for x in range(0, 12345678, 96)]    # Generate Random Unsorted List
 random.shuffle(inputList)
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+print("")
+print("Comparing performance of 3 algorithms [ mergeSort + optimizedBubbleSort + selectionSort ]:")
+print("  - using random generated data")
+print("  - of an array of integer values")
+print("  - with {} elements".format(len(inputList)))
+print("")
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 
 # hybridBubbleSort() is a combination of the two
@@ -166,10 +175,9 @@ def checkOrderedListEquivalence(r: list, k: list):
 
 start_time = time.time()
 selectionSorted = selectionSort(inputList)
-print(" ================ ")
 print("\nSelection Sort give [first 15 elements as]: %s" % selectionSorted[:15])
-print("runtime: %f seconds\n" % (time.time() - start_time))
-
+print("runtime: %f seconds" % (time.time() - start_time))
+print("================================")
 
 #
 # Timed execution for mergeSort()
@@ -177,10 +185,9 @@ print("runtime: %f seconds\n" % (time.time() - start_time))
 
 start_time = time.time()
 mergesorted = mergeSort(inputList)
-print(" ================ ")
 print("\nMerge Sort gives [first 15 elements as]: %s" % mergesorted[:15])
-print("runtime: %f seconds\n" % (time.time() - start_time))
-
+print("runtime: %f seconds" % (time.time() - start_time))
+print("================================")
 
 #
 # Timed execution for hybridBubbleSort()
@@ -188,10 +195,9 @@ print("runtime: %f seconds\n" % (time.time() - start_time))
 
 start_time = time.time()
 hybridBubblesorted = hybridBubbleSort(inputList)
-print(" ================ ")
 print("\nHybrid Bubble Sort gives [first 15 elements as]: %s" % hybridBubblesorted[:15])
-print("runtime: %f seconds\n" % (time.time() - start_time))
-print("\n ================ ")
+print("runtime: %f seconds" % (time.time() - start_time))
+print("================================")
 
 
 #
