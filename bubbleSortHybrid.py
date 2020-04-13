@@ -3,7 +3,7 @@ import time
 #
 # Generate Random Unsorted List
 #
-rlist = [x for x in range(0, 124763258, 96)]
+rlist = [x for x in range(0, 1247635, 96)]
 random.shuffle(rlist)
 loopRange = len(rlist)                      # avoids repeating len() on large lists
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
