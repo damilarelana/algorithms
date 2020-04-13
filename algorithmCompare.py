@@ -4,7 +4,7 @@ import math
 #
 # Generate Random Unsorted List
 #
-inputList = [x for x in range(0, 12345678, 96)]    # Generate Random Unsorted List
+inputList = [x for x in range(0, 12476358, 96)]    # Generate Random Unsorted List
 random.shuffle(inputList)
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("")
