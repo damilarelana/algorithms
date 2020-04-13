@@ -1,11 +1,19 @@
 import random
 import time
 import math
+import copy
 #
 # Generate Random Unsorted List
 #
 inputList = [x for x in range(0, 1247635, 96)]    # Generate Random Unsorted List
 random.shuffle(inputList)
+
+# create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
+hBSInputList = copy.deepcopy(inputList)
+sSInputList = copy.deepcopy(inputList)
+mSInputList = copy.deepcopy(inputList)
+
+#
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("")
 print("Comparing performance of 3 algorithms [ mergeSort + optimizedBubbleSort + selectionSort ]:")
@@ -174,7 +182,7 @@ def checkOrderedListEquivalence(r: list, k: list):
 
 
 start_time = time.time()
-selectionSorted = selectionSort(inputList)
+selectionSorted = selectionSort(sSInputList)
 print("\nSelection Sort give [first 15 elements as]: %s" % selectionSorted[:15])
 print("runtime: %f seconds" % (time.time() - start_time))
 print("================================")
@@ -182,9 +190,8 @@ print("================================")
 #
 # Timed execution for mergeSort()
 #
-
 start_time = time.time()
-mergesorted = mergeSort(inputList)
+mergesorted = mergeSort(mSInputList)
 print("\nMerge Sort gives [first 15 elements as]: %s" % mergesorted[:15])
 print("runtime: %f seconds" % (time.time() - start_time))
 print("================================")
@@ -194,7 +201,7 @@ print("================================")
 #
 
 start_time = time.time()
-hybridBubblesorted = hybridBubbleSort(inputList)
+hybridBubblesorted = hybridBubbleSort(hBSInputList)
 print("\nHybrid Bubble Sort gives [first 15 elements as]: %s" % hybridBubblesorted[:15])
 print("runtime: %f seconds" % (time.time() - start_time))
 print("================================")

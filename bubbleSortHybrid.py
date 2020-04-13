@@ -48,6 +48,6 @@ def hybridBubbleSort(inputList: list):
 
 start_time = time.time()
 hybridBubblesorted = hybridBubbleSort(rlist)
-print(" ================ ")
+stop_time = time.time() - start_time
 print("\nHybrid Bubble Sort gives [first 15 elements as]: %s\n" % hybridBubblesorted[:15])
-print("runtime: %f seconds\n" % (time.time() - start_time))
+print("runtime: %f seconds\n" % (stop_time))

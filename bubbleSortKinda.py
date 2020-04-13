@@ -46,6 +46,6 @@ def kindaBubbleSort(inputList: list):
 
 start_time = time.time()
 kindaBubblesorted = kindaBubbleSort(rlist)
-print(" ================ ")
-print("\n Kinda Bubble Sort gives: %s\n" % kindaBubblesorted)
-print("runtime: %f seconds\n" % (time.time() - start_time))
+stop_time = time.time() - start_time
+print("\nKinda Bubble Sort gives [first 15 elements as]: %s\n" % kindaBubblesorted[:15])
+print("runtime: %f seconds\n" % (stop_time))

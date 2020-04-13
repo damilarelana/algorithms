@@ -1,10 +1,16 @@
 import random
 import time
+import copy
 #
 # Generate Random Unsorted List
 #
 inputList = [x for x in range(0, 124763258, 96)]
 random.shuffle(inputList)
+
+# create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
+hBSInputList = copy.deepcopy(inputList)
+kBSInputList = copy.deepcopy(inputList)
+eBSInputList = copy.deepcopy(inputList)
 
 # elegantBubbleSort() is an elegant implementation BUT slower
 
@@ -118,7 +124,7 @@ def checkOrderedListEquivalence(r: list, k: list):
 
 
 start_time = time.time()
-elegantlyBubbleSorted = elegantBubbleSort(inputList)
+elegantlyBubbleSorted = elegantBubbleSort(eBSInputList)
 print(" ================ ")
 print("\nElegant Bubble Sort gives [first 15 elements as]: %s" % elegantlyBubbleSorted[:15])
 print("runtime: %f seconds\n" % (time.time() - start_time))
@@ -129,7 +135,7 @@ print("runtime: %f seconds\n" % (time.time() - start_time))
 #
 
 start_time = time.time()
-kindaBubblesorted = kindaBubbleSort(inputList)
+kindaBubblesorted = kindaBubbleSort(kBSInputList)
 print(" ================ ")
 print("\nKinda Bubble Sort gives [first 15 elements as]: %s" % kindaBubblesorted[:15])
 print("runtime: %f seconds\n" % (time.time() - start_time))
@@ -140,7 +146,7 @@ print("runtime: %f seconds\n" % (time.time() - start_time))
 #
 
 start_time = time.time()
-hybridBubblesorted = hybridBubbleSort(inputList)
+hybridBubblesorted = hybridBubbleSort(hBSInputList)
 print(" ================ ")
 print("\nHybrid Bubble Sort gives [first 15 elements as]: %s" % hybridBubblesorted[:15])
 print("runtime: %f seconds\n" % (time.time() - start_time))
