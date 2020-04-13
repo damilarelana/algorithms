@@ -2,7 +2,12 @@ import random
 import time
 import math
 import copy
-from matplotlib import pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 #
 # Generate Random Unsorted List
@@ -49,6 +54,7 @@ def hybridBubbleSort(inputList: list):
                 inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
                 swapflag = True
             iCount += 1
+
         # break from loop if already sorted input and sorting completion
         if not(swapflag):
             break
@@ -57,6 +63,7 @@ def hybridBubbleSort(inputList: list):
     return inputList
 
 # elegantBubbleSort() is an elegant implementation
+
 
 def elegantBubbleSort(inputList: list):
     inputListLength = len(inputList)
@@ -159,7 +166,9 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
         indexSubListTwo += 1
     return tempMergedList
 
+
 # insertionSort()
+#
 
 
 def insertionSort(ulist):
@@ -177,9 +186,26 @@ def insertionSort(ulist):
                 if ulist[icount-1] > ulist[icount]:           # this already carters for assuming list[0] is sorted
                     ulist[icount - 1], ulist[icount] = ulist[icount], ulist[icount-1]
                 icount -= 1 # this is different to bubbleSort i.e. where there is an increment. Here we are decreasing the unsorted set
-
             ocount += 1 # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
         return ulist
+
+
+# getPlotData()
+#  - takes in an array state while sorting
+#  - uses a `[list comprehension]` and `enumerate()` to generate the required current state of the array i.e. cStateOfArray
+#  - uses zip() to take in the new iterable `cStateOfArray`
+#  - zip() unzips the dereferenced pointer to `cStateOfArray` (i.e. *cStateOfArray)
+#        + to separate `indexTuple` and `valueTuple` required by matplotlib's `plt`
+#  - save the `indexTuple` and `valueTuple` into a 2-element list
+#  - save the 2-element list into dictionary, with specific key value
+#  - increment the dictionary key value
+#  - repeat the saving process
+
+
+def getPlotData(arrayWhileSorting: list):
+    cStateOfArray = [(index, value) for index, value in enumerate(arrayWhileSorting)]  # generate current state of the array
+    indexTuple, valueTuple = zip(*cStateOfArray)
+    indexList, valueList = 
 
 
 #
@@ -277,7 +303,7 @@ print("================================")
 #
 # # Check if both sorted list are equivalent
 # #
-sShBS = checkOrderedListEquivalence(selectionSorted, hybridBubblesorted)
+sShBS = checkOrderedListEquivalence(hybridBubblesorted, selectionSorted)
 hBSmS = checkOrderedListEquivalence(hybridBubblesorted, mergesorted)
 hBSiS = checkOrderedListEquivalence(hybridBubblesorted, insertionsorted)
 hBSeBS = checkOrderedListEquivalence(hybridBubblesorted, elegantBubblesorted)
