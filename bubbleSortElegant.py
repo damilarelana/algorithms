@@ -3,10 +3,9 @@ import time
 #
 # Generate Random Unsorted List
 #
-inputList = [x for x in range(0, 12276, 96)]
+inputList = [x for x in range(0, 1247635, 96)]
 random.shuffle(inputList)
-print("\nGiven random unsorted list (%s elements): \n%s\n" % (len(inputList), inputList))
-
+1247635
 
 # elegantBubbleSort() is an elegant implementation BUT slower
 
@@ -34,5 +33,5 @@ def elegantBubbleSort(inputList: list):
 start_time = time.time()
 elegantlyBubbleSorted = elegantBubbleSort(inputList)
 print(" ================ ")
-print("\n Elegant Bubble Sort gives: %s\n" % elegantlyBubbleSorted)
+print("\n Elegant Bubble Sort gives: %s\n" % elegantlyBubbleSorted[:15])
 print("runtime: %f seconds\n" % (time.time() - start_time))

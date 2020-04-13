@@ -4,7 +4,7 @@ import copy
 #
 # Generate Random Unsorted List
 #
-inputList = [x for x in range(0, 124763258, 96)]
+inputList = [x for x in range(0, 1247635, 96)]
 random.shuffle(inputList)
 
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
