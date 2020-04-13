@@ -3,9 +3,17 @@ import time
 #
 # Generate Random Unsorted List
 #
-rlist = [x for x in range(0, 12276854, 96)]
+rlist = [x for x in range(0, 124763258, 96)]
 random.shuffle(rlist)
-print("\nGiven random unsorted list (with %s elements): \n%s\n" % (len(rlist), rlist))
+loopRange = len(rlist)                      # avoids repeating len() on large lists
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+print("")
+print("A python implementation of a Bubble Sort algorithm:")
+print("  - using randomly generated data")
+print("  - of an array of integer values")
+print("  - with {} elements".format(loopRange))
+print("")
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 # hybridBubbleSort() is a combination of the bubbleSortElegant.py and bubbleSortKinda.py
 # - it is an hybrid in the sense that it dynamically adjusts

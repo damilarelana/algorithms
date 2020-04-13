@@ -2,10 +2,17 @@ import math
 import random
 import time
 
-rlist = [x for x in range(0, 12276, 96)]    # Generate Random Unsorted List
+rlist = [x for x in range(0, 124763258, 96)]    # Generate Random Unsorted List
 random.shuffle(rlist)
 loopRange = len(rlist)                      # avoids repeating len() on large lists
-print("\nGiven random unsorted list (%s elements): \n%s\n" % (loopRange, rlist))
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+print("")
+print("A python implementation of Merge Sort algorithm:")
+print("  - using randomly generated data")
+print("  - of an array of integer values")
+print("  - with {} elements".format(loopRange))
+print("")
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 # mergeSort()
 # - works by:
