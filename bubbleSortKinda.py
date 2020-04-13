@@ -18,8 +18,6 @@ print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # kindaBubbleSort() is a less elegant solution BUT faster
 # - it uses a swap flag AND break point
 # - WITHOUT even reducing the inputListLength, after each inner loop iteration
-# - it 10x-100x faster than bubbleSortElegant.py
-# - sometimes marginally faster (or marginally slower) than bubbleSortHybrid.py
 
 
 def kindaBubbleSort(inputList: list):

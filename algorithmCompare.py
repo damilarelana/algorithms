@@ -2,6 +2,8 @@ import random
 import time
 import math
 import copy
+from matplotlib import pyplot as plt
+
 #
 # Generate Random Unsorted List
 #
@@ -10,14 +12,16 @@ random.shuffle(inputList)
 
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
 hBSInputList = copy.deepcopy(inputList)
+eBSInputList = copy.deepcopy(inputList)
 sSInputList = copy.deepcopy(inputList)
 mSInputList = copy.deepcopy(inputList)
 iSInputList = copy.deepcopy(inputList)
 
+
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("")
-print("Comparing performance of 3 algorithms [ mergeSort + optimizedBubbleSort + selectionSort ]:")
+print("Comparing performance of 5 algorithms [ mergeSort + hybridBubbleSort + elegantBubbleSort + selectionSort + insertionSort]:")
 print("  - using randomly generated data")
 print("  - of an array of integer values")
 print("  - with {} elements".format(len(inputList)))
@@ -51,6 +55,22 @@ def hybridBubbleSort(inputList: list):
         oCount += 1
         inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
     return inputList
+
+# elegantBubbleSort() is an elegant implementation
+
+def elegantBubbleSort(inputList: list):
+    inputListLength = len(inputList)
+    oCount = 0  # initialize the outer counter i.e. which controls repetition after bubbling previous largest values
+    while oCount < len(inputList):  # this does not use rlistLength, to ensure we test all elements for largeness
+        iCount = 0   # initialize the inner counter i.e. to move one selected element through the list
+        while iCount < (inputListLength - 1):
+            if inputList[iCount] > inputList[iCount+1]:
+                inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
+            iCount += 1
+        oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
+        inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
+
+    return inputList  # returning a now sorted input List
 
 # selectionSort()
 # - works by:
@@ -233,6 +253,16 @@ print("================================")
 
 
 #
+# Timed execution for elegantBubbleSort()
+#
+eBSStartTime = time.time()
+elegantBubblesorted = elegantBubbleSort(eBSInputList)
+eBSStopTime = time.time()
+print("\nElegant Bubble Sort gives [first 15 elements as]: %s" % elegantBubblesorted[:15])
+print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
+print("================================")
+
+#
 # Timed execution for insertionSort()
 #
 
@@ -249,6 +279,8 @@ print("================================")
 # #
 sShBS = checkOrderedListEquivalence(selectionSorted, hybridBubblesorted)
 hBSmS = checkOrderedListEquivalence(hybridBubblesorted, mergesorted)
+hBSiS = checkOrderedListEquivalence(hybridBubblesorted, insertionsorted)
+hBSeBS = checkOrderedListEquivalence(hybridBubblesorted, elegantBubblesorted)
 if sShBS and hBSmS:
     print("\nAll algorithms give the same sorted list")
 else:

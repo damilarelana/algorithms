@@ -7,7 +7,7 @@ inputList = [x for x in range(0, 1247635, 96)]
 random.shuffle(inputList)
 1247635
 
-# elegantBubbleSort() is an elegant implementation BUT slower
+# elegantBubbleSort() is an elegant implementation
 
 
 def elegantBubbleSort(inputList: list):

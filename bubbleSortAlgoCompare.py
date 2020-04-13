@@ -12,7 +12,7 @@ hBSInputList = copy.deepcopy(inputList)
 kBSInputList = copy.deepcopy(inputList)
 eBSInputList = copy.deepcopy(inputList)
 
-# elegantBubbleSort() is an elegant implementation BUT slower
+# elegantBubbleSort() is an elegant implementation
 
 
 def elegantBubbleSort(inputList: list):
@@ -30,11 +30,10 @@ def elegantBubbleSort(inputList: list):
     return inputList  # returning a now sorted input List
 
 
-# kindaBubbleSort() is a less elegant solution BUT faster
+# kindaBubbleSort() is a less elegant solution
 # - it uses a swap flag AND break point
 # - WITHOUT even reducing the inputListLength, after each inner loop iteration
-# - it 10x-100x faster than bubbleSortElegant.py
-# - sometimes marginally faster (or marginally slower) than bubbleSortHybrid()
+
 
 def kindaBubbleSort(inputList: list):
     oCount = 0  # outer counter initialization
@@ -57,8 +56,6 @@ def kindaBubbleSort(inputList: list):
 # - it is an hybrid in the sense that it dynamically adjusts
 # - by reducing the inputListLength, after each inner loop iteration
 # - while still using a swap flag AND break point
-# - it 10x-100x faster than bubbleSortElegant.py
-# - sometimes marginally faster (or marginally slower) than kindaBubbleSort()
 
 
 def hybridBubbleSort(inputList: list):

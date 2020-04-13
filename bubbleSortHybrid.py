@@ -19,8 +19,6 @@ print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # - it is an hybrid in the sense that it dynamically adjusts
 # - by reducing the inputListLength, after each inner loop iteration
 # - while still using a swap flag AND break point
-# - it 10x-100x faster than bubbleSortElegant.py
-# - sometimes marginally faster (or marginally slower) than kindaBubbleSort.py
 
 
 def hybridBubbleSort(inputList: list):
