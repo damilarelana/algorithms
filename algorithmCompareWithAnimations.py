@@ -173,10 +173,10 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
 
 def insertionSort(ulist):
     # animation data initialize dict, with `index 0` being an empty list
-    iSDictKey = 0  # key to store the matching pairs (indexTuple, valueTuple) foreach array's state
-    iSStateDataPair = list()  # initialize placeholder for matched pairs
+    iSDictKey = 0  # key to store the valueTuple foreach array's state
+    iSStateData = list()  # initialize placeholder for the stored valueTuple
     iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
-        iSDictKey: iSDataPair,
+        iSDictKey: iSStateData,
     }
 
     # array sorting logic 
@@ -194,7 +194,7 @@ def insertionSort(ulist):
                 if ulist[icount-1] > ulist[icount]:           # this already carters for assuming list[0] is sorted
                     ulist[icount - 1], ulist[icount] = ulist[icount], ulist[icount-1]
                 icount -= 1 # this is different to bubbleSort i.e. where there is an increment. Here we are decreasing the unsorted set
-                getPlotData(ulist, iSDictKey, iSStateDataPair, iSPlotDataDict)
+                getPlotData(ulist, iSDictKey, iSStateData, iSPlotDataDict)
             ocount += 1 # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
         return ulist, iSPlotDataDict
 
@@ -215,7 +215,7 @@ def insertionSort(ulist):
 #  - does not return anything as it is working on the array and dictionary in-place
 
 
-def getPlotData(arrayWhileSorting: list, dictKey: int, stateDataPair: list, plotDataDict: dict):
+def getPlotData(arrayWhileSorting: list, dictKey: int, stateData: list, plotDataDict: dict):
 
     cStateOfArray = [(index, value) for index, value in enumerate(arrayWhileSorting)]  # generate current state of the array
     indexTuple, valueTuple = zip(*cStateOfArray)
@@ -330,7 +330,7 @@ print("================================")
 #
 
 iSStartTime = time.time()
-insertionsorted = insertionSort(iSInputList)
+insertionsorted, plotdata = insertionSort(iSInputList)
 iSStopTime = time.time()
 print("\nInsertion Sort gives [first 15 elements as]: %s" % insertionsorted[:15])
 print("runtime: %f seconds" % (iSStopTime - iSStartTime))
