@@ -3,16 +3,16 @@ import time
 import math
 import copy
 import numpy as np
-import pandas as pd
 import seaborn as sns
 import matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+import matplotlib.animation as FuncAnimation
 
 #
 # Generate Random Unsorted List
 #
 inputList = [x for x in range(0, 1247635, 96)]    # Generate Random Unsorted List
+inputListLength = len(inputList)
 random.shuffle(inputList)
 
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
@@ -173,8 +173,8 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
 
 def insertionSort(ulist):
     # animation data initialize dict, with `index 0` being an empty list
-    iSDictKey = 0  # key to store the valueTuple foreach array's state
-    iSStateData = list()  # initialize placeholder for the stored valueTuple
+    iSDictKey = 0  # key to store the arrayState for each loop cycle
+    iSStateData = list()  # initialize placeholder for the stored arrayState
     iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
         iSDictKey: iSStateData,
     }
@@ -203,25 +203,21 @@ def insertionSort(ulist):
 #  - takes in an array state while sorting
 #  - takes in plot data dictionary (to be populated)
 #  - takes in the initialized dictionary key dictKey
-#  - takes in the initialized dataPair
-#  - uses a `[list comprehension]` and `enumerate()` to generate the required current state of the array i.e. cStateOfArray
-#  - uses zip() to take in the new iterable `cStateOfArray`
-#  - zip() unzips the dereferenced pointer to `cStateOfArray` (i.e. *cStateOfArray)
-#        + to separate `indexTuple` and `valueTuple` required by matplotlib's `plt`
-#  - save the `indexTuple` and `valueTuple` into a 2-element list
-#  - save the 2-element list into dictionary, with specific key value
+#  - takes in the initialized stateData list
+#  - takes in the initialized plotDataDict dict
+#  - saves the stateData (initial, current and future) into the dictionary, with specific key value
 #  - increment the dictionary key value
 #  - repeat the saving process
 #  - does not return anything as it is working on the array and dictionary in-place
+#  - dictionary is being used so as to obtain:
+#   + a 2-D array once we extract the `list of lists` from the dictionary 
+#   + as required by the animation approach [https://brushingupscience.com/2016/06/21/matplotlib-animations-the-easy-way/]
+#   + `list of lists` approach is also being used to improved performance:
+#        - by avoiding the use of zip() to extract and unzip
 
 
 def getPlotData(arrayWhileSorting: list, dictKey: int, stateData: list, plotDataDict: dict):
-
-    cStateOfArray = [(index, value) for index, value in enumerate(arrayWhileSorting)]  # generate current state of the array
-    indexTuple, valueTuple = zip(*cStateOfArray)
-
-    stateDataPair = [indexTuple, valueTuple]  # current matching pair
-    plotDataDict[dictKey] = stateDataPair  # append to dict
+    plotDataDict[dictKey] = stateData  # append stateData to dict
     dictKey += 1  # increase dictionary index (this increments in getPlotData, without affecting it's value in callBack function e.g. `iSDictKey`)
 
 #
@@ -232,17 +228,30 @@ def getPlotData(arrayWhileSorting: list, dictKey: int, stateData: list, plotData
 
 
 def parsePlotData(plotDataDict: dict):
-    stateDataTupleLists = [values for values in plotDataDict.values()]
-    stateDataListLists = [list(l) for l in stateDataTupleLists]
-    pass
+    stateDataLists = [values for values in plotDataDict.values()]
+    return stateDataLists  # returns the list of lists required by animation
 #
 # createAnimation()
-# - takes in the parsePlotData()
-# - uses the data to create an animation of the sorting
+#   - takes in the stateDataLists
+#   - takes in inputListLength
+#   - takes in listMinValue
+#   - takes in listMaxValue
+#   - uses the parameters to create an animation of the sorting
 
 
-def createAnimation():
-    pass
+def createAnimation(stateDataLists: list, inputListLength: int, listMinValue: int, listMaxValue: int):
+    # setup plotting area
+    #   - ylim refers to the the actual values in the array hence why it should be on the y-axis - in relation to a bar chart
+    #       + `5` is used to pad the listMinValue and listMaxValue to animating those values easier to see
+    #   - xlim refers to the index numbers of the array, which can be computed simply from the array length 
+
+    x = np.linspace(0, inputListLength-1, 1)  # creates the plotting grid i.e. evenly spaced stuff in x-axis that matches the array index spacing
+
+    fig, ax = plt.subplots(figsize=(5,3))
+    ax.set(xlim=(0, inputListLength-1), ylim=(listMinValue-5, listMaxValue+5))
+
+    # plot the first array data
+    array = ax.plot(x, stateDataLists[0, :], color='k', lw=2)[0]
 
 
 #
