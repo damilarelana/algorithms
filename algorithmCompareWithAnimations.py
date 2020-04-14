@@ -172,13 +172,14 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
 
 
 def insertionSort(ulist):
-    # initialize dict, with `index 0` being an empty list
-    iSDictKey = 0  # key to store the matching pairs (indexTuple, valueTuple)
-    iSdataPair = list()  # initialize placeholder for matched pairs
+    # animation data initialize dict, with `index 0` being an empty list
+    iSDictKey = 0  # key to store the matching pairs (indexTuple, valueTuple) foreach array's state
+    iSStateDataPair = list()  # initialize placeholder for matched pairs
     iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
-        keyDict: resultPair,
+        iSDictKey: iSDataPair,
     }
 
+    # array sorting logic 
     loopRange = len(ulist)
     if loopRange == 1:
         return ulist    # no point wasting CPU cycle to sort one item
@@ -193,13 +194,16 @@ def insertionSort(ulist):
                 if ulist[icount-1] > ulist[icount]:           # this already carters for assuming list[0] is sorted
                     ulist[icount - 1], ulist[icount] = ulist[icount], ulist[icount-1]
                 icount -= 1 # this is different to bubbleSort i.e. where there is an increment. Here we are decreasing the unsorted set
+                getPlotData(ulist, iSDictKey, iSStateDataPair, iSPlotDataDict)
             ocount += 1 # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
-        return ulist
+        return ulist, iSPlotDataDict
 
 
 # getPlotData()
 #  - takes in an array state while sorting
-#  - takes in plot data dictionary, meant to be updated
+#  - takes in plot data dictionary (to be populated)
+#  - takes in the initialized dictionary key dictKey
+#  - takes in the initialized dataPair
 #  - uses a `[list comprehension]` and `enumerate()` to generate the required current state of the array i.e. cStateOfArray
 #  - uses zip() to take in the new iterable `cStateOfArray`
 #  - zip() unzips the dereferenced pointer to `cStateOfArray` (i.e. *cStateOfArray)
@@ -211,20 +215,35 @@ def insertionSort(ulist):
 #  - does not return anything as it is working on the array and dictionary in-place
 
 
-def getPlotData(arrayWhileSorting: list, dictKey: int, dataPair: list, plotDataDict: dict):
+def getPlotData(arrayWhileSorting: list, dictKey: int, stateDataPair: list, plotDataDict: dict):
 
     cStateOfArray = [(index, value) for index, value in enumerate(arrayWhileSorting)]  # generate current state of the array
     indexTuple, valueTuple = zip(*cStateOfArray)
 
-    resultTriplet = [t, i, j]  # current matching triplet is now identified 
-    resultTriplet = bubbleSort(resultTriplet)  # sort matching triplet
-    resultDict[keyDict] = resultTriplet  # append to dict
-    keyDict += 1  # increase dictionary index
-
+    stateDataPair = [indexTuple, valueTuple]  # current matching pair
+    plotDataDict[dictKey] = stateDataPair  # append to dict
+    dictKey += 1  # increase dictionary index (this increments in getPlotData, without affecting it's value in callBack function e.g. `iSDictKey`)
 
 #
+# parsePlotData()
+# - takes in the returned plotDataDict (via getPlotData via sort functions [e.g. insertionSort()])
+# - parses it through a `list comprehension` that references plotDataDict.values()
+#   + to extract the [indexTuple, valueTuple] at each dictionary key
+
+
+def parsePlotData(plotDataDict: dict):
+    stateDataTupleLists = [values for values in plotDataDict.values()]
+    stateDataListLists = [list(l) for l in stateDataTupleLists]
+    pass
+#
 # createAnimation()
-# 
+# - takes in the parsePlotData()
+# - uses the data to create an animation of the sorting
+
+
+def createAnimation():
+    pass
+
 
 #
 # checkOrderedListEquivalence() a brutal bruteforce check for whether two lists are identical
