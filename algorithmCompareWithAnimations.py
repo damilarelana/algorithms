@@ -2,9 +2,8 @@ import random
 import time
 import math
 import copy
+import pdb
 import numpy as np
-import seaborn as sns
-import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.animation as FuncAnimation
 plt.style.use('seaborn-pastel')
@@ -14,17 +13,17 @@ plt.style.use('dark_background')
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 1247635
-listRangeStep = 96
+listRangeStop = 12
+listRangeStep = 3
 
 # create list
 inputList = [x for x in range(listRangeStart, listRangeStop, listRangeStep)]    # Generate Random Unsorted List
 random.shuffle(inputList)
 inputListLength = len(inputList)
+printedSliceLength = 4
 
-# create global data required by createAnimation() [i.e. avoid performance issues - by avoiding recreation for each animation]
+# initialize xLinspace globally as required by all createAnimation() [i.e. to avoid performance issues due to repeated recreation]
 xLinspace = np.linspace(0, inputListLength-1, 1)  # creates i.e. evenly spaced stuff in x-axis that matches the array index spacing
-yLinspace = np.linspace(listRangeStart, listRangeStop, listRangeStep) # creates evenly space stuff in y-axis for actual array element value
 
 
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
@@ -186,7 +185,7 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
 def insertionSort(ulist):
     # animation data initialize dict, with `index 0` being an empty list
     iSDictKey = 0  # key to store the arrayState for each loop cycle
-    iSStateData = list()  # initialize placeholder for the stored arrayState
+    iSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
     iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
         iSDictKey: iSStateData,
     }
@@ -206,7 +205,8 @@ def insertionSort(ulist):
                 if ulist[icount-1] > ulist[icount]:           # this already carters for assuming list[0] is sorted
                     ulist[icount - 1], ulist[icount] = ulist[icount], ulist[icount-1]
                 icount -= 1 # this is different to bubbleSort i.e. where there is an increment. Here we are decreasing the unsorted set
-                getPlotData(ulist, iSDictKey, iSStateData, iSPlotDataDict)
+                getPlotData(ulist, iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+                iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
             ocount += 1 # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
         return ulist, iSPlotDataDict
 
@@ -228,9 +228,9 @@ def insertionSort(ulist):
 #        - by avoiding the use of zip() to extract and unzip
 
 
-def getPlotData(arrayWhileSorting: list, dictKey: int, stateData: list, plotDataDict: dict):
-    plotDataDict[dictKey] = stateData  # append stateData to dict
-    dictKey += 1  # increase dictionary index (this increments in getPlotData, without affecting it's value in callBack function e.g. `iSDictKey`)
+def getPlotData(arrayWhileSorting, dictKey: int, plotDataDict: dict):
+    plotDataDict.update({dictKey: arrayWhileSorting})  # append arrayWhileSorting to dict, at the end of the dict
+    # plotDataDict[dictKey] = arrayWhileSorting  # append arrayWhileSorting to dict, at the end of the dict
 
 #
 # parsePlotData()
@@ -253,17 +253,20 @@ def parsePlotData(plotDataDict: dict):
 
 
 def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, algorithmName: str, animationFormat: str):
-
     # setup the matplotlib's plot parameters
-    fig, arrayPlot = setupPlotParams(listMinValue, listMaxValue)
+    fig, arrayPlot = setupPlotParams(listMinValue, listMaxValue, stateDataLists)
 
     # create animation
     #   - 'interval' talks about ms interval between frames
     #   - 'frames' required to help save the animation later
     #   - 'blit' ensures that only areas of the plot which have changed are re-drawn i.e. improves performance and smoothness
     #   - uses `fig` after setupPlotParams() is called
-    #   - calls `animate()`
-    animation = FuncAnimation(fig, animate(_, stateDataLists, arrayPlot), interval=200, frames=inputListLength-1, blit=True)
+    #   - calls `animate()` [while using the `stateDataList` and `arrayPlot`] defined within the scope of `createAnimation`
+    animation = FuncAnimation(fig, animate, interval=200, frames=inputListLength-1, blit=True)
+
+    # show
+    plt.draw()
+    plt.show()
 
     # save animation
     #   - checks the animation format
@@ -278,7 +281,7 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 
 # animate()
 #  -
-def animate(i: int, stateDataLists: list, arrayPlot):
+def animate(i: int):
     arrayPlot.set_ydata(stateDataLists[i, :])   # use 'arrayPlot' to generate a plot with each iteration `i` of the `y-axis data`
 
 # setupPlotParameters()
@@ -290,11 +293,14 @@ def setupPlotParams(listMinValue: int, listMaxValue: int, stateDataLists: list):
     #   - set_ylim refers to the the actual values in the array hence why it should be on the y-axis - in relation to a bar chart
     #       + `5` is used to pad the listMinValue and listMaxValue to animating those values easier to see
     #   - set_xlim refers to the index numbers of the array, which can be computed simply from the array length 
+    #   - xLinspace is obtained from the global variable scope
+    #   - yLinspace is calculated here using attributes of the already sorted list e.g. listMaxValue
 
+    yLinspace = np.linspace(listMinValue, listMaxValue, inputListLength) # creates even space in y-axis for array element values
     xx, yy = np.meshgrid(xLinspace, yLinspace)  # create the mesh grid 
 
-    figsize = (6, 3)  # set figure size tuple i.e. canvas size (i.e. paper size: A4, Letter, wide-screen aspect ratio etc.)
-    fig, ax = plt.subplots(figsize)
+    # figsize = (6, 3)  # set figure size tuple i.e. canvas size (i.e. paper size: A4, Letter, wide-screen aspect ratio etc.)
+    fig, ax = plt.subplots(figsize=(6, 3))
     # ax.set(xlim=(0, inputListLength-1), ylim=(listMinValue-5, listMaxValue+5))
     ax.set_xlim(0, inputListLength-1)  # handles the scaling of the axis
     ax.set_ylim(0, listMinValue-5, listMaxValue+5)
@@ -306,12 +312,12 @@ def setupPlotParams(listMinValue: int, listMaxValue: int, stateDataLists: list):
 
     color='green' # color of each bar chart shape
     alpha='0.8' # transparency of each bar chart shape
-    
+    pdb.set_trace()
+
     # plot the first array data
     #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
-    # arrayPlot = ax.plot(x, stateDataLists[0, :], color='k', lw=2)[0]
-    arrayPlot = ax.bar(xx, stateDataLists[0, :], color, alpha)[0]  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
+    arrayPlot = ax.bar(xx, stateDataLists[0, :], color, alpha)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
     return fig, arrayPlot  # return generated plot setup parameters as a tuple
 
 
@@ -360,53 +366,61 @@ def checkOrderedListEquivalence(r: list, k: list):
 sSStartTime = time.time()
 selectionSorted = selectionSort(sSInputList)
 sSStopTime = time.time()
-print("\nSelection Sort give [first 15 elements as]: %s" % selectionSorted[:15])
+print("\nSelection Sort give [first {} elements as]: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
 print("================================")
-# animation creation
-algorithmName = selectionSort.__name__  # get the function name as a string
 
 #
-# Timed execution for mergeSort()
+# mergeSort()
 #
+# timed runtime
 mSStartTime = time.time()
 mergesorted = mergeSort(mSInputList)
 mSStopTime = time.time()
-print("\nMerge Sort gives [first 15 elements as]: %s" % mergesorted[:15])
+print("\nMerge Sort gives [first {} elements as]: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (mSStopTime - mSStartTime))
 print("================================")
 
 #
-# Timed execution for hybridBubbleSort()
+# hybridBubbleSort()
 #
+# timed runtime
 hBSStartTime = time.time()
 hybridBubblesorted = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
-print("\nHybrid Bubble Sort gives [first 15 elements as]: %s" % hybridBubblesorted[:15])
+print("\nHybrid Bubble Sort gives [first {} elements as]: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
 print("================================")
 
 
 #
-# Timed execution for elegantBubbleSort()
+# elegantBubbleSort()
 #
+# timed runtime
 eBSStartTime = time.time()
 elegantBubblesorted = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
-print("\nElegant Bubble Sort gives [first 15 elements as]: %s" % elegantBubblesorted[:15])
+print("\nElegant Bubble Sort give [first {} elements as]: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
 print("================================")
 
 #
-# Timed execution for insertionSort()
+# insertionSort()
 #
-
+# timed runtime
 iSStartTime = time.time()
-insertionsorted, plotdata = insertionSort(iSInputList)
+insertionsorted, iSPlotData = insertionSort(iSInputList)
 iSStopTime = time.time()
-print("\nInsertion Sort gives [first 15 elements as]: %s" % insertionsorted[:15])
+print("\nInsertion Sort gives [first {} elements as]: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (iSStopTime - iSStartTime))
 print("================================")
+# animation creation
+algorithmName = selectionSort.__name__  # get the function name as a string
+iSListMinValue = insertionsorted[0]
+iSListMaxValue = insertionsorted[inputListLength - 1]
+animationFormat = "gif"
+parsedPlotData = parsePlotData(iSPlotData)  # converts the plotdata from a dict into a list
+createAnimation(parsedPlotData, iSListMinValue, iSListMaxValue, algorithmName, animationFormat)
 
 
 #
