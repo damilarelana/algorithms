@@ -7,13 +7,25 @@ import seaborn as sns
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.animation as FuncAnimation
+plt.style.use('seaborn-pastel')
+plt.style.use('dark_background')
 
 #
 # Generate Random Unsorted List
 #
-inputList = [x for x in range(0, 1247635, 96)]    # Generate Random Unsorted List
-inputListLength = len(inputList)
+listRangeStart = 0
+listRangeStop = 1247635
+listRangeStep = 96
+
+# create list
+inputList = [x for x in range(listRangeStart, listRangeStop, listRangeStep)]    # Generate Random Unsorted List
 random.shuffle(inputList)
+inputListLength = len(inputList)
+
+# create global data required by createAnimation() [i.e. avoid performance issues - by avoiding recreation for each animation]
+xLinspace = np.linspace(0, inputListLength-1, 1)  # creates i.e. evenly spaced stuff in x-axis that matches the array index spacing
+yLinspace = np.linspace(listRangeStart, listRangeStop, listRangeStep) # creates evenly space stuff in y-axis for actual array element value
+
 
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
 hBSInputList = copy.deepcopy(inputList)
@@ -29,7 +41,7 @@ print("")
 print("Comparing performance of 5 algorithms [ mergeSort + hybridBubbleSort + elegantBubbleSort + selectionSort + insertionSort]:")
 print("  - using randomly generated data")
 print("  - of an array of integer values")
-print("  - with {} elements".format(len(inputList)))
+print("  - with {} elements".format(inputListLength))
 print("")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
@@ -233,25 +245,75 @@ def parsePlotData(plotDataDict: dict):
 #
 # createAnimation()
 #   - takes in the stateDataLists
-#   - takes in inputListLength
 #   - takes in listMinValue
 #   - takes in listMaxValue
+#   - takes in the algorithm's name e.g. "insertion Sort" etc.
+#   - takes in the animation file format e.g. "mp4" or "gif"
 #   - uses the parameters to create an animation of the sorting
 
 
-def createAnimation(stateDataLists: list, inputListLength: int, listMinValue: int, listMaxValue: int):
-    # setup plotting area
-    #   - ylim refers to the the actual values in the array hence why it should be on the y-axis - in relation to a bar chart
+def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, algorithmName: str, animationFormat: str):
+
+    # setup the matplotlib's plot parameters
+    fig, arrayPlot = setupPlotParams(listMinValue, listMaxValue)
+
+    # create animation
+    #   - 'interval' talks about ms interval between frames
+    #   - 'frames' required to help save the animation later
+    #   - 'blit' ensures that only areas of the plot which have changed are re-drawn i.e. improves performance and smoothness
+    #   - uses `fig` after setupPlotParams() is called
+    #   - calls `animate()`
+    animation = FuncAnimation(fig, animate(_, stateDataLists, arrayPlot), interval=200, frames=inputListLength-1, blit=True)
+
+    # save animation
+    #   - checks the animation format
+    #   - uses anonymous function to simulate a switch statement
+    #   - to save as `mp4` change `filename` assignment i.e. "filename = algorithm + '.mp4' "
+    filename = algorithmName + animationFormat
+    if animationFormat == "gif":
+        animation.save(filename, writer='imagemagick')
+    else:
+        animation.save(filename)
+
+
+# animate()
+#  -
+def animate(i: int, stateDataLists: list, arrayPlot):
+    arrayPlot.set_ydata(stateDataLists[i, :])   # use 'arrayPlot' to generate a plot with each iteration `i` of the `y-axis data`
+
+# setupPlotParameters()
+# - sets up the required Matplotlib parameters
+
+
+def setupPlotParams(listMinValue: int, listMaxValue: int, stateDataLists: list):
+    # setup plotting area attributes
+    #   - set_ylim refers to the the actual values in the array hence why it should be on the y-axis - in relation to a bar chart
     #       + `5` is used to pad the listMinValue and listMaxValue to animating those values easier to see
-    #   - xlim refers to the index numbers of the array, which can be computed simply from the array length 
+    #   - set_xlim refers to the index numbers of the array, which can be computed simply from the array length 
 
-    x = np.linspace(0, inputListLength-1, 1)  # creates the plotting grid i.e. evenly spaced stuff in x-axis that matches the array index spacing
+    xx, yy = np.meshgrid(xLinspace, yLinspace)  # create the mesh grid 
 
-    fig, ax = plt.subplots(figsize=(5,3))
-    ax.set(xlim=(0, inputListLength-1), ylim=(listMinValue-5, listMaxValue+5))
+    figsize = (6, 3)  # set figure size tuple i.e. canvas size (i.e. paper size: A4, Letter, wide-screen aspect ratio etc.)
+    fig, ax = plt.subplots(figsize)
+    # ax.set(xlim=(0, inputListLength-1), ylim=(listMinValue-5, listMaxValue+5))
+    ax.set_xlim(0, inputListLength-1)  # handles the scaling of the axis
+    ax.set_ylim(0, listMinValue-5, listMaxValue+5)
 
+    ax.set_xlabel("Index")  # handles the title label for of x-axis
+    ax.set_ylabel("Value")  # handles the title label for of y-axis
+
+    ax.set_title(algorithmName)  # handles printing of the name of the overall plot at the top
+
+    color='green' # color of each bar chart shape
+    alpha='0.8' # transparency of each bar chart shape
+    
     # plot the first array data
-    array = ax.plot(x, stateDataLists[0, :], color='k', lw=2)[0]
+    #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
+    #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
+    # arrayPlot = ax.plot(x, stateDataLists[0, :], color='k', lw=2)[0]
+    arrayPlot = ax.bar(xx, stateDataLists[0, :], color, alpha)[0]  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
+    return fig, arrayPlot  # return generated plot setup parameters as a tuple
+
 
 
 #
@@ -292,16 +354,17 @@ def checkOrderedListEquivalence(r: list, k: list):
 
 
 #
-# Timed execution for selectionSort()
+# selectionSort()
 #
-
-
+# timed runtime
 sSStartTime = time.time()
 selectionSorted = selectionSort(sSInputList)
 sSStopTime = time.time()
 print("\nSelection Sort give [first 15 elements as]: %s" % selectionSorted[:15])
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
 print("================================")
+# animation creation
+algorithmName = selectionSort.__name__  # get the function name as a string
 
 #
 # Timed execution for mergeSort()
