@@ -14,8 +14,8 @@ plt.style.use('dark_background')
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 20
-listRangeStep = 4
+listRangeStop = 25
+listRangeStep = 2
 
 
 #
@@ -228,7 +228,12 @@ def insertionSort(ulist):
                 if ulist[icount-1] > ulist[icount]:           # this already carters for assuming list[0] is sorted
                     ulist[icount - 1], ulist[icount] = ulist[icount], ulist[icount-1]
                 icount -= 1 # this is different to bubbleSort i.e. where there is an increment. Here we are decreasing the unsorted set
-                getPlotData(ulist, iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+
+                # passing a slice of `ulist` (i.e. ulist[:]) helps to dereference/decouple before usage by getPlotData()
+                #   - to avoids scenarios where all dict values are reference to same sorted list
+                #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
+                #   - this was not done for `space complexity performance reasons`
+                getPlotData(ulist[:], iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
                 iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
             ocount += 1  # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
         return ulist, iSPlotDataDict
