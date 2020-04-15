@@ -16,11 +16,27 @@ listRangeStart = 0
 listRangeStop = 12
 listRangeStep = 3
 
+
+#
+# shuffleListCopy()
+#  - helps to avoid the problem that random.shuffle tends to shuffle in place
+#  - copy the inputList around sometimes means references [i.e. the copies] are not copied
+
+
+def listShuffler(initialList: list):
+    shuffledList = copy.deepcopy(initialList)
+    random.shuffle(shuffledList)
+    return shuffledList
+
+
 # create list
-inputList = [x for x in range(listRangeStart, listRangeStop, listRangeStep)]    # Generate Random Unsorted List
-random.shuffle(inputList)
+initialList = [x for x in range(listRangeStart, listRangeStop, listRangeStep)]    # Generate Random Unsorted List
+print("Initial List:", initialList)
+inputList = listShuffler(initialList)
+print("Reshuffled list:", inputList)
 inputListLength = len(inputList)
 printedSliceLength = 4
+
 
 # initialize xLinspace globally as required by all createAnimation() [i.e. to avoid performance issues due to repeated recreation]
 xLinspace = np.linspace(0, inputListLength-1, 1)  # creates i.e. evenly spaced stuff in x-axis that matches the array index spacing
@@ -32,7 +48,7 @@ eBSInputList = copy.deepcopy(inputList)
 sSInputList = copy.deepcopy(inputList)
 mSInputList = copy.deepcopy(inputList)
 iSInputList = copy.deepcopy(inputList)
-
+print("iS InputList", iSInputList)
 
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -282,7 +298,7 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 # animate()
 #  -
 def animate(i: int):
-    arrayPlot.set_ydata(stateDataLists[i, :])   # use 'arrayPlot' to generate a plot with each iteration `i` of the `y-axis data`
+    arrayPlot.set_ydata(stateDataLists[i:])   # use 'arrayPlot' to generate a plot with each iteration `i` of the `y-axis data`
 
 # setupPlotParameters()
 # - sets up the required Matplotlib parameters
@@ -311,13 +327,11 @@ def setupPlotParams(listMinValue: int, listMaxValue: int, stateDataLists: list):
     ax.set_title(algorithmName)  # handles printing of the name of the overall plot at the top
 
     color='green' # color of each bar chart shape
-    alpha='0.8' # transparency of each bar chart shape
-    pdb.set_trace()
 
     # plot the first array data
     #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
-    arrayPlot = ax.bar(xx, stateDataLists[0, :], color, alpha)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
+    arrayPlot = ax.bar(xx, stateDataLists[0:], color, alpha=0.8)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
     return fig, arrayPlot  # return generated plot setup parameters as a tuple
 
 
