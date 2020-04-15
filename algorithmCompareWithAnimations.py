@@ -3,6 +3,7 @@ import time
 import math
 import copy
 import pdb
+import secrets
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as FuncAnimation
@@ -24,11 +25,14 @@ listRangeStep = 3
 
 
 def listShuffler(initialList: list):
-    random.seed(time.time())  # seed the randomizer by always using the time of the day
-    randomSample = random.sample(initialList, len(initialList))  # take a random sample of list [which returns a shuffled version]
-    shuffledList = copy.deepcopy(randomSample)  # deepcopy that random sample
-    random.shuffle(shuffledList)  # shuffle the copy of the random sample again just to be sure :)
-    return shuffledList
+    workingList = copy.deepcopy(initialList)  # deepcopy that random sample
+    randomNumber = secrets.randbits(8192)     # generate random number for random.seed()
+    random.seed(randomNumber)     # improve the randomizer by calling random.seed()
+    # shuffledList = random.sample(workingList, len(workingList))  # take a random sample of list [which returns a shuffled version]
+    random.shuffle(workingList)  # shuffle the copy of the random sample again just to be sure :)
+
+    # return the now shuffled list
+    return workingList
 
 
 # create list
