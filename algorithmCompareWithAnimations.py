@@ -28,8 +28,8 @@ def listShuffler(initialList: list):
     workingList = copy.deepcopy(initialList)  # deepcopy that random sample
     randomNumber = secrets.randbits(8192)     # generate random number for random.seed()
     random.seed(randomNumber)     # improve the randomizer by calling random.seed()
-    # shuffledList = random.sample(workingList, len(workingList))  # take a random sample of list [which returns a shuffled version]
     random.shuffle(workingList)  # shuffle the copy of the random sample again just to be sure :)
+    # shuffledList = random.sample(workingList, len(workingList))  # take a random sample of list [which returns a shuffled version]
 
     # return the now shuffled list
     return workingList
