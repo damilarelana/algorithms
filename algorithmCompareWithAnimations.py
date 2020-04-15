@@ -15,7 +15,7 @@ plt.style.use('dark_background')
 #
 listRangeStart = 0
 listRangeStop = 25
-listRangeStep = 2
+listRangeStep = 3
 
 
 #
@@ -310,7 +310,8 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 # animate()
 #  -
 def animate(i: int):
-    arrayPlot.set_ydata(stateDataLists[i,:])   # use 'arrayPlot' to generate a plot with each iteration `i` of the `y-axis data`
+    arrayPlot.set_ydata(stateDataLists[i])   # use 'arrayPlot' to generate a plot with each iteration `i` of the `y-axis data`
+    return arrayPlot
 
 # setupPlotParameters()
 # - sets up the required Matplotlib parameters
@@ -343,7 +344,7 @@ def setupPlotParams(listMinValue: int, listMaxValue: int, stateDataLists: list):
     # plot the first array data
     #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
-    arrayPlot = ax.bar(xx, stateDataLists[0,:], color, alpha=0.8)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
+    arrayPlot = ax.bar(xx[0], stateDataLists[0], color, alpha=0.8)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
     return fig, arrayPlot  # return generated plot setup parameters as a tuple
 
 
