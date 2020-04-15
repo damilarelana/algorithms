@@ -13,7 +13,7 @@ plt.style.use('dark_background')
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 12
+listRangeStop = 20
 listRangeStep = 3
 
 
@@ -24,18 +24,23 @@ listRangeStep = 3
 
 
 def listShuffler(initialList: list):
-    shuffledList = copy.deepcopy(initialList)
-    random.shuffle(shuffledList)
+    random.seed(time.time())  # seed the randomizer by always using the time of the day
+    randomSample = random.sample(initialList, len(initialList))  # take a random sample of list [which returns a shuffled version]
+    shuffledList = copy.deepcopy(randomSample)  # deepcopy that random sample
+    random.shuffle(shuffledList)  # shuffle the copy of the random sample again just to be sure :)
     return shuffledList
 
 
 # create list
-initialList = [x for x in range(listRangeStart, listRangeStop, listRangeStep)]    # Generate Random Unsorted List
+initialList = [x for x in range(listRangeStart, listRangeStop, listRangeStep)]  # Generate Random Unsorted List
 print("Initial List:", initialList)
 inputList = listShuffler(initialList)
 print("Reshuffled list:", inputList)
 inputListLength = len(inputList)
-printedSliceLength = 4
+if inputListLength > 20:
+    printedSliceLength = 15
+else:
+    printedSliceLength = inputListLength
 
 
 # initialize xLinspace globally as required by all createAnimation() [i.e. to avoid performance issues due to repeated recreation]
