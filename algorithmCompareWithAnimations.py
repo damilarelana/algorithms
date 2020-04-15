@@ -48,8 +48,7 @@ else:
 
 
 # initialize xLinspace globally as required by all createAnimation() [i.e. to avoid performance issues due to repeated recreation]
-xLinspace = np.linspace(0, inputListLength-1, 1)  # creates i.e. evenly spaced stuff in x-axis that matches the array index spacing
-
+xLinspace = np.linspace(0, inputListLength-1, inputListLength)  # creates i.e. evenly spaced stuff in x-axis that matches the array index spacing
 
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
 hBSInputList = copy.deepcopy(inputList)
@@ -57,7 +56,6 @@ eBSInputList = copy.deepcopy(inputList)
 sSInputList = copy.deepcopy(inputList)
 mSInputList = copy.deepcopy(inputList)
 iSInputList = copy.deepcopy(inputList)
-print("iS InputList", iSInputList)
 
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -336,11 +334,11 @@ def setupPlotParams(listMinValue: int, listMaxValue: int, stateDataLists: list):
     ax.set_title(algorithmName)  # handles printing of the name of the overall plot at the top
 
     color='green' # color of each bar chart shape
-
+    pdb.set_trace()
     # plot the first array data
     #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
-    arrayPlot = ax.bar(xx, stateDataLists[0:], color, alpha=0.8)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
+    arrayPlot = ax.bar(xx, stateDataLists[0:], color, alpha=0.8)[0]  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
     return fig, arrayPlot  # return generated plot setup parameters as a tuple
 
 
@@ -386,10 +384,11 @@ def checkOrderedListEquivalence(r: list, k: list):
 # selectionSort()
 #
 # timed runtime
+print("\nInput list had initial {} elements as: {}".format(printedSliceLength, sSInputList[:printedSliceLength+1]))
 sSStartTime = time.time()
 selectionSorted = selectionSort(sSInputList)
 sSStopTime = time.time()
-print("\nSelection Sort give [first {} elements as]: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
+print("Selection Sort gives initial {} elements as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
 print("================================")
 
@@ -397,10 +396,11 @@ print("================================")
 # mergeSort()
 #
 # timed runtime
+print("\nInput list had initial {} elements as: {}".format(printedSliceLength, mSInputList[:printedSliceLength+1]))
 mSStartTime = time.time()
 mergesorted = mergeSort(mSInputList)
 mSStopTime = time.time()
-print("\nMerge Sort gives [first {} elements as]: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
+print("Merge Sort gives initial {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (mSStopTime - mSStartTime))
 print("================================")
 
@@ -408,10 +408,11 @@ print("================================")
 # hybridBubbleSort()
 #
 # timed runtime
+print("\nInput list had initial {} elements as: {}".format(printedSliceLength, hBSInputList[:printedSliceLength+1]))
 hBSStartTime = time.time()
 hybridBubblesorted = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
-print("\nHybrid Bubble Sort gives [first {} elements as]: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
+print("Hybrid Bubble Sort gives initial {} elements as: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
 print("================================")
 
@@ -420,10 +421,11 @@ print("================================")
 # elegantBubbleSort()
 #
 # timed runtime
+print("\nInput list had initial {} elements as: {}".format(printedSliceLength, eBSInputList[:printedSliceLength+1]))
 eBSStartTime = time.time()
 elegantBubblesorted = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
-print("\nElegant Bubble Sort give [first {} elements as]: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
+print("Elegant Bubble Sort gives initial {} elements as: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
 print("================================")
 
@@ -431,10 +433,11 @@ print("================================")
 # insertionSort()
 #
 # timed runtime
+print("\nInput list had initial {} elements as: {}".format(printedSliceLength, iSInputList[:printedSliceLength+1]))
 iSStartTime = time.time()
 insertionsorted, iSPlotData = insertionSort(iSInputList)
 iSStopTime = time.time()
-print("\nInsertion Sort gives [first {} elements as]: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
+print("Insertion Sort gives initial {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (iSStopTime - iSStartTime))
 print("================================")
 # animation creation
