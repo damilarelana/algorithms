@@ -2,7 +2,6 @@ import random
 import time
 import math
 import copy
-import pdb
 import secrets
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,8 +11,8 @@ plt.style.use('dark_background')
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 212
-listRangeStep = 13
+listRangeStop = 2127
+listRangeStep = 23
 
 
 #
@@ -31,6 +30,7 @@ def listShuffler(initialList: list):
 
     # return the now shuffled list
     return workingList
+
 
 # set Animation Save format
 animationFormat = "gif"
@@ -78,10 +78,10 @@ print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 def hybridBubbleSort(inputList: list):
 
     # animation data initialize dict, with `index 0` being an empty list
-    iSDictKey = 0  # key to store the arrayState for each loop cycle
-    iSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
-    iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
-        iSDictKey: iSStateData,
+    hBSDictKey = 0  # key to store the arrayState for each loop cycle
+    hBSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
+    hBSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        hBSDictKey: hBSStateData,
     }
 
     inputListLength = len(inputList)
@@ -100,8 +100,8 @@ def hybridBubbleSort(inputList: list):
             #   - to avoids scenarios where all dict values are reference to same sorted list
             #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
-            getPlotData(inputList[:], iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
-            iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
+            getPlotData(inputList[:], hBSDictKey, hBSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            hBSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
         # break from loop if already sorted input and sorting completion
         if not(swapflag):
@@ -116,10 +116,10 @@ def hybridBubbleSort(inputList: list):
 def elegantBubbleSort(inputList: list):
 
     # animation data initialize dict, with `index 0` being an empty list
-    iSDictKey = 0  # key to store the arrayState for each loop cycle
-    iSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
-    iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
-        iSDictKey: iSStateData,
+    eBSDictKey = 0  # key to store the arrayState for each loop cycle
+    eBSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
+    eBSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        eBSDictKey: eBSStateData,
     }
 
     inputListLength = len(inputList)
@@ -135,8 +135,8 @@ def elegantBubbleSort(inputList: list):
             #   - to avoids scenarios where all dict values are reference to same sorted list
             #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
-            getPlotData(inputList[:], iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
-            iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
+            getPlotData(inputList[:], eBSDictKey, eBSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            eBSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
         oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
         inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
@@ -156,10 +156,10 @@ def elegantBubbleSort(inputList: list):
 def selectionSort(rlist):
 
     # animation data initialize dict, with `index 0` being an empty list
-    iSDictKey = 0  # key to store the arrayState for each loop cycle
-    iSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
-    iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
-        iSDictKey: iSStateData,
+    sSDictKey = 0  # key to store the arrayState for each loop cycle
+    sSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
+    sSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        sSDictKey: sSStateData,
     }
 
     loopRange = len(rlist) 
@@ -180,8 +180,8 @@ def selectionSort(rlist):
             #   - to avoids scenarios where all dict values are reference to same sorted list
             #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
-            getPlotData(rlist[:], iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
-            iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
+            getPlotData(rlist[:], sSDictKey, sSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            sSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
             outerCount += 1                 # increase outer counter i.e. expanding the sorted set
             minElement = outerCount         # reset new temporary minimum index e.g. if initial was index `0`, it would now be `1` 
