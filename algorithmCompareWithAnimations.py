@@ -12,8 +12,8 @@ plt.style.use('dark_background')
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 24
-listRangeStep = 5
+listRangeStop = 212323
+listRangeStep = 13
 
 
 #
