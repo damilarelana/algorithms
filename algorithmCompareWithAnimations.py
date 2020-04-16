@@ -12,7 +12,7 @@ plt.style.use('dark_background')
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 2123
+listRangeStop = 212
 listRangeStep = 13
 
 
@@ -31,6 +31,9 @@ def listShuffler(initialList: list):
 
     # return the now shuffled list
     return workingList
+
+# set Animation Save format
+animationFormat = "gif"
 
 
 # create list
@@ -73,6 +76,14 @@ print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 def hybridBubbleSort(inputList: list):
+
+    # animation data initialize dict, with `index 0` being an empty list
+    iSDictKey = 0  # key to store the arrayState for each loop cycle
+    iSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
+    iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        iSDictKey: iSStateData,
+    }
+
     inputListLength = len(inputList)
     oCount = 0  # outer counter initialization
     while oCount < len(inputList):
@@ -84,18 +95,33 @@ def hybridBubbleSort(inputList: list):
                 inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
                 swapflag = True
             iCount += 1
+            
+            # passing a slice of `ulist` (i.e. ulist[:]) helps to dereference/decouple before usage by getPlotData()
+            #   - to avoids scenarios where all dict values are reference to same sorted list
+            #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
+            #   - this was not done for `space complexity performance reasons`
+            getPlotData(inputList[:], iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
         # break from loop if already sorted input and sorting completion
         if not(swapflag):
             break
         oCount += 1
         inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
-    return inputList
+    return inputList, hBSPlotDataDict
 
 # elegantBubbleSort() is an elegant implementation
 
 
 def elegantBubbleSort(inputList: list):
+
+    # animation data initialize dict, with `index 0` being an empty list
+    iSDictKey = 0  # key to store the arrayState for each loop cycle
+    iSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
+    iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        iSDictKey: iSStateData,
+    }
+
     inputListLength = len(inputList)
     oCount = 0  # initialize the outer counter i.e. which controls repetition after bubbling previous largest values
     while oCount < len(inputList):  # this does not use rlistLength, to ensure we test all elements for largeness
@@ -104,10 +130,18 @@ def elegantBubbleSort(inputList: list):
             if inputList[iCount] > inputList[iCount+1]:
                 inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
             iCount += 1
+
+            # passing a slice of `ulist` (i.e. ulist[:]) helps to dereference/decouple before usage by getPlotData()
+            #   - to avoids scenarios where all dict values are reference to same sorted list
+            #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
+            #   - this was not done for `space complexity performance reasons`
+            getPlotData(inputList[:], iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
+
         oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
         inputListLength -= 1  # decrement list length before next iteration, since previous largest value does not need to be involved in next iterations 
 
-    return inputList  # returning a now sorted input List
+    return inputList, eBSPlotDataDict  # returning a now sorted input List
 
 # selectionSort()
 # - works by:
@@ -120,6 +154,14 @@ def elegantBubbleSort(inputList: list):
 
 
 def selectionSort(rlist):
+
+    # animation data initialize dict, with `index 0` being an empty list
+    iSDictKey = 0  # key to store the arrayState for each loop cycle
+    iSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
+    iSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        iSDictKey: iSStateData,
+    }
+
     loopRange = len(rlist) 
     if loopRange == 1:
         return rlist
@@ -133,6 +175,14 @@ def selectionSort(rlist):
                     minElement = innerCount  # swaps out the index of the old with the new i.e. create new temporary minimum for remaining unsorted set
                 innerCount += 1             # increase inner counter i.e. reducing unsorted list of items
             rlist[outerCount], rlist[minElement] = rlist[minElement], rlist[outerCount]  # confirm new minimum by swapping [temporary outerCount index with new minimum's index]
+
+            # passing a slice of `ulist` (i.e. ulist[:]) helps to dereference/decouple before usage by getPlotData()
+            #   - to avoids scenarios where all dict values are reference to same sorted list
+            #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
+            #   - this was not done for `space complexity performance reasons`
+            getPlotData(rlist[:], iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
+
             outerCount += 1                 # increase outer counter i.e. expanding the sorted set
             minElement = outerCount         # reset new temporary minimum index e.g. if initial was index `0`, it would now be `1` 
             if outerCount == loopRange - 1:  # i.e. only one unsorted element remains, break outer loop
@@ -140,7 +190,7 @@ def selectionSort(rlist):
             # note that we CANNOT use the optimization (loopRange -= 1) since we are shifting values/index around 
             # as such the last value after every iteration can still need to be touched
             # this is one difference with BubbleSort() where the last index can be removed from dataset after every loop
-        return rlist
+        return rlist, sSPlotDataDict
 
 
 # mergeSort()
@@ -395,12 +445,19 @@ def checkOrderedListEquivalence(r: list, k: list):
 #
 # timed runtime
 sSStartTime = time.time()
-selectionSorted = selectionSort(sSInputList)
+selectionSorted, sSPlotData = selectionSort(sSInputList)
 sSStopTime = time.time()
 print("Selection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
 print("\nInput's first {} values: {}".format(printedSliceLength, sSInputList[:printedSliceLength+1]))
 print("================================")
+# animation creation
+algorithmName = selectionSort.__name__  # get the function name as a string
+sSListMinValue = selectionSorted[0]
+sSListMaxValue = selectionSorted[inputListLength - 1]
+sSParsedPlotData = parsePlotData(sSPlotData)  # converts the plotdata from a dict into a list
+createAnimation(sSParsedPlotData, sSListMinValue, sSListMaxValue, algorithmName, animationFormat)
+
 
 #
 # mergeSort()
@@ -419,12 +476,18 @@ print("================================")
 #
 # timed runtime
 hBSStartTime = time.time()
-hybridBubblesorted = hybridBubbleSort(hBSInputList)
+hybridBubblesorted, hBSPlotData  = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
 print("\nHybrid Bubble Sort gives first {} elements as: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
 print("Input's first {} values: {}".format(printedSliceLength, hBSInputList[:printedSliceLength+1]))
 print("================================")
+# animation creation
+algorithmName = hybridBubbleSort.__name__  # get the function name as a string
+hBSListMinValue = hybridBubblesorted[0]
+hBSListMaxValue = hybridBubblesorted[inputListLength - 1]
+hBParsedPlotData = parsePlotData(hBSPlotData)  # converts the plotdata from a dict into a list
+createAnimation(hBParsedPlotData, hBSListMinValue, hBSListMaxValue, algorithmName, animationFormat)
 
 
 #
@@ -432,12 +495,19 @@ print("================================")
 #
 # timed runtime
 eBSStartTime = time.time()
-elegantBubblesorted = elegantBubbleSort(eBSInputList)
+elegantBubblesorted, eBSPlotData = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
 print("\nElegant Bubble Sort gives first {} elements as: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
 print("Input's first {} values: {}".format(printedSliceLength, eBSInputList[:printedSliceLength+1]))
 print("================================")
+# animation creation
+algorithmName = elegantBubbleSort.__name__  # get the function name as a string
+eBSListMinValue = elegantBubblesorted[0]
+eBSListMaxValue = elegantBubblesorted[inputListLength - 1]
+eBParsedPlotData = parsePlotData(eBSPlotData)  # converts the plotdata from a dict into a list
+createAnimation(eBParsedPlotData, eBSListMinValue, eBSListMaxValue, algorithmName, animationFormat)
+
 
 #
 # insertionSort()
@@ -454,9 +524,8 @@ print("================================")
 algorithmName = selectionSort.__name__  # get the function name as a string
 iSListMinValue = insertionsorted[0]
 iSListMaxValue = insertionsorted[inputListLength - 1]
-animationFormat = "gif"
-parsedPlotData = parsePlotData(iSPlotData)  # converts the plotdata from a dict into a list
-createAnimation(parsedPlotData, iSListMinValue, iSListMaxValue, algorithmName, animationFormat)
+iSParsedPlotData = parsePlotData(iSPlotData)  # converts the plotdata from a dict into a list
+createAnimation(iSParsedPlotData, iSListMinValue, iSListMaxValue, algorithmName, animationFormat)
 
 
 #
