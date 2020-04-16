@@ -281,7 +281,7 @@ def parsePlotData(plotDataDict: dict):
 def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, algorithmName: str, animationFormat: str):
 
     # setup the matplotlib's plot parameters
-    fig, ax, alpha, color = setupPlotParams(listMinValue, listMaxValue)
+    fig, ax = setupPlotParams(listMinValue, listMaxValue)
 
     # setup the mesh grid
     yLinspace = np.linspace(listMinValue, listMaxValue, inputListLength) # creates even space in y-axis for array element values
@@ -301,19 +301,22 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
     # plot the first array data
     #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
-    print("ax: ", ax)
-    print("fig: ", fig)
-    print("yy: ", yy)
-    print("yy[0]: ", yy[0])
-    print("xx: ", xx)
-    print("xx[0]: ", xx[0])
-    print("numEvents: ", numEvents)
-    print("stateDataLists: ", stateDataLists)
-    print("stateDataLists[0]: ", stateDataLists[0])
-    pdb.set_trace()
-    arrayPlot = ax.bar(xx[0], stateDataLists[0], color, alpha)  # helps to ensure that we plot only the first array due to how ax.bar handles 
-    animate(arrayPlot, stateDataLists, fig, numEvents)
+    # print("ax: ", ax)
+    # print("fig: ", fig)
+    # print("yy: ", yy)
+    # print("yy[0]: ", yy[0])
+    # print("xx: ", xx)
+    # print("xx[0]: ", xx[0])
+    # print("numEvents: ", numEvents)
+    # print("stateDataLists: ", stateDataLists)
+    # print("stateDataLists[0]: ", stateDataLists[0])
+    # print("Type pf stateDataLists[0]: ", type(stateDataLists[0]))
+    # pdb.set_trace()
+    arrayPlot = ax.bar(xx[0], stateDataLists[0], 0.2, None, color='green', alpha=0.6)  # helps to ensure that we plot only the first array due to how ax.bar handles 
+    animate(xx[0], ax, arrayPlot, stateDataLists, fig, numEvents)
+    plt.show()
     
+
     # save animation
     #   - checks the animation format
     #   - uses anonymous function to simulate a switch statement
@@ -326,11 +329,13 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 
 
 # animate()
-def animate(arrayPlot, stateDataLists, fig, numEvents):
+def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents):
     for i in range(numEvents):
-        arrayPlot.set_height(stateDataLists[i])
+        arrayPlot = ax.bar(x, stateDataLists[i], 0.2, None, color='green', alpha=0.6)
         fig.canvas.draw()
         fig.canvas.flush_events()
+    # plt.show()
+    # plt.pause(44455555)
 
 # setupPlotParameters()
 # - sets up the required Matplotlib parameters
@@ -353,19 +358,13 @@ def setupPlotParams(listMinValue: int, listMaxValue: int):
     ax.set_ylabel("Value")  # handles the title label for of y-axis
 
     ax.set_title(algorithmName)  # handles printing of the name of the overall plot at the top
-    ax.legend(frameon=False)
 
     # ticks customization
     ax.tick_params(colors='gray', direction='out') 
 
-    color='#EE6666' # color of each bar chart shape
-    edgecolor='#E6E6E6'
-    alpha=0.6 # transparency
-
     plt.grid(color='gray', linestyle='solid')
-
     
-    return fig, ax, alpha, color
+    return fig, ax
 
 
 
