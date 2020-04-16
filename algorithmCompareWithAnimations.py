@@ -14,8 +14,8 @@ plt.style.use('dark_background')
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 25
-listRangeStep = 3
+listRangeStop = 24
+listRangeStep = 5
 
 
 #
@@ -282,7 +282,7 @@ def parsePlotData(plotDataDict: dict):
 
 def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, algorithmName: str, animationFormat: str):
     # setup the matplotlib's plot parameters
-    fig, arrayPlot = setupPlotParams(listMinValue, listMaxValue, stateDataLists)
+    fig, arrayPlot, xx = setupPlotParams(listMinValue, listMaxValue, stateDataLists)
 
     # create animation
     #   - 'interval' talks about ms interval between frames
@@ -310,7 +310,8 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 # animate()
 #  -
 def animate(i: int):
-    arrayPlot.set_ydata(stateDataLists[i])   # use 'arrayPlot' to generate a plot with each iteration `i` of the `y-axis data`
+    # arrayPlot.set_ydata(stateDataLists[i])   # use 'arrayPlot' to generate a plot with each iteration `i` of the `y-axis data`
+    arrayPlot = ax.bar(xx[0], stateDataLists[i], color='green', alpha=0.8)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
     return arrayPlot
 
 # setupPlotParameters()
@@ -338,14 +339,15 @@ def setupPlotParams(listMinValue: int, listMaxValue: int, stateDataLists: list):
     ax.set_ylabel("Value")  # handles the title label for of y-axis
 
     ax.set_title(algorithmName)  # handles printing of the name of the overall plot at the top
-
+    
     color='green' # color of each bar chart shape
     pdb.set_trace()
     # plot the first array data
     #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
     arrayPlot = ax.bar(xx[0], stateDataLists[0], color, alpha=0.8)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
-    return fig, arrayPlot  # return generated plot setup parameters as a tuple
+    # arrayPlot = plt.bar(xx[0], stateDataLists[0], color, alpha=0.8)  # `[0]` helps to ensure that we plot only the first array due to how ax.bar handles 
+    return fig, arrayPlot, xx  # return generated plot setup parameters as a tuple
 
 
 
