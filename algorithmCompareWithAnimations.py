@@ -399,10 +399,12 @@ def setupPlotParams(listMinValue: int, listMaxValue: int):
     #   - xLinspace is obtained from the global variable scope
     #   - yLinspace is calculated here using attributes of the already sorted list e.g. listMaxValue
     # figsize = (6, 3)  # set figure size tuple i.e. canvas size (i.e. paper size: A4, Letter, wide-screen aspect ratio etc.)
-    # ax.set(xlim=(0, inputListLength-1), ylim=(listMinValue-5, listMaxValue+5))
+    # ax.set(xlim=(0, inputListLength), ylim=(listMinValue-5, listMaxValue+5))
+    #   - note that xlim(0, inputListLength) was choosen as such to ensure that last element is visible during the plot
+    #   - it would have been invisible, if xlim(0, inputListLength) was used instead
 
     fig = plt.figure(figsize=(10, 6))
-    ax = fig.add_subplot(1,1,1, xlim = (0, inputListLength-1), ylim = (listMinValue-20, listMaxValue+20), xlabel = "Index", ylabel = "Value", title = algorithmName, alpha=0.6)
+    ax = fig.add_subplot(1,1,1, xlim = (0, inputListLength), ylim = (listMinValue-20, listMaxValue+20), xlabel = "Index", ylabel = "Value", title = algorithmName, alpha=0.6)
     
     return fig, ax
 
