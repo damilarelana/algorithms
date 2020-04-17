@@ -189,9 +189,6 @@ def insertionSort(ulist):
             ocount += 1 # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
         return ulist
 
-#
-# createAnimation()
-# 
 
 #
 # checkOrderedListEquivalence() a brutal bruteforce check for whether two lists are identical

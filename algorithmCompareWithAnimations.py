@@ -3,10 +3,12 @@ import time
 import math
 import copy
 import secrets
+import pdb
 import numpy as np
+import matplotlib
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
-plt.style.use('seaborn-pastel')
-plt.style.use('dark_background')
+plt.style.use('seaborn-darkgrid')
 #
 # Generate Random Unsorted List
 #
@@ -330,6 +332,8 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 
     # setup the matplotlib's plot parameters
     fig, ax = setupPlotParams(listMinValue, listMaxValue)
+    fig.show()
+    # fig.canvas.draw()
 
     # setup the mesh grid
     yLinspace = np.linspace(listMinValue, listMaxValue, inputListLength) # creates even space in y-axis for array element values
@@ -349,10 +353,13 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
     # plot the first array data
     #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
-    arrayPlot = ax.bar(xx[0], stateDataLists[0], 0.2, None, color='green', alpha=0.6)  # helps to ensure that we plot only the first array due to how ax.bar handles 
-    animate(xx[0], ax, arrayPlot, stateDataLists, fig, numEvents)
-    plt.show()
-    
+    arrayPlot = plt.bar(xx[0], stateDataLists[0], 0.8, None, color='green', edgecolor='snow', alpha=0.7)  # helps to ensure that we plot only the first array due to how ax.bar handles 
+
+    background = fig.canvas.copy_from_bbox(ax.bbox)  #save background be fore animating ... to improve performance
+
+    animStartTime = time.time()
+    animate(xx[0], ax, arrayPlot, stateDataLists, fig, numEvents, background)
+    print('animation rendered in {:.2f}s'.format(time.time()-animStartTime))  # print the fps to have 2 decimal places
 
     # save animation
     #   - checks the animation format
@@ -366,17 +373,25 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 
 
 # animate()
-def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents):
+def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents, background):
     for i in range(numEvents):
-        arrayPlot = ax.bar(x, stateDataLists[i], 0.2, None, color='green', alpha=0.6)
+        fig.canvas.restore_region(background) # restore the cached background (i.e. apart from the bars themselves)
+        arrayPlot.remove() # remove the previous bar chart rendering, so as to avoid ghosting
+
+        if hasattr(arrayPlot, 'set_height'):
+            arrayPlot.set_height(stateDataLists[i])  # faster option but does not always work due to matplotlib issues
+        else:
+            arrayPlot = plt.bar(x, stateDataLists[i], 0.8, None, color='green', edgecolor='snow', alpha=0.7)  # brute force creation of new bar container
+
         fig.canvas.draw()
+        fig.canvas.blit(ax.bbox)
         fig.canvas.flush_events()
 
 # setupPlotParameters()
 # - sets up the required Matplotlib parameters
 def setupPlotParams(listMinValue: int, listMaxValue: int):
 
-    plt.ion()
+    # plt.ion()
     # setup plotting area attributes
     #   - set_ylim refers to the the actual values in the array hence why it should be on the y-axis - in relation to a bar chart
     #       + `5` is used to pad the listMinValue and listMaxValue to animating those values easier to see
@@ -384,20 +399,10 @@ def setupPlotParams(listMinValue: int, listMaxValue: int):
     #   - xLinspace is obtained from the global variable scope
     #   - yLinspace is calculated here using attributes of the already sorted list e.g. listMaxValue
     # figsize = (6, 3)  # set figure size tuple i.e. canvas size (i.e. paper size: A4, Letter, wide-screen aspect ratio etc.)
-    fig, ax = plt.subplots(figsize=(10, 6))
     # ax.set(xlim=(0, inputListLength-1), ylim=(listMinValue-5, listMaxValue+5))
-    ax.set_xlim(0, inputListLength-1)  # handles the scaling of the axis
-    ax.set_ylim(listMinValue-5, listMaxValue+5)
 
-    ax.set_xlabel("Index")  # handles the title label for of x-axis
-    ax.set_ylabel("Value")  # handles the title label for of y-axis
-
-    ax.set_title(algorithmName)  # handles printing of the name of the overall plot at the top
-
-    # ticks customization
-    ax.tick_params(colors='gray', direction='out') 
-
-    plt.grid(color='gray', linestyle='solid')
+    fig = plt.figure(figsize=(10, 6))
+    ax = fig.add_subplot(1,1,1, xlim = (0, inputListLength-1), ylim = (listMinValue-20, listMaxValue+20), xlabel = "Index", ylabel = "Value", title = algorithmName, alpha=0.6)
     
     return fig, ax
 
@@ -449,15 +454,14 @@ selectionSorted, sSPlotData = selectionSort(sSInputList)
 sSStopTime = time.time()
 print("Selection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
-print("\nInput's first {} values: {}".format(printedSliceLength, sSInputList[:printedSliceLength+1]))
-print("================================")
+print("input's first {} values: {}".format(printedSliceLength, sSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = selectionSort.__name__  # get the function name as a string
 sSListMinValue = selectionSorted[0]
 sSListMaxValue = selectionSorted[inputListLength - 1]
 sSParsedPlotData = parsePlotData(sSPlotData)  # converts the plotdata from a dict into a list
 createAnimation(sSParsedPlotData, sSListMinValue, sSListMaxValue, algorithmName, animationFormat)
-
+print("================================")
 
 #
 # mergeSort()
@@ -468,9 +472,8 @@ mergesorted = mergeSort(mSInputList)
 mSStopTime = time.time()
 print("\nMerge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (mSStopTime - mSStartTime))
-print("Input's first {} values: {}".format(printedSliceLength, mSInputList[:printedSliceLength+1]))
+print("input's first {} values: {}".format(printedSliceLength, mSInputList[:printedSliceLength+1]))
 print("================================")
-
 #
 # hybridBubbleSort()
 #
@@ -480,15 +483,14 @@ hybridBubblesorted, hBSPlotData  = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
 print("\nHybrid Bubble Sort gives first {} elements as: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
-print("Input's first {} values: {}".format(printedSliceLength, hBSInputList[:printedSliceLength+1]))
-print("================================")
+print("input's first {} values: {}".format(printedSliceLength, hBSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = hybridBubbleSort.__name__  # get the function name as a string
 hBSListMinValue = hybridBubblesorted[0]
 hBSListMaxValue = hybridBubblesorted[inputListLength - 1]
 hBParsedPlotData = parsePlotData(hBSPlotData)  # converts the plotdata from a dict into a list
 createAnimation(hBParsedPlotData, hBSListMinValue, hBSListMaxValue, algorithmName, animationFormat)
-
+print("================================")
 
 #
 # elegantBubbleSort()
@@ -499,15 +501,14 @@ elegantBubblesorted, eBSPlotData = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
 print("\nElegant Bubble Sort gives first {} elements as: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
-print("Input's first {} values: {}".format(printedSliceLength, eBSInputList[:printedSliceLength+1]))
-print("================================")
+print("input's first {} values: {}".format(printedSliceLength, eBSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = elegantBubbleSort.__name__  # get the function name as a string
 eBSListMinValue = elegantBubblesorted[0]
 eBSListMaxValue = elegantBubblesorted[inputListLength - 1]
 eBParsedPlotData = parsePlotData(eBSPlotData)  # converts the plotdata from a dict into a list
 createAnimation(eBParsedPlotData, eBSListMinValue, eBSListMaxValue, algorithmName, animationFormat)
-
+print("================================")
 
 #
 # insertionSort()
@@ -518,15 +519,14 @@ insertionsorted, iSPlotData = insertionSort(iSInputList)
 iSStopTime = time.time()
 print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (iSStopTime - iSStartTime))
-print("Input's first {} values: {}".format(printedSliceLength, iSInputList[:printedSliceLength+1]))
-print("================================")
+print("input's first {} values: {}".format(printedSliceLength, iSInputList[:printedSliceLength+1]))
 # animation creation
-algorithmName = selectionSort.__name__  # get the function name as a string
+algorithmName = insertionSort.__name__  # get the function name as a string
 iSListMinValue = insertionsorted[0]
 iSListMaxValue = insertionsorted[inputListLength - 1]
 iSParsedPlotData = parsePlotData(iSPlotData)  # converts the plotdata from a dict into a list
 createAnimation(iSParsedPlotData, iSListMinValue, iSListMaxValue, algorithmName, animationFormat)
-
+print("================================")
 
 #
 # # Check if both sorted list are equivalent
