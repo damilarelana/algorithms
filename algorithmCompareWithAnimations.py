@@ -18,7 +18,7 @@ listRangeStep = 23
 
 
 #
-# shuffleListCopy()
+# listShuffler()
 #  - helps to avoid the problem that random.shuffle tends to shuffle in place
 #  - copy the inputList around sometimes means references [i.e. the copies] are not copied
 
@@ -48,11 +48,11 @@ else:
     printedSliceLength = inputListLength
 
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
-hBSInputList = copy.deepcopy(inputList)
-eBSInputList = copy.deepcopy(inputList)
-sSInputList = copy.deepcopy(inputList)
-mSInputList = copy.deepcopy(inputList)
-iSInputList = copy.deepcopy(inputList)
+hBSInputList = copy.deepcopy(inputList[:])
+eBSInputList = copy.deepcopy(inputList[:])
+sSInputList = copy.deepcopy(inputList[:])
+mSInputList = copy.deepcopy(inputList[:])
+iSInputList = copy.deepcopy(inputList[:])
 
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -101,7 +101,7 @@ def hybridBubbleSort(inputList: list):
             #   - this passing/receiving of slice is implemented inside augmentList()
             #   - getPlotData() implements augmentList() to validate the inputted list
             #       + augmentList() helps to validate if the size of inputList[:] is dynamically changing i.e. as it occurs within mergeSort()
-            getPlotData(inputList[:], hBSDictKey, hBSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            getPlotData(inputList[:], hBSDictKey, hBSPlotDataDict, inputListLength)
             hBSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
         # break from loop if already sorted input and sorting completion
@@ -139,7 +139,7 @@ def elegantBubbleSort(inputList: list):
             #   - this passing/receiving of slice is implemented inside augmentList()
             #   - getPlotData() implements augmentList() to validate the inputted list
             #       + augmentList() helps to validate if the size of inputList[:] is dynamically changing i.e. as it occurs within mergeSort()            
-            getPlotData(inputList[:], eBSDictKey, eBSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            getPlotData(inputList[:], eBSDictKey, eBSPlotDataDict, inputListLength)
             eBSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
         oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
@@ -187,7 +187,7 @@ def selectionSort(inputList):
             #   - this passing/receiving of slice is implemented inside augmentList()
             #   - getPlotData() implements augmentList() to validate the inputted list
             #       + augmentList() helps to validate if the size of inputList[:] is dynamically changing i.e. as it occurs within mergeSort()
-            getPlotData(inputList[:], sSDictKey, sSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            getPlotData(inputList[:], sSDictKey, sSPlotDataDict, inputListLength)
             sSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
             outerCount += 1                 # increase outer counter i.e. expanding the sorted set
@@ -207,12 +207,26 @@ def selectionSort(inputList):
 #   + iteratively compares and determines whether to `append sublist1` to `sublist2` OR `append sublist2 to sublist1`
 # - this is NOT happening in place
 #   + hence there is a space penalty for the algorithm
+# - returns the final sorted list via sublistMerge()
+
+# animation data initialize dict, with `index 0` being an empty list
+# - this is initialized at the global level since mergeSort is recursive
+#   + recursion means that stateData would be brought back to zero state after each recursive call
+mSDictKey = 0  # key to store the arrayState for each loop cycle
+mSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
+mSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+    mSDictKey: mSStateData,
+}
+originalInputListLength = len(mSInputList)
 
 
 def mergeSort(inputList):
+
     tempInputListLength = len(inputList)                                      # handles reducing elements, so can't use global
 
     if tempInputListLength < 2:                                           # using "<2" instead of "==", handles when inputList=[]
+        # get stateData, without incrementing `mSDictKey` since it is not necessary [as there is nothing to sort and hence no data to animate]
+        getPlotData(inputList[:], mSDictKey, mSPlotDataDict, originalInputListLength)
         return inputList
     else:
         demarcationIndex = int(math.ceil(tempInputListLength/2))          # works for even, odd and prime tempInputListLength values
@@ -220,14 +234,14 @@ def mergeSort(inputList):
         tempListTwo = inputList[demarcationIndex:]                      # initialize tempListTwo sub-list
         tempListOne = mergeSort(tempListOne)                      # recursive call to mergeSorter()
         tempListTwo = mergeSort(tempListTwo)                      # recursive call to mergeSorter()
-        return sublistMerge(tempListOne, tempListTwo)
+        return sublistMerge(tempListOne, tempListTwo, mSDictKey, mSPlotDataDict, originalInputListLength)
 
 
 # sublistMerge()
 # - is called by mergeSort()
 # - to handle list merging operations
 
-def sublistMerge(tempSubListOne, tempSubListTwo):
+def sublistMerge(tempSubListOne, tempSubListTwo, mSDictKey: int, mSPlotDataDict: dict, originalInputListLength: int):
     tempMergedList = []                                             # initialise empty List to merge sub-Lists into
 
     subListOneLength = len(tempSubListOne)
@@ -239,18 +253,27 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
     while subListOneLength > indexSubListOne and subListTwoLength > indexSubListTwo:      # a=[1]->len(a)=1
         if tempSubListOne[indexSubListOne] > tempSubListTwo[indexSubListTwo]:                   # test smaller element
             tempMergedList.append(tempSubListTwo[indexSubListTwo])                         # add to end of tempMergeList
+            getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
+            mSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
             indexSubListTwo += 1
         else:
             tempMergedList.append(tempSubListOne[indexSubListOne])                         # add to end of tempMergeList
+            getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
+            mSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
             indexSubListOne += 1
 
     while subListOneLength > indexSubListOne:                                  # no elements to merge in SubListTwo
         tempMergedList.append(tempSubListOne[indexSubListOne])                    # remaining elements are appended
+        getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
+        mSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
         indexSubListOne += 1
 
     while subListTwoLength > indexSubListTwo:                                  # no elements to merge in SubListOne
         tempMergedList.append(tempSubListTwo[indexSubListTwo])                    # remaining elements are appended
+        getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
+        mSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
         indexSubListTwo += 1
+
     return tempMergedList
 
 
@@ -508,12 +531,13 @@ def checkOrderedListEquivalence(r: list, k: list):
 # selectionSort()
 #
 # timed runtime
+unsortedSSInputList = mSInputList
 sSStartTime = time.time()
 selectionSorted, sSPlotData = selectionSort(sSInputList)
 sSStopTime = time.time()
 print("Selection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, sSInputList[:printedSliceLength+1]))
+print("input's first {} values: {}".format(printedSliceLength, unsortedSSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = selectionSort.__name__  # get the function name as a string
 sSListMinValue = selectionSorted[0]
@@ -526,23 +550,32 @@ print("================================")
 # mergeSort()
 #
 # timed runtime
+unsortedMSInputList = mSInputList
 mSStartTime = time.time()
 mergesorted = mergeSort(mSInputList)
 mSStopTime = time.time()
 print("\nMerge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (mSStopTime - mSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, mSInputList[:printedSliceLength+1]))
+print("input's first {} values: {}".format(printedSliceLength, unsortedMSInputList[:printedSliceLength+1]))
+# animation creation
+algorithmName = mergeSort.__name__  # get the function name as a string
+mSListMinValue = mergesorted[0]
+mSListMaxValue = mergesorted[inputListLength - 1]
+mSParsedPlotData = parsePlotData(mSPlotDataDict)  # converts the plotdata from a dict into a list [notice that `mSPlotDataDict` is a global variable in this case since mergeSort is recursive]
+createAnimation(mSParsedPlotData, mSListMinValue, mSListMaxValue, algorithmName, animationFormat)
 print("================================")
+
 #
 # hybridBubbleSort()
 #
 # timed runtime
+unsortedHBSInputList = mSInputList
 hBSStartTime = time.time()
 hybridBubblesorted, hBSPlotData  = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
 print("\nHybrid Bubble Sort gives first {} elements as: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, hBSInputList[:printedSliceLength+1]))
+print("input's first {} values: {}".format(printedSliceLength, unsortedHBSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = hybridBubbleSort.__name__  # get the function name as a string
 hBSListMinValue = hybridBubblesorted[0]
@@ -555,12 +588,13 @@ print("================================")
 # elegantBubbleSort()
 #
 # timed runtime
+unsortedEBSInputList = mSInputList
 eBSStartTime = time.time()
 elegantBubblesorted, eBSPlotData = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
 print("\nElegant Bubble Sort gives first {} elements as: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, eBSInputList[:printedSliceLength+1]))
+print("input's first {} values: {}".format(printedSliceLength, unsortedEBSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = elegantBubbleSort.__name__  # get the function name as a string
 eBSListMinValue = elegantBubblesorted[0]
@@ -573,12 +607,13 @@ print("================================")
 # insertionSort()
 #
 # timed runtime
+unsortedISInputList = mSInputList
 iSStartTime = time.time()
 insertionsorted, iSPlotData = insertionSort(iSInputList)
 iSStopTime = time.time()
 print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (iSStopTime - iSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, iSInputList[:printedSliceLength+1]))
+print("input's first {} values: {}".format(printedSliceLength, unsortedISInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = insertionSort.__name__  # get the function name as a string
 iSListMinValue = insertionsorted[0]

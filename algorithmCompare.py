@@ -2,25 +2,50 @@ import random
 import time
 import math
 import copy
+import secrets
 import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
 #
 # Generate Random Unsorted List
 #
-inputList = [x for x in range(0, 1247635, 96)]    # Generate Random Unsorted List
-random.shuffle(inputList)
+listRangeStart = 0
+listRangeStop = 2127231
+listRangeStep = 23
+
+
+#
+# listShuffler()
+#  - helps to avoid the problem that random.shuffle tends to shuffle in place
+#  - copy the inputList around sometimes means references [i.e. the copies] are not copied
+
+
+def listShuffler(initialList: list):
+    workingList = copy.deepcopy(initialList)  # deepcopy that random sample
+    randomNumber = secrets.randbits(8192)     # generate random number for random.seed()
+    random.seed(randomNumber)     # improve the randomizer by calling random.seed()
+    random.shuffle(workingList)  # shuffle the copy of the random sample again just to be sure :)
+    # shuffledList = random.sample(workingList, len(workingList))  # take a random sample of list [which returns a shuffled version]
+
+    # return the now shuffled list
+    return workingList
+
+
+# create list
+initialList = [x for x in range(listRangeStart, listRangeStop, listRangeStep)]  # Generate Random Unsorted List
+inputList = listShuffler(initialList)
+inputListLength = len(inputList)
+if inputListLength > 20:
+    printedSliceLength = 15
+else:
+    printedSliceLength = inputListLength
 
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
-hBSInputList = copy.deepcopy(inputList)
-eBSInputList = copy.deepcopy(inputList)
-sSInputList = copy.deepcopy(inputList)
-mSInputList = copy.deepcopy(inputList)
-iSInputList = copy.deepcopy(inputList)
+hBSInputList = copy.deepcopy(inputList[:])
+eBSInputList = copy.deepcopy(inputList[:])
+sSInputList = copy.deepcopy(inputList[:])
+mSInputList = copy.deepcopy(inputList[:])
+iSInputList = copy.deepcopy(inputList[:])
+
 
 
 #
@@ -31,7 +56,7 @@ print("  - using randomly generated data")
 print("  - of an array of integer values")
 print("  - with {} elements".format(len(inputList)))
 print("")
-print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
 
 
 # hybridBubbleSort() is a combination of the two
@@ -228,59 +253,69 @@ def checkOrderedListEquivalence(r: list, k: list):
 
 
 #
-# Timed execution for selectionSort()
+# selectionSort()
 #
-
-
+# timed runtime
+unsortedSSInputList = mSInputList
 sSStartTime = time.time()
 selectionSorted = selectionSort(sSInputList)
 sSStopTime = time.time()
-print("\nSelection Sort give [first 15 elements as]: %s" % selectionSorted[:15])
+print("Selection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
+print("input's first {} values: {}".format(printedSliceLength, unsortedSSInputList[:printedSliceLength+1]))
 print("================================")
 
 #
-# Timed execution for mergeSort()
+# mergeSort()
 #
+# timed runtime
+unsortedMSInputList = mSInputList
 mSStartTime = time.time()
 mergesorted = mergeSort(mSInputList)
 mSStopTime = time.time()
-print("\nMerge Sort gives [first 15 elements as]: %s" % mergesorted[:15])
+print("\nMerge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (mSStopTime - mSStartTime))
+print("input's first {} values: {}".format(printedSliceLength, unsortedMSInputList[:printedSliceLength+1]))
 print("================================")
 
 #
-# Timed execution for hybridBubbleSort()
+# hybridBubbleSort()
 #
+# timed runtime
+unsortedHBSInputList = mSInputList
 hBSStartTime = time.time()
 hybridBubblesorted = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
-print("\nHybrid Bubble Sort gives [first 15 elements as]: %s" % hybridBubblesorted[:15])
+print("\nHybrid Bubble Sort gives first {} elements as: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
+print("input's first {} values: {}".format(printedSliceLength, unsortedHBSInputList[:printedSliceLength+1]))
 print("================================")
 
-
 #
-# Timed execution for elegantBubbleSort()
+# elegantBubbleSort()
 #
+# timed runtime
+unsortedEBSInputList = mSInputList
 eBSStartTime = time.time()
 elegantBubblesorted = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
-print("\nElegant Bubble Sort gives [first 15 elements as]: %s" % elegantBubblesorted[:15])
+print("\nElegant Bubble Sort gives first {} elements as: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
+print("input's first {} values: {}".format(printedSliceLength, unsortedEBSInputList[:printedSliceLength+1]))
 print("================================")
 
 #
-# Timed execution for insertionSort()
+# insertionSort()
 #
-
+# timed runtime
+unsortedISInputList = mSInputList
 iSStartTime = time.time()
 insertionsorted = insertionSort(iSInputList)
 iSStopTime = time.time()
-print("\nInsertion Sort gives [first 15 elements as]: %s" % insertionsorted[:15])
+print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (iSStopTime - iSStartTime))
+print("input's first {} values: {}".format(printedSliceLength, unsortedISInputList[:printedSliceLength+1]))
 print("================================")
-
 
 #
 # # Check if both sorted list are equivalent
