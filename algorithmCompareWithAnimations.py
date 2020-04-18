@@ -98,7 +98,7 @@ def hybridBubbleSort(inputList: list):
             #   - to avoids scenarios where all dict values are reference to same sorted list
             #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
-            getPlotData(inputList[:], hBSDictKey, hBSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            getPlotData(inputList[:], hBSDictKey, hBSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
             hBSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
         # break from loop if already sorted input and sorting completion
@@ -133,7 +133,7 @@ def elegantBubbleSort(inputList: list):
             #   - to avoids scenarios where all dict values are reference to same sorted list
             #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
-            getPlotData(inputList[:], eBSDictKey, eBSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            getPlotData(inputList[:], eBSDictKey, eBSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
             eBSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
         oCount += 1  # increment outer loop i.e. number of times we have so far bubbled up the largest value
@@ -160,15 +160,15 @@ def selectionSort(rlist):
         sSDictKey: sSStateData,
     }
 
-    loopRange = len(rlist) 
-    if loopRange == 1:
+    inputListLength = len(rlist) 
+    if inputListLength == 1:
         return rlist
     else:
         outerCount = 0                      # initialise outerloop counter
         minElement = outerCount             # assume first index "0" is temporary minimum (changes with each pass)
-        while outerCount < loopRange:       # using "for ... in ... range()" would give same result
+        while outerCount < inputListLength:       # using "for ... in ... range()" would give same result
             innerCount = outerCount + 1     # make (or reset) innerCount to current "outerCount + 1"
-            while innerCount < loopRange:   # scanning by looping over all remaining items to test new minimum
+            while innerCount < inputListLength:   # scanning by looping over all remaining items to test new minimum
                 if rlist[innerCount] < rlist[minElement]:  # if any of the items if less than current minimum
                     minElement = innerCount  # swaps out the index of the old with the new i.e. create new temporary minimum for remaining unsorted set
                 innerCount += 1             # increase inner counter i.e. reducing unsorted list of items
@@ -178,14 +178,14 @@ def selectionSort(rlist):
             #   - to avoids scenarios where all dict values are reference to same sorted list
             #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
-            getPlotData(rlist[:], sSDictKey, sSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            getPlotData(rlist[:], sSDictKey, sSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
             sSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
             outerCount += 1                 # increase outer counter i.e. expanding the sorted set
             minElement = outerCount         # reset new temporary minimum index e.g. if initial was index `0`, it would now be `1` 
-            if outerCount == loopRange - 1:  # i.e. only one unsorted element remains, break outer loop
+            if outerCount == inputListLength - 1:  # i.e. only one unsorted element remains, break outer loop
                 break
-            # note that we CANNOT use the optimization (loopRange -= 1) since we are shifting values/index around 
+            # note that we CANNOT use the optimization (inputListLength -= 1) since we are shifting values/index around 
             # as such the last value after every iteration can still need to be touched
             # this is one difference with BubbleSort() where the last index can be removed from dataset after every loop
         return rlist, sSPlotDataDict
@@ -201,12 +201,12 @@ def selectionSort(rlist):
 
 
 def mergeSort(rlist):
-    temploopRange = len(rlist)                                      # handles reducing elements, so can't use global
+    tempInputListLength = len(rlist)                                      # handles reducing elements, so can't use global
 
-    if temploopRange < 2:                                           # using "<2" instead of "==", handles when rlist=[]
+    if tempInputListLength < 2:                                           # using "<2" instead of "==", handles when rlist=[]
         return rlist
     else:
-        demarcationIndex = int(math.ceil(temploopRange/2))          # works for even, odd and prime temploopRange values
+        demarcationIndex = int(math.ceil(tempInputListLength/2))          # works for even, odd and prime tempInputListLength values
         tempListOne = rlist[:demarcationIndex]                      # initialize tempListOne sub-list
         tempListTwo = rlist[demarcationIndex:]                      # initialize tempListTwo sub-list
         tempListOne = mergeSort(tempListOne)                      # recursive call to mergeSorter()
@@ -221,13 +221,13 @@ def mergeSort(rlist):
 def sublistMerge(tempSubListOne, tempSubListTwo):
     tempMergedList = []                                             # initialise empty List to merge sub-Lists into
 
-    loopRangeSubListOne = len(tempSubListOne)
-    loopRangeSubListTwo = len(tempSubListTwo)
+    subListOneLength = len(tempSubListOne)
+    subListTwoLength = len(tempSubListTwo)
 
     indexSubListOne = 0                                             # avoids using list.pop() to remove element
     indexSubListTwo = 0
 
-    while loopRangeSubListOne > indexSubListOne and loopRangeSubListTwo > indexSubListTwo:      # a=[1]->len(a)=1
+    while subListOneLength > indexSubListOne and subListTwoLength > indexSubListTwo:      # a=[1]->len(a)=1
         if tempSubListOne[indexSubListOne] > tempSubListTwo[indexSubListTwo]:                   # test smaller element
             tempMergedList.append(tempSubListTwo[indexSubListTwo])                         # add to end of tempMergeList
             indexSubListTwo += 1
@@ -235,11 +235,11 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
             tempMergedList.append(tempSubListOne[indexSubListOne])                         # add to end of tempMergeList
             indexSubListOne += 1
 
-    while loopRangeSubListOne > indexSubListOne:                                  # no elements to merge in SubListTwo
+    while subListOneLength > indexSubListOne:                                  # no elements to merge in SubListTwo
         tempMergedList.append(tempSubListOne[indexSubListOne])                    # remaining elements are appended
         indexSubListOne += 1
 
-    while loopRangeSubListTwo > indexSubListTwo:                                  # no elements to merge in SubListOne
+    while subListTwoLength > indexSubListTwo:                                  # no elements to merge in SubListOne
         tempMergedList.append(tempSubListTwo[indexSubListTwo])                    # remaining elements are appended
         indexSubListTwo += 1
     return tempMergedList
@@ -258,13 +258,13 @@ def insertionSort(ulist):
     }
 
     # array sorting logic 
-    loopRange = len(ulist)
-    if loopRange == 1:
+    inputListLength = len(ulist)
+    if inputListLength == 1:
         return ulist    # no point wasting CPU cycle to sort one item
     else:
         # we assume that element at index `0` i.e. ocount = 0, is already sorted, hence why the unsorted starts at ocount = 1
         ocount = 1                       # initialising unsorted list index to the first one to be removed from unsorted [we ]
-        while ocount < loopRange:        # handles if len(ulist)=1, unsorted loop index
+        while ocount < inputListLength:        # handles if len(ulist)=1, unsorted loop index
             icount = ocount              # re-initialising sorted list's max index to allow countdown
             while icount > 0:            # handles inner loop i.e. the `sorted list loop`. greater than zero 
                                          # helps to ensure that when you `bring` a new element (from unsorted) to test/loop against `the sorted
@@ -278,9 +278,9 @@ def insertionSort(ulist):
                 #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
                 #   - this was not done for `space complexity performance reasons`
                 #   - this passing/receiving of slice is implemented inside augmentList()
-                #   - augmentList() helps to validate if the ulist[:] is dynamically changing i.e. as it occurs within mergeSort()
-                validatedList = augmentList(ulist[:])
-                getPlotData(validatedList, iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+                #   - getPlotData() implements augmentList() to validate the inputted list
+                #       + augmentList() helps to validate if the size of ulist[:] is dynamically changing i.e. as it occurs within mergeSort()
+                getPlotData(ulist[:], iSDictKey, iSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
                 iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
             ocount += 1  # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
         return ulist, iSPlotDataDict
@@ -290,8 +290,8 @@ def insertionSort(ulist):
 #   - is mostly applicable to algorithms that breakdown the list before sorting e.g. MergeSort()
 #   - it takes a full slice `ulist[:]` of current list as argument (i.e. currentList = ulist[:]) so as to capture current state
 #   - it gets length of current list currentListLength = len(currentList)
-#   - it takes in length of input list i.e. loopRange
-#   - checks if there has been a decomposition i.e. if loopRange != currentListLength
+#   - it takes in length of input list i.e. inputListLength
+#   - checks if there has been a decomposition i.e. if inputListLength != currentListLength
 #       + if false, it simply returns `currentList` to the callback function
 #       + if true, it pads the currentList with `0` at the end so as to make the `lists` inside `stateDataList` to be of same length i.e.
 #               - calculates `padLength = looRange - currentListLength`
@@ -316,6 +316,7 @@ def augmentList(currentList: list, inputListLength: list):
 #  - takes in the initialized dictionary key dictKey
 #  - takes in the initialized stateData list
 #  - takes in the initialized plotDataDict dict
+#  - takes in the original input list length i.e. inputListLength
 #  - saves the stateData (initial, current and future) into the dictionary, with specific key value
 #  - increment the dictionary key value
 #  - repeat the saving process
@@ -327,8 +328,9 @@ def augmentList(currentList: list, inputListLength: list):
 #        - by avoiding the use of zip() to extract and unzip
 
 
-def getPlotData(arrayWhileSorting, dictKey: int, plotDataDict: dict):
-    plotDataDict.update({dictKey: arrayWhileSorting})  # append arrayWhileSorting to dict, at the end of the dict
+def getPlotData(arrayWhileSorting, dictKey: int, plotDataDict: dict, inputListLength: int):
+    augmentedList = augmentList(arrayWhileSorting, inputListLength)
+    plotDataDict.update({dictKey: augmentedList})  # append arrayWhileSorting to dict, at the end of the dict
     # plotDataDict[dictKey] = arrayWhileSorting  # append arrayWhileSorting to dict, at the end of the dict
 
 #
