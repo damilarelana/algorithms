@@ -47,10 +47,6 @@ if inputListLength > 20:
 else:
     printedSliceLength = inputListLength
 
-
-# initialize xLinspace globally as required by all createAnimation() [i.e. to avoid performance issues due to repeated recreation]
-xLinspace = np.linspace(0, inputListLength-1, inputListLength)  # creates i.e. evenly spaced stuff in x-axis that matches the array index spacing
-
 # create distinct copies of the now reshuffled list [so as to ensure objectivity in the sorting]
 hBSInputList = copy.deepcopy(inputList)
 eBSInputList = copy.deepcopy(inputList)
@@ -330,12 +326,22 @@ def parsePlotData(plotDataDict: dict):
 
 def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, algorithmName: str, animationFormat: str):
 
+    # determine length of each stateData list (in the list of list) meant to be animated
+    try:
+        inputListLength = len(stateDataLists[0])
+    except ValueError:
+        raise Exception("Unable to determine lenght of stateData list (in the `list of lists`)")
+
     # setup the matplotlib's plot parameters
-    fig, ax = setupPlotParams(listMinValue, listMaxValue)
+    fig, ax = setupPlotParams(listMinValue, listMaxValue, inputListLength)
     fig.show()
     # fig.canvas.draw()
 
+
     # setup the mesh grid
+    #   - xLinspace and yLinspace input to np.meshgrid()
+    #   - xx and yy output indicating the width and height of the mesh grid in terms of array
+    xLinspace = np.linspace(0, inputListLength-1, inputListLength)  # creates i.e. evenly spaced stuff in x-axis that matches the array index spacing
     yLinspace = np.linspace(listMinValue, listMaxValue, inputListLength) # creates even space in y-axis for array element values
     xx, yy = np.meshgrid(xLinspace, yLinspace)  # create the mesh grid 
 
@@ -348,6 +354,8 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 
     # numEvents
     #   - refers to the number of stateData that exists in the stateDataLists
+    #   - i.e. how many lists do you have within the `list of lists`
+    #   - where each `list` represents an event
     numEvents = len(stateDataLists)
 
     # plot the first array data
@@ -355,10 +363,10 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
     arrayPlot = plt.bar(xx[0], stateDataLists[0], 0.8, None, color='green', edgecolor='snow', alpha=0.7)  # helps to ensure that we plot only the first array due to how ax.bar handles 
 
-    background = fig.canvas.copy_from_bbox(ax.bbox)  #save background be fore animating ... to improve performance
+    backgroundRender = fig.canvas.copy_from_bbox(ax.bbox)  #save background be fore animating ... to improve performance
 
     animStartTime = time.time()
-    animate(xx[0], ax, arrayPlot, stateDataLists, fig, numEvents, background)
+    animate(xx[0], ax, arrayPlot, stateDataLists, fig, numEvents, backgroundRender)
     print('animation rendered in {:.2f}s'.format(time.time()-animStartTime))  # print the fps to have 2 decimal places
 
     # save animation
@@ -373,9 +381,9 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 
 
 # animate()
-def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents, background):
+def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents, backgroundRender):
     for i in range(numEvents):
-        fig.canvas.restore_region(background) # restore the cached background (i.e. apart from the bars themselves)
+        fig.canvas.restore_region(backgroundRender) # restore the cached/rendered background (i.e. apart from the bars themselves)
         arrayPlot.remove() # remove the previous bar chart rendering, so as to avoid ghosting
 
         if hasattr(arrayPlot, 'set_height'):
@@ -389,7 +397,7 @@ def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents, background):
 
 # setupPlotParameters()
 # - sets up the required Matplotlib parameters
-def setupPlotParams(listMinValue: int, listMaxValue: int):
+def setupPlotParams(listMinValue: int, listMaxValue: int, inputListLength: int):
 
     # plt.ion()
     # setup plotting area attributes
