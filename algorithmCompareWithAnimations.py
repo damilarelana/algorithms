@@ -94,10 +94,13 @@ def hybridBubbleSort(inputList: list):
                 swapflag = True
             iCount += 1
             
-            # passing a slice of `ulist` (i.e. ulist[:]) helps to dereference/decouple before usage by getPlotData()
+            # passing a slice of `inputList` (i.e. inputList[:]) helps to dereference/decouple before usage by getPlotData()
             #   - to avoids scenarios where all dict values are reference to same sorted list
-            #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
+            #   - we could also use `tempList = inputList[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
+            #   - this passing/receiving of slice is implemented inside augmentList()
+            #   - getPlotData() implements augmentList() to validate the inputted list
+            #       + augmentList() helps to validate if the size of inputList[:] is dynamically changing i.e. as it occurs within mergeSort()
             getPlotData(inputList[:], hBSDictKey, hBSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
             hBSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
@@ -122,17 +125,20 @@ def elegantBubbleSort(inputList: list):
 
     inputListLength = len(inputList)
     oCount = 0  # initialize the outer counter i.e. which controls repetition after bubbling previous largest values
-    while oCount < len(inputList):  # this does not use rlistLength, to ensure we test all elements for largeness
+    while oCount < len(inputList):  # this does not use inputListLength, to ensure we test all elements for largeness
         iCount = 0   # initialize the inner counter i.e. to move one selected element through the list
         while iCount < (inputListLength - 1):
             if inputList[iCount] > inputList[iCount+1]:
                 inputList[iCount], inputList[iCount+1] = inputList[iCount+1], inputList[iCount]
             iCount += 1
 
-            # passing a slice of `ulist` (i.e. ulist[:]) helps to dereference/decouple before usage by getPlotData()
+            # passing a slice of `inputList` (i.e. inputList[:]) helps to dereference/decouple before usage by getPlotData()
             #   - to avoids scenarios where all dict values are reference to same sorted list
-            #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
+            #   - we could also use `tempList = inputList[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
+            #   - this passing/receiving of slice is implemented inside augmentList()
+            #   - getPlotData() implements augmentList() to validate the inputted list
+            #       + augmentList() helps to validate if the size of inputList[:] is dynamically changing i.e. as it occurs within mergeSort()            
             getPlotData(inputList[:], eBSDictKey, eBSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
             eBSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
@@ -151,7 +157,7 @@ def elegantBubbleSort(inputList: list):
 #   + we are just using `outcounter` to implement a virtual segregation of what is sorted and unsorted
 
 
-def selectionSort(rlist):
+def selectionSort(inputList):
 
     # animation data initialize dict, with `index 0` being an empty list
     sSDictKey = 0  # key to store the arrayState for each loop cycle
@@ -160,25 +166,28 @@ def selectionSort(rlist):
         sSDictKey: sSStateData,
     }
 
-    inputListLength = len(rlist) 
+    inputListLength = len(inputList) 
     if inputListLength == 1:
-        return rlist
+        return inputList
     else:
         outerCount = 0                      # initialise outerloop counter
         minElement = outerCount             # assume first index "0" is temporary minimum (changes with each pass)
         while outerCount < inputListLength:       # using "for ... in ... range()" would give same result
             innerCount = outerCount + 1     # make (or reset) innerCount to current "outerCount + 1"
             while innerCount < inputListLength:   # scanning by looping over all remaining items to test new minimum
-                if rlist[innerCount] < rlist[minElement]:  # if any of the items if less than current minimum
+                if inputList[innerCount] < inputList[minElement]:  # if any of the items if less than current minimum
                     minElement = innerCount  # swaps out the index of the old with the new i.e. create new temporary minimum for remaining unsorted set
                 innerCount += 1             # increase inner counter i.e. reducing unsorted list of items
-            rlist[outerCount], rlist[minElement] = rlist[minElement], rlist[outerCount]  # confirm new minimum by swapping [temporary outerCount index with new minimum's index]
+            inputList[outerCount], inputList[minElement] = inputList[minElement], inputList[outerCount]  # confirm new minimum by swapping [temporary outerCount index with new minimum's index]
 
-            # passing a slice of `ulist` (i.e. ulist[:]) helps to dereference/decouple before usage by getPlotData()
+            # passing a slice of `inputList` (i.e. inputList[:]) helps to dereference/decouple before usage by getPlotData()
             #   - to avoids scenarios where all dict values are reference to same sorted list
-            #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
+            #   - we could also use `tempList = inputList[:]` and then pass `tempList` to getPlotData(tempList ... )
             #   - this was not done for `space complexity performance reasons`
-            getPlotData(rlist[:], sSDictKey, sSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+            #   - this passing/receiving of slice is implemented inside augmentList()
+            #   - getPlotData() implements augmentList() to validate the inputted list
+            #       + augmentList() helps to validate if the size of inputList[:] is dynamically changing i.e. as it occurs within mergeSort()
+            getPlotData(inputList[:], sSDictKey, sSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
             sSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
 
             outerCount += 1                 # increase outer counter i.e. expanding the sorted set
@@ -188,7 +197,7 @@ def selectionSort(rlist):
             # note that we CANNOT use the optimization (inputListLength -= 1) since we are shifting values/index around 
             # as such the last value after every iteration can still need to be touched
             # this is one difference with BubbleSort() where the last index can be removed from dataset after every loop
-        return rlist, sSPlotDataDict
+        return inputList, sSPlotDataDict
 
 
 # mergeSort()
@@ -200,15 +209,15 @@ def selectionSort(rlist):
 #   + hence there is a space penalty for the algorithm
 
 
-def mergeSort(rlist):
-    tempInputListLength = len(rlist)                                      # handles reducing elements, so can't use global
+def mergeSort(inputList):
+    tempInputListLength = len(inputList)                                      # handles reducing elements, so can't use global
 
-    if tempInputListLength < 2:                                           # using "<2" instead of "==", handles when rlist=[]
-        return rlist
+    if tempInputListLength < 2:                                           # using "<2" instead of "==", handles when inputList=[]
+        return inputList
     else:
         demarcationIndex = int(math.ceil(tempInputListLength/2))          # works for even, odd and prime tempInputListLength values
-        tempListOne = rlist[:demarcationIndex]                      # initialize tempListOne sub-list
-        tempListTwo = rlist[demarcationIndex:]                      # initialize tempListTwo sub-list
+        tempListOne = inputList[:demarcationIndex]                      # initialize tempListOne sub-list
+        tempListTwo = inputList[demarcationIndex:]                      # initialize tempListTwo sub-list
         tempListOne = mergeSort(tempListOne)                      # recursive call to mergeSorter()
         tempListTwo = mergeSort(tempListTwo)                      # recursive call to mergeSorter()
         return sublistMerge(tempListOne, tempListTwo)
@@ -249,7 +258,7 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
 #
 
 
-def insertionSort(ulist):
+def insertionSort(inputList):
     # animation data initialize dict, with `index 0` being an empty list
     iSDictKey = 0  # key to store the arrayState for each loop cycle
     iSStateData = list()  # initialize placeholder for the stored arrayState, not used beyond here
@@ -258,37 +267,37 @@ def insertionSort(ulist):
     }
 
     # array sorting logic 
-    inputListLength = len(ulist)
+    inputListLength = len(inputList)
     if inputListLength == 1:
-        return ulist    # no point wasting CPU cycle to sort one item
+        return inputList    # no point wasting CPU cycle to sort one item
     else:
         # we assume that element at index `0` i.e. ocount = 0, is already sorted, hence why the unsorted starts at ocount = 1
         ocount = 1                       # initialising unsorted list index to the first one to be removed from unsorted [we ]
-        while ocount < inputListLength:        # handles if len(ulist)=1, unsorted loop index
+        while ocount < inputListLength:        # handles if len(inputList)=1, unsorted loop index
             icount = ocount              # re-initialising sorted list's max index to allow countdown
             while icount > 0:            # handles inner loop i.e. the `sorted list loop`. greater than zero 
                                          # helps to ensure that when you `bring` a new element (from unsorted) to test/loop against `the sorted
                                          # it helps to ensure that the looping down does not go beyond `index 0` within the sorted
-                if ulist[icount-1] > ulist[icount]:           # this already carters for assuming list[0] is sorted
-                    ulist[icount - 1], ulist[icount] = ulist[icount], ulist[icount-1]
+                if inputList[icount-1] > inputList[icount]:           # this already carters for assuming list[0] is sorted
+                    inputList[icount - 1], inputList[icount] = inputList[icount], inputList[icount-1]
                 icount -= 1 # this is different to bubbleSort i.e. where there is an increment. Here we are decreasing the unsorted set
 
-                # passing a slice of `ulist` (i.e. ulist[:]) helps to dereference/decouple before usage by getPlotData()
+                # passing a slice of `inputList` (i.e. inputList[:]) helps to dereference/decouple before usage by getPlotData()
                 #   - to avoids scenarios where all dict values are reference to same sorted list
-                #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
+                #   - we could also use `tempList = inputList[:]` and then pass `tempList` to getPlotData(tempList ... )
                 #   - this was not done for `space complexity performance reasons`
                 #   - this passing/receiving of slice is implemented inside augmentList()
                 #   - getPlotData() implements augmentList() to validate the inputted list
-                #       + augmentList() helps to validate if the size of ulist[:] is dynamically changing i.e. as it occurs within mergeSort()
-                getPlotData(ulist[:], iSDictKey, iSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+                #       + augmentList() helps to validate if the size of inputList[:] is dynamically changing i.e. as it occurs within mergeSort()
+                getPlotData(inputList[:], iSDictKey, iSPlotDataDict, inputListLength)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
                 iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
             ocount += 1  # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
-        return ulist, iSPlotDataDict
+        return inputList, iSPlotDataDict
 
 #
 # augmentList()
 #   - is mostly applicable to algorithms that breakdown the list before sorting e.g. MergeSort()
-#   - it takes a full slice `ulist[:]` of current list as argument (i.e. currentList = ulist[:]) so as to capture current state
+#   - it takes a full slice `inputList[:]` of current list as argument (i.e. currentList = inputList[:]) so as to capture current state
 #   - it gets length of current list currentListLength = len(currentList)
 #   - it takes in length of input list i.e. inputListLength
 #   - checks if there has been a decomposition i.e. if inputListLength != currentListLength
