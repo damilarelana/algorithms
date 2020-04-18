@@ -277,10 +277,37 @@ def insertionSort(ulist):
                 #   - to avoids scenarios where all dict values are reference to same sorted list
                 #   - we could also use `tempList = ulist[:]` and then pass `tempList` to getPlotData(tempList ... )
                 #   - this was not done for `space complexity performance reasons`
-                getPlotData(ulist[:], iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
+                #   - this passing/receiving of slice is implemented inside augmentList()
+                #   - augmentList() helps to validate if the ulist[:] is dynamically changing i.e. as it occurs within mergeSort()
+                validatedList = augmentList(ulist[:])
+                getPlotData(validatedList, iSDictKey, iSPlotDataDict)  # note that isPlotDataDict is being updated in place within scope of `insertionSort()`
                 iSDictKey += 1  # increase dictionary index before it is re-used again in getPlotData
             ocount += 1  # here we are increasing the sorted set boundaries [which weirdly also acts like the next `first element of the now shrinking unsorted set`]
         return ulist, iSPlotDataDict
+
+#
+# augmentList()
+#   - is mostly applicable to algorithms that breakdown the list before sorting e.g. MergeSort()
+#   - it takes a full slice `ulist[:]` of current list as argument (i.e. currentList = ulist[:]) so as to capture current state
+#   - it gets length of current list currentListLength = len(currentList)
+#   - it takes in length of input list i.e. loopRange
+#   - checks if there has been a decomposition i.e. if loopRange != currentListLength
+#       + if false, it simply returns `currentList` to the callback function
+#       + if true, it pads the currentList with `0` at the end so as to make the `lists` inside `stateDataList` to be of same length i.e.
+#               - calculates `padLength = looRange - currentListLength`
+#               - creates `padList = [0]*padLength`
+#               - pads `currentList` by the pythonic approach of `currentList += padList`
+#               - returns the padded list
+#
+
+
+def augmentList(currentList: list, inputListLength: list):
+    currentListLength = len(currentList)
+    if currentListLength != inputListLength:
+        padLength = inputListLength - currentListLength
+        padList = [0]*padLength
+        currentList += padList
+    return currentList
 
 
 # getPlotData()
@@ -330,20 +357,23 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
     try:
         inputListLength = len(stateDataLists[0])
     except ValueError:
-        raise Exception("Unable to determine lenght of stateData list (in the `list of lists`)")
-
-    # setup the matplotlib's plot parameters
-    fig, ax = setupPlotParams(listMinValue, listMaxValue, inputListLength)
-    fig.show()
-    # fig.canvas.draw()
+        raise Exception("Unable to determine length of stateData list (in the `list of lists`)")
 
 
     # setup the mesh grid
     #   - xLinspace and yLinspace input to np.meshgrid()
     #   - xx and yy output indicating the width and height of the mesh grid in terms of array
+    #   - initializing the meshGrid at the beginning would not be a problem even if stateData length changes during sorting
+    #       + this is because the stateData length can only reduce and not increase
+    #       + thus the meshGrid would still be big enough to handle rendering on it by smaller data set
     xLinspace = np.linspace(0, inputListLength-1, inputListLength)  # creates i.e. evenly spaced stuff in x-axis that matches the array index spacing
     yLinspace = np.linspace(listMinValue, listMaxValue, inputListLength) # creates even space in y-axis for array element values
     xx, yy = np.meshgrid(xLinspace, yLinspace)  # create the mesh grid 
+
+    # setup the matplotlib's plot parameters
+    fig, ax = setupPlotParams(listMinValue, listMaxValue, inputListLength)
+    fig.show()
+    # fig.canvas.draw()
 
     # create animation
     #   - 'interval' talks about ms interval between frames
@@ -361,8 +391,16 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
     # plot the first array data
     #   - note that `stateDataLists[0, :]` is acting like `yy` i.e. the height data to the barplot handler
     #   - hence why we later `animate` i.e. iterate of `yy` (i.e. stateDataLists[i, :] different indices) in the `animate()` function
+    #   - assumption is that:
+    #       + length of xx[i] does not change AND length of stateDataList[i] also does not change
+    #       + hence this breaks with mergeSort() since stateDataList[i] changes during mergeSort()
+    #       + two solutions:
+    #           - Option I: dynamically alter length of `xx[0]` i.e. recomputing np.meshgrid everytime [with new Linspace], while stateData[i] changes
+    #           - Option II: `xx[0]` remains the same but stateData[i] is dynamically padded (at the) with `zeros` to simulate absence of plot data [as mergeSort splits the data down to only one index]
+    #       + Option is more DRY and SOLID i.e. it avoids to many changes to the animation convas
+    #           - only the plotting data is dynamically changing
     arrayPlot = plt.bar(xx[0], stateDataLists[0], 0.8, None, color='green', edgecolor='snow', alpha=0.7)  # helps to ensure that we plot only the first array due to how ax.bar handles 
-
+    
     backgroundRender = fig.canvas.copy_from_bbox(ax.bbox)  #save background be fore animating ... to improve performance
 
     animStartTime = time.time()
