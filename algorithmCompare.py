@@ -9,7 +9,7 @@ import numpy as np
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 2127231
+listRangeStop = 2127
 listRangeStep = 23
 
 
