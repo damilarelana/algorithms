@@ -236,16 +236,18 @@ def sublistRecurser(inputList: list, tempMergedList: list, inputListLowerIndex: 
     splitIndex = (inputListLowerIndex + (inputListUpperIndex + 1))//2  # "//" helps ensure that only the floor (i.e. integer value) is returned
 
     # using "<" instead of "==" to avoid infinite recursion
-    #   - 'when splitIndex == 2' THEN we had 1 split left i.e. if [0:1] and[1:2]
+    #   - 'when `inputListLowerIndex = 0` and `inputListUpperIndex = 2` 
+    #       + splitIndex = (0 + 2 + 1)//2' i.e. 1
+    #   - THEN next `inputListIndex = 0` and `inputListUpperIndex = 1`
+    #       + next splitIndex = (0 + 1 + 1)//2 i.e. 1 [which then causes an infinite loop]
     #   - once that split is done then there is nothing to split any more
-    #   - since next splitIndex is now `(0 + 1)//2` i.e. `0` 
-    #       + which means that 'new inputListUpperIndex' == 'inputListLowerIndex' i.e. 0 == 0, is when we should breakout of recursion
-    #       + using 'inputListLowerIndex >= inputListUpperIndex' helps us to adjust for when `inputListIndex = splitIndex` i.e. rightSubList is being handled
-    if inputListLowerIndex >= inputListUpperIndex:
+    #   - since next splitIndex is now `(0 + 1 + 1)//2` i.e. `1` 
+    pdb.set_trace()
+    if inputListLowerIndex == inputListUpperIndex and inputListLowerIndex == splitIndex:
         return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
     else:  # continue the recursion
-        sublistRecurser(inputList, tempMergedList, inputListLowerIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by tempListOne
-        sublistRecurser(inputList, tempMergedList, splitIndex, inputListUpperIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by tempListTwo
+        sublistRecurser(inputList, tempMergedList, inputListLowerIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by leftSubList
+        sublistRecurser(inputList, tempMergedList, splitIndex, inputListUpperIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by rightSubList
         return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
 
 
@@ -257,10 +259,12 @@ def sublistMerger(inputList: list, tempMergedList: list, inputListLowerIndex: in
     # Logic for splitting
     #   - leftSubList = inputList[inputListLowerIndex:splitIndex+1]
     #   - rightSubList = inputList[splitIndex:inputListUpperIndex+1]
-
     leftSublistIndex = inputListLowerIndex
     rightSublistIndex = splitIndex
     tempMergedListIndex = [inputListLowerIndex][:][0]  # used here to create an independent copy (that can increment without changing inputListLowerIndex) without using copy.deepcopy()
+
+    # if inputListLowerIndex >= inputListUpperIndex:
+    # return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
 
     while leftSublistIndex <= splitIndex and rightSublistIndex <= inputListUpperIndex:      
         if inputList[leftSublistIndex] > inputList[rightSublistIndex]:                   # test smaller element
