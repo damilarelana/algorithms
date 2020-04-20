@@ -241,9 +241,10 @@ def sublistRecurser(inputList: list, tempMergedList: list, inputListLowerIndex: 
     #   - THEN next `inputListIndex = 0` and `inputListUpperIndex = 1`
     #       + next splitIndex = (0 + 1 + 1)//2 i.e. 1 [which then causes an infinite loop]
     #   - once that split is done then there is nothing to split any more
-    #   - since next splitIndex is now `(0 + 1 + 1)//2` i.e. `1` 
-    pdb.set_trace()
-    if inputListLowerIndex == inputListUpperIndex and inputListLowerIndex == splitIndex:
+    #       + since next splitIndex is now `(0 + 1 + 1)//2` i.e. `1`
+    # pdb.set_trace()
+    print("inputListLowerIndex: {} | splitIndex: {} | inputListUpperIndex: {} ".format(inputListLowerIndex, splitIndex, inputListUpperIndex))
+    if inputListLowerIndex >= inputListUpperIndex or inputListUpperIndex == splitIndex:
         return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
     else:  # continue the recursion
         sublistRecurser(inputList, tempMergedList, inputListLowerIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by leftSubList
@@ -263,16 +264,15 @@ def sublistMerger(inputList: list, tempMergedList: list, inputListLowerIndex: in
     rightSublistIndex = splitIndex
     tempMergedListIndex = [inputListLowerIndex][:][0]  # used here to create an independent copy (that can increment without changing inputListLowerIndex) without using copy.deepcopy()
 
-    # if inputListLowerIndex >= inputListUpperIndex:
-    # return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
+    print("leftSublistIndex: {} | rightSublistIndex: {} | tempMergedListIndex: {} ".format(leftSublistIndex, rightSublistIndex, tempMergedListIndex))
 
     while leftSublistIndex <= splitIndex and rightSublistIndex <= inputListUpperIndex:      
         if inputList[leftSublistIndex] > inputList[rightSublistIndex]:                   # test smaller element
-            tempMergedList[tempMergedListIndex] = inputList[rightSublistIndex]                     # add to end of tempMergeList
+            tempMergedList[tempMergedListIndex] = inputList[rightSublistIndex]           # add to end of tempMergeList
             rightSublistIndex += 1
             tempMergedListIndex += 1
         else:
-            tempMergedList[tempMergedListIndex] = inputList[leftSublistIndex]                           # add to end of tempMergeList
+            tempMergedList[tempMergedListIndex] = inputList[leftSublistIndex]            # add to end of tempMergeList
             leftSublistIndex += 1
             tempMergedListIndex += 1
     while leftSublistIndex <= splitIndex:                                  # no elements to merge in rightSublist
