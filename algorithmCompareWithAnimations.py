@@ -199,86 +199,103 @@ def selectionSort(inputList):
 
 # mergeSort()
 # - works by:
-#   + splitting the iteratively splitting the original lists into sublists
+#   + splitting the iteratively splitting the original lists into sublists using sublistRecurser
 #   + until you have sublists that are not more than 1 element long i.e. inherently sorted
 #   + iteratively compares and determines whether to `append sublist1` to `sublist2` OR `append sublist2 to sublist1`
 # - this is NOT happening in place
 #   + hence there is a space penalty for the algorithm
 # - returns the final sorted list via sublistMerge()
 
-# animation data initialize dict, with `index 0` being an empty list
-# - this is initialized at the global level since mergeSort is recursive
-#   + recursion means that stateData would be brought back to zero state after each recursive call
-mSDictKey = 0  # key to store the arrayState for each loop cycle
-mSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
-    mSDictKey: mSInputList[:],  # initialize placeholder for the stored arrayState: where initial inputList is initial state (i.e. at index 0)
-}
-originalInputListLength = len(mSInputList)
-
-
 def mergeSort(inputList):
-    global mSDictKey  # making it clear that you are referencing the global variable mSDictKey
-    global mSPlotDataDict
-
-    tempInputListLength = len(inputList)                                      # handles reducing elements, so can't use global
-
-    if tempInputListLength < 2:                                           # using "<2" instead of "==", handles when inputList=[]
+    # animation data initialize dict, with `index 0` being an empty list
+    # - this is initialized at the global level since mergeSort is recursive
+    #   + recursion means that stateData would be brought back to zero state after each recursive call
+    mSDictKey = 0  # key to store the arrayState for each loop cycle
+    mSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        mSDictKey: inputList[:],  # initialize placeholder for the stored arrayState: where initial inputList is initial state (i.e. at index 0)
+    }
+    inputListLength = len(inputList)
+    if inputListLength < 2:                                           # using "<2" instead of "==", handles when inputList=[] or [1] i.e. either a null or single element list
         # return the original list without changing stateData since it is not necessary [as there is nothing to sort and hence no data to animate]
         return inputList
-    else:
-        demarcationIndex = int(math.ceil(tempInputListLength/2))          # works for even, odd and prime tempInputLissteptLength values
-        tempListOne = inputList[:demarcationIndex]                      # initialize tempListOne sub-list
-        tempListTwo = inputList[demarcationIndex:]                      # initialize tempListTwo sub-list
 
-        mSDictKey += 1  # increase dictionary index before it is used
-        getPlotData(tempListOne[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
-        tempListOne = mergeSort(tempListOne)                      # recursive call to mergeSorter() by tempListOne
+    tempMergedList = [0]*inputListLength       # initialise List to hold sorted values during merging of sub-Lists
+    inputListLowerIndex = 0  # initialize index value of the list's first element
+    inputListUpperIndex = inputListLength - 1  # initialize the index value of the list's last element
 
-        mSDictKey += 1  # increase dictionary index before it is used
-        getPlotData(tempListOne[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data      
-        tempListTwo = mergeSort(tempListTwo)                      # recursive call to mergeSorter() by tempListTwo
-
-        mSDictKey += 1  # increase dictionary index before it is used
-        getPlotData(sublistMerge(tempListOne, tempListTwo, mSDictKey, mSPlotDataDict, originalInputListLength)[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data      
-        return sublistMerge(tempListOne, tempListTwo, mSDictKey, mSPlotDataDict, originalInputListLength)
+    return sublistRecurser(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, mSDictKey, mSPlotDataDict, inputListLength)
 
 
-# sublistMerge()
-# - is called by mergeSort()
+# sublistRecurser()
+def sublistRecurser(inputList: list, tempMergedList: list, inputListLowerIndex: int, inputListUpperIndex: int,  mSDictKey: int, mSPlotDataDict: dict, inputListLength: int):
+    # Logic for splitting
+    #   - leftSubList = inputList[inputListLowerIndex:splitIndex+1]
+    #   - rightSubList = inputList[splitIndex:inputListUpperIndex+1]
+
+    # 'inputListLowerIndex != 0' since it can actually be `inputListIndex = splitIndex` when the rightSubList is being handled
+    splitIndex = (inputListLowerIndex + (inputListUpperIndex + 1))//2  # "//" helps ensure that only the floor (i.e. integer value) is returned
+
+    # using "<" instead of "==" to avoid infinite recursion
+    #   - 'when splitIndex == 2' THEN we had 1 split left i.e. if [0:1] and[1:2]
+    #   - once that split is done then there is nothing to split any more
+    #   - since next splitIndex is now `(0 + 1)//2` i.e. `0` 
+    #       + which means that 'new inputListUpperIndex' == 'inputListLowerIndex' i.e. 0 == 0, is when we should breakout of recursion
+    #       + using 'inputListLowerIndex >= inputListUpperIndex' helps us to adjust for when `inputListIndex = splitIndex` i.e. rightSubList is being handled
+    if inputListLowerIndex >= inputListUpperIndex:
+        return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
+    else:  # continue the recursion
+        sublistRecurser(inputList, tempMergedList, inputListLowerIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by tempListOne
+        sublistRecurser(inputList, tempMergedList, splitIndex, inputListUpperIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by tempListTwo
+        return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
+
+
+# sublistMerger()
+# - is called by sublistRecurser()
 # - to handle list merging operations
 
-def sublistMerge(tempSubListOne, tempSubListTwo, mSDictKey: int, mSPlotDataDict: dict, originalInputListLength: int):
-    tempMergedList = []                                             # initialise empty List to merge sub-Lists into
+def sublistMerger(inputList: list, tempMergedList: list, inputListLowerIndex: int, inputListUpperIndex: int, splitIndex: int, mSDictKey: int, mSPlotDataDict: dict, inputListLength: int):
+    # Logic for splitting
+    #   - leftSubList = inputList[inputListLowerIndex:splitIndex+1]
+    #   - rightSubList = inputList[splitIndex:inputListUpperIndex+1]
 
-    subListOneLength = len(tempSubListOne)
-    subListTwoLength = len(tempSubListTwo)
+    leftSublistIndex = inputListLowerIndex
+    rightSublistIndex = splitIndex
+    tempMergedListIndex = [inputListLowerIndex][:][0]  # used here to create an independent copy (that can increment without changing inputListLowerIndex) without using copy.deepcopy()
 
-    indexSubListOne = 0                                             # avoids using list.pop() to remove element
-    indexSubListTwo = 0
-
-    while subListOneLength > indexSubListOne and subListTwoLength > indexSubListTwo:      # a=[1]->len(a)=1
-        if tempSubListOne[indexSubListOne] > tempSubListTwo[indexSubListTwo]:                   # test smaller element
-            tempMergedList.append(tempSubListTwo[indexSubListTwo])                         # add to end of tempMergeList
-            mSDictKey += 1  # increase dictionary index before it is used by getPlotData e.g. since inputList is already at index 0
-            getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
-            indexSubListTwo += 1
+    while leftSublistIndex <= splitIndex and rightSublistIndex <= inputListUpperIndex:      
+        if inputList[leftSublistIndex] > inputList[rightSublistIndex]:                   # test smaller element
+            tempMergedList[tempMergedListIndex] = inputList[rightSublistIndex]                     # add to end of tempMergeList
+            rightSublistIndex += 1
+            tempMergedListIndex += 1
         else:
-            tempMergedList.append(tempSubListOne[indexSubListOne])                         # add to end of tempMergeList
-            mSDictKey += 1  # increase dictionary index before it is used
-            getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
-            indexSubListOne += 1
+            tempMergedList[tempMergedListIndex] = inputList[leftSublistIndex]                           # add to end of tempMergeList
+            leftSublistIndex += 1
+            tempMergedListIndex += 1
+    while leftSublistIndex <= splitIndex:                                  # no elements to merge in rightSublist
+        tempMergedList[tempMergedListIndex] = inputList[leftSublistIndex]                    
+        leftSublistIndex += 1
+        tempMergedListIndex += 1
+    while rightSublistIndex <= inputListUpperIndex:                                  # no elements to merge in leftSublist
+        tempMergedList[tempMergedListIndex] = inputList[rightSublistIndex]                
+        rightSublistIndex += 1
+        tempMergedListIndex += 1
 
-    while subListOneLength > indexSubListOne:                                  # no elements to merge in SubListTwo
-        tempMergedList.append(tempSubListOne[indexSubListOne])                    # remaining elements are appended
-        mSDictKey += 1  # increase dictionary index before it is used
-        getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
-        indexSubListOne += 1
-
-    while subListTwoLength > indexSubListTwo:                                  # no elements to merge in SubListOne
-        tempMergedList.append(tempSubListTwo[indexSubListTwo])                    # remaining elements are appended
-        mSDictKey += 1  # increase dictionary index before it is used
-        getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, originalInputListLength) # get state data
-        indexSubListTwo += 1
+    # update stateData by
+    #   - note that `inputListLowerIndex` is not always `0` 
+    #   - using the recently updated tempMergeList values between indices: `inputLowerIndex <> inputListUpperIndex`
+    #   - to change the all the values at the index of inputList to their correct values
+    #   - since we are building upwards from `pre-sorted` single element lists THEN would be able to over-writing any unsorted elements
+    #       + i.e. the data (where a > c > b) we are dealing with means:
+    #           - if the leftSubList = [a, b] where `inputList[0] = a` and `inputList[1]`
+    #           - if the rightSubList = [c] where `inputList[2] = c`
+    #       + thus tempMergedList would have them in the correct order [b, c, a]
+    #       + then the ONLY indices we are dealing with are those of [a, b] and [c]
+    #       + so the location of the values changes but the values themselves are NOT over-written
+    for index in range(inputListLowerIndex, inputListUpperIndex+1):
+        inputList[index] = tempMergedList[index]
+    
+    mSDictKey += 1  # increase dictionary index before it is used
+    getPlotData(inputList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data      
 
     return tempMergedList
 
@@ -390,7 +407,7 @@ def parsePlotData(plotDataDict: dict):
 #   - uses the parameters to create an animation of the sorting
 
 
-def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, algorithmName: str, animationFormat: str):
+def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, algorithmName: str, animationFormat: str, speedFlag):
 
     # determine length of each stateData list (in the list of list) meant to be animated
     try:
@@ -442,7 +459,7 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
     
     backgroundRender = fig.canvas.copy_from_bbox(ax.bbox)  #save background be fore animating ... to improve performance
     animStartTime = time.time()
-    animate(xx[0], ax, arrayPlot, stateDataLists, fig, numEvents, backgroundRender)
+    animate(xx[0], ax, arrayPlot, stateDataLists, fig, numEvents, backgroundRender, speedFlag)
     print('animation rendered in {:.2f}s'.format(time.time()-animStartTime))  # print the fps to have 2 decimal places
 
     # save animation
@@ -457,7 +474,7 @@ def createAnimation(stateDataLists: list, listMinValue: int, listMaxValue: int, 
 
 
 # animate()
-def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents, backgroundRender):
+def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents, backgroundRender, speedFlag):
     for i in range(numEvents):
         fig.canvas.restore_region(backgroundRender) # restore the cached/rendered background (i.e. apart from the bars themselves)
         arrayPlot.remove() # remove the previous bar chart rendering, so as to avoid ghosting
@@ -466,10 +483,15 @@ def animate(x, ax, arrayPlot, stateDataLists, fig, numEvents, backgroundRender):
             arrayPlot.set_height(stateDataLists[i])  # faster option but does not always work due to matplotlib issues
         else:
             arrayPlot = plt.bar(x, stateDataLists[i], 0.8, None, color='green', edgecolor='snow', alpha=0.7)  # brute force creation of new bar container
-
-        fig.canvas.draw()
-        fig.canvas.blit(ax.bbox)
-        fig.canvas.flush_events()
+        if speedFlag is True:
+            time.sleep(0.5)  # meant to slow down the animation plot of mergesort() data
+            fig.canvas.draw()
+            fig.canvas.blit(ax.bbox)
+            fig.canvas.flush_events()
+        else:
+            fig.canvas.draw()
+            fig.canvas.blit(ax.bbox)
+            fig.canvas.flush_events()
 
 # setupPlotParameters()
 # - sets up the required Matplotlib parameters
@@ -547,7 +569,7 @@ algorithmName = selectionSort.__name__  # get the function name as a string
 sSListMinValue = selectionSorted[0]
 sSListMaxValue = selectionSorted[inputListLength - 1]
 sSParsedPlotData = parsePlotData(sSPlotData)  # converts the plotdata from a dict into a list
-createAnimation(sSParsedPlotData, sSListMinValue, sSListMaxValue, algorithmName, animationFormat)
+createAnimation(sSParsedPlotData, sSListMinValue, sSListMaxValue, algorithmName, animationFormat, False)
 print("================================")
 
 #
@@ -566,7 +588,7 @@ algorithmName = mergeSort.__name__  # get the function name as a string
 mSListMinValue = mergesorted[0]
 mSListMaxValue = mergesorted[inputListLength - 1]
 mSParsedPlotData = parsePlotData(mSPlotDataDict)  # converts the plotdata from a dict into a list [notice that `mSPlotDataDict` is a global variable in this case since mergeSort is recursive]
-createAnimation(mSParsedPlotData, mSListMinValue, mSListMaxValue, algorithmName, animationFormat)
+createAnimation(mSParsedPlotData, mSListMinValue, mSListMaxValue, algorithmName, animationFormat, True)
 print("================================")
 
 #
@@ -585,7 +607,7 @@ algorithmName = hybridBubbleSort.__name__  # get the function name as a string
 hBSListMinValue = hybridBubblesorted[0]
 hBSListMaxValue = hybridBubblesorted[inputListLength - 1]
 hBParsedPlotData = parsePlotData(hBSPlotData)  # converts the plotdata from a dict into a list
-createAnimation(hBParsedPlotData, hBSListMinValue, hBSListMaxValue, algorithmName, animationFormat)
+createAnimation(hBParsedPlotData, hBSListMinValue, hBSListMaxValue, algorithmName, animationFormat, False)
 print("================================")
 
 #
@@ -604,7 +626,7 @@ algorithmName = elegantBubbleSort.__name__  # get the function name as a string
 eBSListMinValue = elegantBubblesorted[0]
 eBSListMaxValue = elegantBubblesorted[inputListLength - 1]
 eBParsedPlotData = parsePlotData(eBSPlotData)  # converts the plotdata from a dict into a list
-createAnimation(eBParsedPlotData, eBSListMinValue, eBSListMaxValue, algorithmName, animationFormat)
+createAnimation(eBParsedPlotData, eBSListMinValue, eBSListMaxValue, algorithmName, animationFormat, False)
 print("================================")
 
 #
@@ -623,7 +645,7 @@ algorithmName = insertionSort.__name__  # get the function name as a string
 iSListMinValue = insertionsorted[0]
 iSListMaxValue = insertionsorted[inputListLength - 1]
 iSParsedPlotData = parsePlotData(iSPlotData)  # converts the plotdata from a dict into a list
-createAnimation(iSParsedPlotData, iSListMinValue, iSListMaxValue, algorithmName, animationFormat)
+createAnimation(iSParsedPlotData, iSListMinValue, iSListMaxValue, algorithmName, animationFormat, False)
 print("================================")
 
 #
