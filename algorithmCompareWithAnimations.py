@@ -223,6 +223,8 @@ def mergeSort(inputList):
     inputListLowerIndex = 0  # initialize index value of the list's first element
     inputListUpperIndex = inputListLength - 1  # initialize the index value of the list's last element
 
+    print("\nInitial inputListLowerIndex: {}  |  inputListUpperIndex: {}\n".format(inputListLowerIndex, inputListUpperIndex))
+
     sublistRecurser(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, mSDictKey, mSPlotDataDict, inputListLength)
 
 
@@ -233,7 +235,8 @@ def sublistRecurser(inputList: list, tempMergedList: list, inputListLowerIndex: 
 
     leftSublistStartIndex = inputListLowerIndex
     rightSublistStartIndex = leftSublistStopIndex + 1
-    rightSublistStopIndex = inputListUpperIndex
+    rightSublistStopIndex = [inputListUpperIndex][:][0]
+
     if leftSublistStartIndex >= rightSublistStopIndex:
         print("Breaking recursive loop as LeftSublistStartIndex:{} >= RightSublistStopIndex:{}".format(leftSublistStartIndex, rightSublistStopIndex))
         return
@@ -255,6 +258,8 @@ def sublistMerger(inputList: list, tempMergedList: list, leftSublistStartIndex: 
     tempMergedListIndex = leftSublistStartIndex
     initialRightSublistCounter = rightSublistStartIndex
 
+    pdb.set_trace()
+
     while initialLeftSublistCounter <= leftSublistStopIndex and initialRightSublistCounter <= rightSublistStopIndex:
         if inputList[initialLeftSublistCounter] > inputList[initialRightSublistCounter]:                   # test smaller element
             tempMergedList[tempMergedListIndex] = inputList[initialRightSublistCounter]           # add to end of tempMergeList
@@ -262,10 +267,6 @@ def sublistMerger(inputList: list, tempMergedList: list, leftSublistStartIndex: 
         else:
             tempMergedList[tempMergedListIndex] = inputList[initialLeftSublistCounter]            # add to end of tempMergeList
             initialLeftSublistCounter += 1
-
-        print("\ninitialLeftSublistCounter: {} | initialRightSublistCounter: {} | tempMergedListIndex: {}".format(initialLeftSublistCounter, initialRightSublistCounter, tempMergedListIndex))
-        print("inputList[{}]: {} | inputList[{}]: {} | tempMergedList[{}]: {} ".format(initialLeftSublistCounter, inputList[initialLeftSublistCounter], initialRightSublistCounter, inputList[initialRightSublistCounter], tempMergedListIndex, tempMergedList[tempMergedListIndex]))
-        print("=====================")
 
         # increment temporary merged list counter AND stop the current state of the merged list inside the mSPlotDataDict
         tempMergedListIndex += 1
@@ -281,7 +282,7 @@ def sublistMerger(inputList: list, tempMergedList: list, leftSublistStartIndex: 
         tempMergedListIndex += 1
         # mSDictKey += 1  # increase dictionary index before it is used
         # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data
-
+    
     while initialRightSublistCounter <= rightSublistStopIndex:                                  # no elements to merge in leftSublist
         tempMergedList[tempMergedListIndex] = inputList[initialRightSublistCounter]                
         initialRightSublistCounter += 1
