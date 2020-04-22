@@ -90,3 +90,135 @@ for phase in np.linspace(0, 10*np.pi, 500):
     line1.set_ydata(np.sin(x + phase))
     fig.canvas.draw()
     fig.canvas.flush_events()
+
+
+
+# mergeSort()
+# - works by:
+#   + splitting the iteratively splitting the original lists into sublists using sublistRecurser
+#   + until you have sublists that are not more than 1 element long i.e. inherently sorted
+#   + iteratively compares and determines whether to `append sublist1` to `sublist2` OR `append sublist2 to sublist1`
+# - this is NOT happening in place
+#   + hence there is a space penalty for the algorithm
+# - returns the final sorted list via sublistMerge()
+
+def mergeSort(inputList):
+    # animation data initialize dict, with `index 0` being an empty list
+    # - this is initialized at the global level since mergeSort is recursive
+    #   + recursion means that stateData would be brought back to zero state after each recursive call
+    mSDictKey = 0  # key to store the arrayState for each loop cycle
+    mSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+        mSDictKey: inputList[:],  # initialize placeholder for the stored arrayState: where initial inputList is initial state (i.e. at index 0)
+    }
+    inputListLength = len(inputList)
+    if inputListLength < 2:                                           # using "<2" instead of "==", handles when inputList=[] or [1] i.e. either a null or single element list
+        # return the original list without changing stateData since it is not necessary [as there is nothing to sort and hence no data to animate]
+        return inputList, mSPlotDataDict
+
+    print("Original msPlotDataDict", mSPlotDataDict)
+
+    tempMergedList = [0]*inputListLength       # initialise List to hold sorted values during merging of sub-Lists
+    inputListLowerIndex = 0  # initialize index value of the list's first element
+    inputListUpperIndex = inputListLength - 1  # initialize the index value of the list's last element
+
+    return sublistRecurser(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, mSDictKey, mSPlotDataDict, inputListLength)
+
+
+# sublistRecurser()
+def sublistRecurser(inputList: list, tempMergedList: list, inputListLowerIndex: int, inputListUpperIndex: int,  mSDictKey: int, mSPlotDataDict: dict, inputListLength: int):
+    # Logic for splitting
+    #   - leftSubList = inputList[inputListLowerIndex:splitIndex+1]
+    #   - rightSubList = inputList[splitIndex:inputListUpperIndex+1]
+
+    # 'inputListLowerIndex != 0' since it can actually be `inputListIndex = splitIndex` when the rightSubList is being handled
+    # ceil() this helps to ensure that we get the ceil(of the division) instead of the floor that `a//b` gives
+    splitIndex = ceilIntDiv(inputListLowerIndex, inputListUpperIndex)
+    
+    # using "<" instead of "==" to avoid infinite recursion
+    #   - 'when `inputListLowerIndex = 0` and `inputListUpperIndex = 2` 
+    #       + splitIndex = (0 + 2 + 1)//2' i.e. 1
+    #   - THEN next `inputListIndex = 0` and `inputListUpperIndex = 1`
+    #       + next splitIndex = (0 + 1 + 1)//2 i.e. 1 [which then causes an infinite loop]
+    #   - once that split is done then there is nothing to split any more
+    #       + since next splitIndex is now `(0 + 1 + 1)//2` i.e. `1`
+    # pdb.set_trace()
+    # print("inputListLowerIndex: {} | splitIndex: {} | inputListUpperIndex: {} ".format(inputListLowerIndex, splitIndex, inputListUpperIndex))
+    if inputListLowerIndex >= inputListUpperIndex or inputListUpperIndex == splitIndex:
+        return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
+    else:  # continue the recursion
+        sublistRecurser(inputList, tempMergedList, inputListLowerIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by leftSubList
+        sublistRecurser(inputList, tempMergedList, splitIndex, inputListUpperIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by rightSubList
+        return sublistMerger(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, splitIndex, mSDictKey, mSPlotDataDict, inputListLength)
+
+
+# sublistMerger()
+# - is called by sublistRecurser()
+# - to handle list merging operations
+
+def sublistMerger(inputList: list, tempMergedList: list, inputListLowerIndex: int, inputListUpperIndex: int, splitIndex: int, mSDictKey: int, mSPlotDataDict: dict, inputListLength: int):
+    # Logic for splitting
+    #   - leftSubList = inputList[inputListLowerIndex:splitIndex+1]
+    #   - rightSubList = inputList[splitIndex:inputListUpperIndex+1]
+    leftSublistIndex = [inputListLowerIndex][:][0]
+    rightSublistIndex = [splitIndex][:][0]
+    tempMergedListIndex = [inputListLowerIndex][:][0]  # used here to create an independent copy (that can increment without changing inputListLowerIndex) without using copy.deepcopy()
+
+    
+    while leftSublistIndex < splitIndex and rightSublistIndex < inputListUpperIndex:      
+        if inputList[leftSublistIndex] > inputList[rightSublistIndex]:                   # test smaller element
+            tempMergedList[tempMergedListIndex] = inputList[rightSublistIndex]           # add to end of tempMergeList
+            rightSublistIndex += 1
+            # tempMergedListIndex += 1
+            print("leftSubListIndex: {} | rightSubListIndex: {} | tempMergedListIndex: {} ".format(leftSublistIndex, rightSublistIndex, tempMergedListIndex))
+            # print("Original tempMergeList", tempMergedList)
+            # mSDictKey += 1  # increase dictionary index before it is used
+            # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data      
+        else:
+            tempMergedList[tempMergedListIndex] = inputList[leftSublistIndex]            # add to end of tempMergeList
+            leftSublistIndex += 1
+            # tempMergedListIndex += 1
+            # mSDictKey += 1  # increase dictionary index before it is used
+            # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data      
+    while leftSublistIndex < splitIndex:                                  # no elements to merge in rightSublist
+        tempMergedList[tempMergedListIndex] = inputList[leftSublistIndex]                    
+        leftSublistIndex += 1
+        # tempMergedListIndex += 1
+        # mSDictKey += 1  # increase dictionary index before it is used
+        # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data      
+    while rightSublistIndex < inputListUpperIndex:                                  # no elements to merge in leftSublist
+        tempMergedList[tempMergedListIndex] = inputList[rightSublistIndex]                
+        rightSublistIndex += 1
+        # tempMergedListIndex += 1
+        # mSDictKey += 1  # increase dictionary index before it is used
+        # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data      
+
+    # update stateData by
+    #   - note that `inputListLowerIndex` is not always `0` 
+    #   - using the recently updated tempMergeList values between indices: `inputLowerIndex <> inputListUpperIndex`
+    #   - to change the all the values at the index of inputList to their correct values
+    #   - since we are building upwards from `pre-sorted` single element lists THEN would be able to over-writing any unsorted elements
+    #       + i.e. the data (where a > c > b) we are dealing with means:
+    #           - if the leftSubList = [a, b] where `inputList[0] = a` and `inputList[1]`
+    #           - if the rightSubList = [c] where `inputList[2] = c`
+    #       + thus tempMergedList would have them in the correct order [b, c, a]
+    #       + then the ONLY indices we are dealing with are those of [a, b] and [c]
+    #       + so the location of the values changes but the values themselves are NOT over-written
+
+    # for index in range(inputListLowerIndex, inputListUpperIndex+1):
+    #     inputList[index] = tempMergedList[index]
+    
+    # print("Original tempMergeList", tempMergedList)
+    # mSDictKey += 1  # increase dictionary index before it is used
+    # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data      
+
+    return tempMergedList, mSPlotDataDict
+
+#
+# ceilIntDiv()
+#   - computes 
+def ceilIntDiv(inputListLowerIndex: int, inputListUpperIndex: int):
+    numerator = inputListLowerIndex + inputListUpperIndex + 1
+    denumerator = 2
+    value, quotient = divmod(numerator, denumerator)
+    adjustedValue = value + bool(quotient)
+    return adjustedValue

@@ -153,7 +153,12 @@ def mergeSort(rlist):
     if temploopRange < 2:                                           # using "<2" instead of "==", handles when rlist=[]
         return rlist
     else:
-        demarcationIndex = int(math.ceil(temploopRange/2))          # works for even, odd and prime temploopRange values
+        # we could also use:
+        #   - demarcationIndex = int(math.ceil(temploopRange/2))
+        #   - works for even, odd and prime temploopRange values
+        # ceil() this helps to ensure that we get the ceil(of the division) instead of the floor that `a//b` gives
+        # demarcationIndex = int(math.ceil(temploopRange/2))`
+        demarcationIndex = ceilIntDiv(0, temploopRange)
         tempListOne = rlist[:demarcationIndex]                      # initialize tempListOne sub-list
         tempListTwo = rlist[demarcationIndex:]                      # initialize tempListTwo sub-list
         tempListOne = mergeSort(tempListOne)                      # recursive call to mergeSorter()
@@ -191,7 +196,19 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
         indexSubListTwo += 1
     return tempMergedList
 
+#
+# ceilIntDiv()
+#   - computes 
 
+
+def ceilIntDiv(inputListLowerIndex: int, inputListUpperIndex: int):
+    numerator = inputListLowerIndex + inputListUpperIndex
+    denumerator = 2
+    value, quotient = divmod(numerator, denumerator)
+    adjustedValue = value + bool(quotient)
+    return adjustedValue
+
+#
 # insertionSort()
 #
 
@@ -202,7 +219,7 @@ def insertionSort(ulist):
         return ulist    # no point wasting CPU cycle to sort one item
     else:
         # we assume that element at index `0` i.e. ocount = 0, is already sorted, hence why the unsorted starts at ocount = 1
-        ocount = 1                       # initialising unsorted list index to the first one to be removed from unsorted [we ]
+        ocount = 1                       # initialising unsorted list index to the first one to be removed from unsorted [we]
         while ocount < loopRange:        # handles if len(ulist)=1, unsorted loop index
             icount = ocount              # re-initialising sorted list's max index to allow countdown
             while icount > 0:            # handles inner loop i.e. the `sorted list loop`. greater than zero 
