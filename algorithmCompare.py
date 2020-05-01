@@ -158,7 +158,7 @@ def mergeSort(rlist):
         #   - works for even, odd and prime temploopRange values
         # ceil() this helps to ensure that we get the ceil(of the division) instead of the floor that `a//b` gives
         # demarcationIndex = int(math.ceil(temploopRange/2))`
-        demarcationIndex = ceilIntDiv(0, temploopRange)
+        demarcationIndex = indexSplitter(0, temploopRange)
         tempListOne = rlist[:demarcationIndex]                      # initialize tempListOne sub-list
         tempListTwo = rlist[demarcationIndex:]                      # initialize tempListTwo sub-list
         tempListOne = mergeSort(tempListOne)                      # recursive call to mergeSorter()
@@ -197,16 +197,25 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
     return tempMergedList
 
 #
-# ceilIntDiv()
-#   - computes 
+# indexDemarcation()
+#   - gives the floor of the division between inputListUpperIndex and inputListLowerIndex (i.e. a // b )
+#   - alternative is to give the ceiling
+#   - we are instead going with floor so as to more easily control the startIndex for rightSubList 
+#           + i.e. if splitIndex = 2 and hence the last index for the leftSubList
+#           + then startIndex for rightSubList is splitIndex += 1
+#   - def indexDemarcation(inputListLowerIndex: int, inputListUpperIndex: int):
+#           numerator = inputListLowerIndex + inputListUpperIndex
+#           denumerator = 2
+#           splitIndex, quotient = divmod(numerator, denumerator)
+#           adjustedSplitIndex = value + bool(quotient)
+#           return adjustedSplitIndex
 
 
-def ceilIntDiv(inputListLowerIndex: int, inputListUpperIndex: int):
-    numerator = inputListLowerIndex + inputListUpperIndex
-    denumerator = 2
-    value, quotient = divmod(numerator, denumerator)
-    adjustedValue = value + bool(quotient)
-    return adjustedValue
+def indexSplitter(inputListLowerIndex: int, inputListUpperIndex: int):
+    nuMerator = inputListLowerIndex + inputListUpperIndex
+    deNumerator = 2
+    splitIndex = nuMerator // deNumerator
+    return splitIndex
 
 #
 # insertionSort()

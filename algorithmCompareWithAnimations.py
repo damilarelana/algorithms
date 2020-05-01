@@ -196,6 +196,15 @@ def selectionSort(inputList):
             # this is one difference with BubbleSort() where the last index can be removed from dataset after every loop
         return inputList, sSPlotDataDict
 
+# animation data initialize dict, with `index 0` being an empty list
+# - this is initialized at the global level since mergeSort is recursive
+#   + recursion means that stateData would be brought back to zero state after each recursive call
+
+
+mSDictKey = 0  # key to store the arrayState for each loop cycle
+mSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
+    mSDictKey: mSInputList[:],  # initialize placeholder for the stored arrayState: where initial inputList is initial state (i.e. at index 0)
+}
 
 # mergeSort()
 # - works by:
@@ -206,93 +215,64 @@ def selectionSort(inputList):
 #   + hence there is a space penalty for the algorithm
 # - returns the final sorted list via sublistMerge()
 
-def mergeSort(inputList):
-    # animation data initialize dict, with `index 0` being an empty list
-    # - this is initialized at the global level since mergeSort is recursive
-    #   + recursion means that stateData would be brought back to zero state after each recursive call
-    mSDictKey = 0  # key to store the arrayState for each loop cycle
-    mSPlotDataDict = {  # represents the plot data to be consumed to aggregated the sorting plot data for later animation
-        mSDictKey: inputList[:],  # initialize placeholder for the stored arrayState: where initial inputList is initial state (i.e. at index 0)
-    }
-    inputListLength = len(inputList)
-    if inputListLength < 2:                                           # using "<2" instead of "==", handles when inputList=[] or [1] i.e. either a null or single element list
-        # return the original list without changing stateData since it is not necessary [as there is nothing to sort and hence no data to animate]
-        return inputList, mSPlotDataDict
 
-    tempMergedList = [0]*inputListLength       # initialise List to hold sorted values during merging of sub-Lists
-    inputListLowerIndex = 0  # initialize index value of the list's first element
-    inputListUpperIndex = inputListLength - 1  # initialize the index value of the list's last element
+def mergeSort(rlist):
+    temploopRange = len(rlist)                                      # handles reducing elements, so can't use global
 
-    print("\nInitial inputListLowerIndex: {}  |  inputListUpperIndex: {}\n".format(inputListLowerIndex, inputListUpperIndex))
+    if temploopRange < 2:                                           # using "<2" instead of "==", handles when rlist=[]
+        return rlist
+    else:
+        # we could also use:
+        #   - demarcationIndex = int(math.ceil(temploopRange/2))
+        #   - works for even, odd and prime temploopRange values
+        # ceil() this helps to ensure that we get the ceil(of the division) instead of the floor that `a//b` gives
+        # demarcationIndex = int(math.ceil(temploopRange/2))`
+        demarcationIndex = indexSplitter(0, temploopRange)
+        tempListOne = rlist[:demarcationIndex]                      # initialize tempListOne sub-list
+        tempListTwo = rlist[demarcationIndex:]                      # initialize tempListTwo sub-list
+        tempListOne = mergeSort(tempListOne)                      # recursive call to mergeSorter()
+        tempListTwo = mergeSort(tempListTwo)                      # recursive call to mergeSorter()
+        return sublistMerge(tempListOne, tempListTwo, rlist)
 
-    sublistRecurser(inputList, tempMergedList, inputListLowerIndex, inputListUpperIndex, mSDictKey, mSPlotDataDict, inputListLength)
-
-
-# sublistRecurser()
-def sublistRecurser(inputList: list, tempMergedList: list, inputListLowerIndex: int, inputListUpperIndex: int,  mSDictKey: int, mSPlotDataDict: dict, inputListLength: int):
-    # indexSplitter() this helps to ensure that we get the floor that `a//b` gives
-    leftSublistStopIndex = indexSplitter(inputListLowerIndex, inputListUpperIndex)
-
-    leftSublistStartIndex = inputListLowerIndex
-    rightSublistStartIndex = leftSublistStopIndex + 1
-    rightSublistStopIndex = [inputListUpperIndex][:][0]
-
-    if leftSublistStartIndex >= rightSublistStopIndex:
-        print("Breaking recursive loop as LeftSublistStartIndex:{} >= RightSublistStopIndex:{}".format(leftSublistStartIndex, rightSublistStopIndex))
-        return
-    else:  # continue the recursion
-        sublistRecurser(inputList, tempMergedList, leftSublistStartIndex, leftSublistStopIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by leftSubList
-        sublistRecurser(inputList, tempMergedList, rightSublistStartIndex, rightSublistStopIndex, mSDictKey, mSPlotDataDict, inputListLength)                      # recursive call to sublistRecurser() by rightSubList
-        sublistMerger(inputList, tempMergedList, leftSublistStartIndex, leftSublistStopIndex, rightSublistStartIndex, rightSublistStopIndex, mSDictKey, mSPlotDataDict, inputListLength)
-
-
-# sublistMerger()
-# - is called by sublistRecurser()
+# sublistMerge()
+# - is called by mergeSort()
 # - to handle list merging operations
 
-def sublistMerger(inputList: list, tempMergedList: list, leftSublistStartIndex: int, leftSublistStopIndex: int, rightSublistStartIndex: int, rightSublistStopIndex: int, mSDictKey: int, mSPlotDataDict: dict, inputListLength: int):
-    # Logic for splitting
-    #   - leftSubList = inputList[leftSubListStartIndex:leftSublistStopIndex+1]
-    #   - rightSubList = inputList[rightSublistStartIndex:rightSublistStopIndex+1]
-    initialLeftSublistCounter = leftSublistStartIndex
-    tempMergedListIndex = leftSublistStartIndex
-    initialRightSublistCounter = rightSublistStartIndex
 
-    pdb.set_trace()
+def sublistMerge(tempSubListOne, tempSubListTwo, rlist):
+    global mSDictKey
+    global mSPlotDataDict
+    tempMergedList = []                                             # initialise empty List to merge sub-Lists into
 
-    while initialLeftSublistCounter <= leftSublistStopIndex and initialRightSublistCounter <= rightSublistStopIndex:
-        if inputList[initialLeftSublistCounter] > inputList[initialRightSublistCounter]:                   # test smaller element
-            tempMergedList[tempMergedListIndex] = inputList[initialRightSublistCounter]           # add to end of tempMergeList
-            initialRightSublistCounter += 1
+    loopRangeSubListOne = len(tempSubListOne)
+    loopRangeSubListTwo = len(tempSubListTwo)
+
+    indexSubListOne = 0                                             # avoids using list.pop() to remove element
+    indexSubListTwo = 0
+
+    while loopRangeSubListOne > indexSubListOne and loopRangeSubListTwo > indexSubListTwo:      # a=[1]->len(a)=1
+        if tempSubListOne[indexSubListOne] > tempSubListTwo[indexSubListTwo]:                   # test smaller element
+            tempMergedList.append(tempSubListTwo[indexSubListTwo])                         # add to end of tempMergeList
+            indexSubListTwo += 1
         else:
-            tempMergedList[tempMergedListIndex] = inputList[initialLeftSublistCounter]            # add to end of tempMergeList
-            initialLeftSublistCounter += 1
+            tempMergedList.append(tempSubListOne[indexSubListOne])                         # add to end of tempMergeList
+            indexSubListOne += 1
+        mSDictKey += 1  # increase dictionary index before it is used AND then use a slice of the whole `updated input List` as the stateData to be added to mSPlotDataDict
+        getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data
 
-        # increment temporary merged list counter AND stop the current state of the merged list inside the mSPlotDataDict
-        tempMergedListIndex += 1
-        # mSDictKey += 1  # increase dictionary index before it is used
-        # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data      
-
-    # handles when the left sublist still elements in it (which are inherently sorted - since sublistMerger() is recursively building from the bottom)
-    while initialLeftSublistCounter <= leftSublistStopIndex:                                  # no elements to merge in rightSublist
-        tempMergedList[tempMergedListIndex] = inputList[initialLeftSublistCounter]                  
-        initialLeftSublistCounter += 1
-
-        # increment temporary merged list counter AND stop the current state of the merged list inside the mSPlotDataDict
-        tempMergedListIndex += 1
-        # mSDictKey += 1  # increase dictionary index before it is used
-        # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data
-    
-    while initialRightSublistCounter <= rightSublistStopIndex:                                  # no elements to merge in leftSublist
-        tempMergedList[tempMergedListIndex] = inputList[initialRightSublistCounter]                
-        initialRightSublistCounter += 1
-
-        # increment temporary merged list counter AND stop the current state of the merged list inside the mSPlotDataDict
-        tempMergedListIndex += 1
-        # mSDictKey += 1  # increase dictionary index before it is used
-        # getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data
-
-    # update stateData by
+    while loopRangeSubListOne > indexSubListOne:                                  # no elements to merge in SubListTwo
+        tempMergedList.append(tempSubListOne[indexSubListOne])                    # remaining elements are appended
+        indexSubListOne += 1
+        mSDictKey += 1  # increase dictionary index before it is used AND then use a slice of the whole `updated input List` as the stateData to be added to mSPlotDataDict
+        getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data
+        
+    while loopRangeSubListTwo > indexSubListTwo:                                  # no elements to merge in SubListOne
+        tempMergedList.append(tempSubListTwo[indexSubListTwo])                    # remaining elements are appended
+        indexSubListTwo += 1
+        mSDictKey += 1  # increase dictionary index before it is used AND then use a slice of the whole `updated input List` as the stateData to be added to mSPlotDataDict
+        getPlotData(tempMergedList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data
+        
+        # update stateData by
     #   - this is only useful if you are trying to plot current state data of the input list
     #   - this basically writes back the `portion` (i.e. starting from the left sublist index 0) of the inputlist that has been sorted
     #       + leftSublistStartIndex is always going to start from 0
@@ -302,13 +282,13 @@ def sublistMerger(inputList: list, tempMergedList: list, leftSublistStartIndex: 
     #   - hence indirectly making the other sides of the input list to be some sort of state data
     #   - tempMergedList is also a stateData, the difference however is that it ALWAYS builds up from index 0, as if you are appending sorted items to a list
     #       + tempMergedList does not show how the sorting is being done in comparison to the existing state of the data
-    for index in range(leftSublistStartIndex, rightSublistStopIndex+1):
-        inputList[index] = tempMergedList[index]
+    for index in range(indexSubListOne, loopRangeSubListTwo):
+        rlist[index] = tempMergedList[index]
     
     mSDictKey += 1  # increase dictionary index before it is used AND then use a slice of the whole `updated input List` as the stateData to be added to mSPlotDataDict
-    getPlotData(inputList[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data
+    getPlotData(rlist[:], mSDictKey, mSPlotDataDict, inputListLength) # get state data
 
-    return tempMergedList, mSPlotDataDict
+    return tempMergedList
 
 #
 # indexDemarcation()
@@ -608,7 +588,7 @@ print("================================")
 # timed runtime
 unsortedMSInputList = mSInputList[:]
 mSStartTime = time.time()
-mergesorted, mSPlotDataDict = mergeSort(mSInputList)
+mergesorted = mergeSort(mSInputList)
 mSStopTime = time.time()
 print("\nMerge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (mSStopTime - mSStartTime))
