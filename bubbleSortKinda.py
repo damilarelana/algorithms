@@ -45,5 +45,7 @@ def kindaBubbleSort(inputList: list):
 start_time = time.time()
 kindaBubblesorted = kindaBubbleSort(rlist)
 stop_time = time.time() - start_time
-print("\nKinda Bubble Sort gives [first 15 elements as]: %s\n" % kindaBubblesorted[:15])
-print("runtime: %f seconds\n" % (stop_time))
+print("\nKinda Bubble Sort gives [first 15 elements as]: %s" % kindaBubblesorted[:15])
+print("runtime: %f seconds" % (stop_time))
+print("largest number is : {}".format(kindaBubblesorted[loopRange-1]))
+print("smallest number is : {}\n".format(kindaBubblesorted[0]))

@@ -72,5 +72,7 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
 
 start_time = time.time()                    # start time counter
 mergeSorted = mergeSort(rlist)
-print("Merge Sort gives [first 15 elements as]: %s\n" % mergeSorted[:15])
-print("runtime: %s seconds\n" % (time.time() - start_time))
+print("Merge Sort gives [first 15 elements as]: %s" % mergeSorted[:15])
+print("runtime: %s seconds" % (time.time() - start_time))
+print("largest number is : {}".format(mergeSorted[loopRange-1]))
+print("smallest number is : {}\n".format(mergeSorted[0]))

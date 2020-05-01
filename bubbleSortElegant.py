@@ -5,7 +5,7 @@ import time
 #
 inputList = [x for x in range(0, 1247635, 96)]
 random.shuffle(inputList)
-1247635
+loopRange = len(inputList)
 
 # elegantBubbleSort() is an elegant implementation
 
@@ -33,5 +33,7 @@ def elegantBubbleSort(inputList: list):
 start_time = time.time()
 elegantlyBubbleSorted = elegantBubbleSort(inputList)
 print(" ================ ")
-print("\n Elegant Bubble Sort gives: %s\n" % elegantlyBubbleSorted[:15])
-print("runtime: %f seconds\n" % (time.time() - start_time))
+print("\nElegant Bubble Sort gives: %s" % elegantlyBubbleSorted[:15])
+print("runtime: %f seconds" % (time.time() - start_time))
+print("largest number is : {}".format(elegantlyBubbleSorted[loopRange-1]))
+print("smallest number is : {}\n".format(elegantlyBubbleSorted[0]))

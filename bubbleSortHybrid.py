@@ -47,5 +47,7 @@ def hybridBubbleSort(inputList: list):
 start_time = time.time()
 hybridBubblesorted = hybridBubbleSort(rlist)
 stop_time = time.time() - start_time
-print("\nHybrid Bubble Sort gives [first 15 elements as]: %s\n" % hybridBubblesorted[:15])
-print("runtime: %f seconds\n" % (stop_time))
+print("\nHybrid Bubble Sort gives [first 15 elements as]: %s" % hybridBubblesorted[:15])
+print("runtime: %f seconds" % (stop_time))
+print("largest number is : {}".format(hybridBubblesorted[loopRange-1]))
+print("smallest number is : {}\n".format(hybridBubblesorted[0]))
