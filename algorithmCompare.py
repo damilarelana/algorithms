@@ -10,7 +10,7 @@ import numpy as np
 #
 listRangeStart = 0
 listRangeStop = 1247635
-listRangeStep = 96
+listRangeStep = 48
 
 
 #
