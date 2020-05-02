@@ -197,13 +197,13 @@ def sublistMerge(tempSubListOne, tempSubListTwo):
     return tempMergedList
 
 #
-# indexDemarcation()
+# indexSplitter()
 #   - gives the floor of the division between inputListUpperIndex and inputListLowerIndex (i.e. a // b )
 #   - alternative is to give the ceiling
 #   - we are instead going with floor so as to more easily control the startIndex for rightSubList 
 #           + i.e. if splitIndex = 2 and hence the last index for the leftSubList
 #           + then startIndex for rightSubList is splitIndex += 1
-#   - def indexDemarcation(inputListLowerIndex: int, inputListUpperIndex: int):
+#   - def indexSplitter(inputListLowerIndex: int, inputListUpperIndex: int):
 #           numerator = inputListLowerIndex + inputListUpperIndex
 #           denumerator = 2
 #           splitIndex, quotient = divmod(numerator, denumerator)
