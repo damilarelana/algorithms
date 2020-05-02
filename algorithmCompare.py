@@ -9,7 +9,7 @@ import numpy as np
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 1247635
+listRangeStop = 124763545
 listRangeStep = 48
 
 
@@ -51,7 +51,7 @@ iSInputList = copy.deepcopy(inputList[:])
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("")
-print("Comparing Python performance of 5 algorithms [ mergeSort + hybridBubbleSort + elegantBubbleSort + selectionSort + insertionSort]:")
+print("Comparing Python performance of 5 algorithms [ mergeSort + hybridBubbleSort + elegantBubbleSort + selectionSort + insertionSort ]:")
 print("  - using randomly generated data")
 print("  - of an array of integer values")
 print("  - with {} elements".format(len(inputList)))

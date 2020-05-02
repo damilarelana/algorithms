@@ -57,7 +57,7 @@ iSInputList = copy.deepcopy(inputList[:])
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("")
-print("Comparing Python performance of 5 algorithms [ selectionSort + mergeSort + hybridBubbleSort + elegantBubbleSort + insertionSort]:")
+print("Comparing Python performance of 5 algorithms [ selectionSort + mergeSort + hybridBubbleSort + elegantBubbleSort + insertionSort ]:")
 print("  - using randomly generated data")
 print("  - of an array of integer values")
 print("  - with {} elements".format(inputListLength))
@@ -166,7 +166,7 @@ def selectionSort(inputList):
 
     inputListLength = len(inputList) 
     if inputListLength == 1:
-        return inputList
+        return inputList, sSPlotDataDict
     else:
         outerCount = 0                      # initialise outerloop counter
         minElement = outerCount             # assume first index "0" is temporary minimum (changes with each pass)
@@ -325,7 +325,7 @@ def insertionSort(inputList):
     # array sorting logic 
     inputListLength = len(inputList)
     if inputListLength == 1:
-        return inputList    # no point wasting CPU cycle to sort one item
+        return inputList, iSPlotDataDict    # no point wasting CPU cycle to sort one item
     else:
         # we assume that element at index `0` i.e. ocount = 0, is already sorted, hence why the unsorted starts at ocount = 1
         ocount = 1                       # initialising unsorted list index to the first one to be removed from unsorted [we ]
