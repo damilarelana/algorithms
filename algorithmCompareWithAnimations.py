@@ -57,7 +57,7 @@ iSInputList = copy.deepcopy(inputList[:])
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("")
-print("Comparing performance of 5 algorithms [ selectionSort + mergeSort + hybridBubbleSort + elegantBubbleSort + insertionSort]:")
+print("Comparing Python performance of 5 algorithms [ selectionSort + mergeSort + hybridBubbleSort + elegantBubbleSort + insertionSort]:")
 print("  - using randomly generated data")
 print("  - of an array of integer values")
 print("  - with {} elements".format(inputListLength))
@@ -563,6 +563,41 @@ def checkOrderedListEquivalence(r: list, k: list):
         return True
     return False
 
+#
+# mergeSort()
+#
+# timed runtime
+unsortedMSInputList = mSInputList[:]
+mSStartTime = time.time()
+mergesorted = mergeSort(mSInputList)
+mSStopTime = time.time()
+print("Merge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
+print("runtime: %f seconds" % (mSStopTime - mSStartTime))
+# animation creation
+algorithmName = mergeSort.__name__  # get the function name as a string
+mSListMinValue = mergesorted[0]
+mSListMaxValue = mergesorted[inputListLength - 1]
+mSParsedPlotData = parsePlotData(mSPlotDataDict)  # converts the plotdata from a dict into a list [notice that `mSPlotDataDict` is a global variable in this case since mergeSort is recursive]
+createAnimation(mSParsedPlotData, mSListMinValue, mSListMaxValue, algorithmName, animationFormat, False)
+print("================================")
+
+#
+# insertionSort()
+#
+# timed runtime
+unsortedISInputList = iSInputList[:]
+iSStartTime = time.time()
+insertionsorted, iSPlotData = insertionSort(iSInputList)
+iSStopTime = time.time()
+print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
+print("runtime: %f seconds" % (iSStopTime - iSStartTime))
+# animation creation
+algorithmName = insertionSort.__name__  # get the function name as a string
+iSListMinValue = insertionsorted[0]
+iSListMaxValue = insertionsorted[inputListLength - 1]
+iSParsedPlotData = parsePlotData(iSPlotData)  # converts the plotdata from a dict into a list
+createAnimation(iSParsedPlotData, iSListMinValue, iSListMaxValue, algorithmName, animationFormat, False)
+print("================================")
 
 #
 # selectionSort()
@@ -572,7 +607,7 @@ unsortedSSInputList = sSInputList[:]
 sSStartTime = time.time()
 selectionSorted, sSPlotData = selectionSort(sSInputList)
 sSStopTime = time.time()
-print("Selection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
+print("\nSelection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
 # animation creation
 algorithmName = selectionSort.__name__  # get the function name as a string
@@ -580,24 +615,6 @@ sSListMinValue = selectionSorted[0]
 sSListMaxValue = selectionSorted[inputListLength - 1]
 sSParsedPlotData = parsePlotData(sSPlotData)  # converts the plotdata from a dict into a list
 createAnimation(sSParsedPlotData, sSListMinValue, sSListMaxValue, algorithmName, animationFormat, False)
-print("================================")
-
-#
-# mergeSort()
-#
-# timed runtime
-unsortedMSInputList = mSInputList[:]
-mSStartTime = time.time()
-mergesorted = mergeSort(mSInputList)
-mSStopTime = time.time()
-print("\nMerge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
-print("runtime: %f seconds" % (mSStopTime - mSStartTime))
-# animation creation
-algorithmName = mergeSort.__name__  # get the function name as a string
-mSListMinValue = mergesorted[0]
-mSListMaxValue = mergesorted[inputListLength - 1]
-mSParsedPlotData = parsePlotData(mSPlotDataDict)  # converts the plotdata from a dict into a list [notice that `mSPlotDataDict` is a global variable in this case since mergeSort is recursive]
-createAnimation(mSParsedPlotData, mSListMinValue, mSListMaxValue, algorithmName, animationFormat, False)
 print("================================")
 
 #
@@ -634,24 +651,6 @@ eBSListMinValue = elegantBubblesorted[0]
 eBSListMaxValue = elegantBubblesorted[inputListLength - 1]
 eBParsedPlotData = parsePlotData(eBSPlotData)  # converts the plotdata from a dict into a list
 createAnimation(eBParsedPlotData, eBSListMinValue, eBSListMaxValue, algorithmName, animationFormat, False)
-print("================================")
-
-#
-# insertionSort()
-#
-# timed runtime
-unsortedISInputList = iSInputList[:]
-iSStartTime = time.time()
-insertionsorted, iSPlotData = insertionSort(iSInputList)
-iSStopTime = time.time()
-print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
-print("runtime: %f seconds" % (iSStopTime - iSStartTime))
-# animation creation
-algorithmName = insertionSort.__name__  # get the function name as a string
-iSListMinValue = insertionsorted[0]
-iSListMaxValue = insertionsorted[inputListLength - 1]
-iSParsedPlotData = parsePlotData(iSPlotData)  # converts the plotdata from a dict into a list
-createAnimation(iSParsedPlotData, iSListMinValue, iSListMaxValue, algorithmName, animationFormat, False)
 print("================================")
 
 #

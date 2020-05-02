@@ -9,8 +9,8 @@ import numpy as np
 # Generate Random Unsorted List
 #
 listRangeStart = 0
-listRangeStop = 2127
-listRangeStep = 23
+listRangeStop = 1247635
+listRangeStep = 96
 
 
 #
@@ -51,7 +51,7 @@ iSInputList = copy.deepcopy(inputList[:])
 #
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("")
-print("Comparing performance of 5 algorithms [ mergeSort + hybridBubbleSort + elegantBubbleSort + selectionSort + insertionSort]:")
+print("Comparing Python performance of 5 algorithms [ mergeSort + hybridBubbleSort + elegantBubbleSort + selectionSort + insertionSort]:")
 print("  - using randomly generated data")
 print("  - of an array of integer values")
 print("  - with {} elements".format(len(inputList)))
@@ -278,36 +278,49 @@ def checkOrderedListEquivalence(r: list, k: list):
         return True
     return False
 
+#
+# mergeSort()
+#
+# timed runtime
+
+
+unsortedMSInputList = mSInputList[:]
+mSStartTime = time.time()
+mergesorted = mergeSort(mSInputList)
+mSStopTime = time.time()
+print("Merge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
+print("runtime: %f seconds" % (mSStopTime - mSStartTime))
+print("================================")
+
+#
+# insertionSort()
+#
+# timed runtime
+unsortedISInputList = iSInputList[:]
+iSStartTime = time.time()
+insertionsorted = insertionSort(iSInputList)
+iSStopTime = time.time()
+print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
+print("runtime: %f seconds" % (iSStopTime - iSStartTime))
+print("================================")
 
 #
 # selectionSort()
 #
 # timed runtime
-unsortedSSInputList = mSInputList
+unsortedSSInputList = sSInputList[:]
 sSStartTime = time.time()
 selectionSorted = selectionSort(sSInputList)
 sSStopTime = time.time()
-print("Selection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
+print("\nSelection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
-print("================================")
-
-#
-# mergeSort()
-#
-# timed runtime
-unsortedMSInputList = mSInputList
-mSStartTime = time.time()
-mergesorted = mergeSort(mSInputList)
-mSStopTime = time.time()
-print("\nMerge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
-print("runtime: %f seconds" % (mSStopTime - mSStartTime))
 print("================================")
 
 #
 # hybridBubbleSort()
 #
 # timed runtime
-unsortedHBSInputList = mSInputList
+unsortedHBSInputList = hBSInputList[:]
 hBSStartTime = time.time()
 hybridBubblesorted = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
@@ -319,24 +332,12 @@ print("================================")
 # elegantBubbleSort()
 #
 # timed runtime
-unsortedEBSInputList = mSInputList
+unsortedEBSInputList = eBSInputList[:]
 eBSStartTime = time.time()
 elegantBubblesorted = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
 print("\nElegant Bubble Sort gives first {} elements as: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
-print("================================")
-
-#
-# insertionSort()
-#
-# timed runtime
-unsortedISInputList = mSInputList
-iSStartTime = time.time()
-insertionsorted = insertionSort(iSInputList)
-iSStopTime = time.time()
-print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
-print("runtime: %f seconds" % (iSStopTime - iSStartTime))
 print("================================")
 
 #
