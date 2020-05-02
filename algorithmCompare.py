@@ -55,6 +55,7 @@ print("Comparing performance of 5 algorithms [ mergeSort + hybridBubbleSort + el
 print("  - using randomly generated data")
 print("  - of an array of integer values")
 print("  - with {} elements".format(len(inputList)))
+print("  - first {} elements: {}".format(printedSliceLength, inputList[:printedSliceLength+1]))
 print("")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
 
@@ -288,7 +289,6 @@ selectionSorted = selectionSort(sSInputList)
 sSStopTime = time.time()
 print("Selection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedSSInputList[:printedSliceLength+1]))
 print("================================")
 
 #
@@ -301,7 +301,6 @@ mergesorted = mergeSort(mSInputList)
 mSStopTime = time.time()
 print("\nMerge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (mSStopTime - mSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedMSInputList[:printedSliceLength+1]))
 print("================================")
 
 #
@@ -314,7 +313,6 @@ hybridBubblesorted = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
 print("\nHybrid Bubble Sort gives first {} elements as: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedHBSInputList[:printedSliceLength+1]))
 print("================================")
 
 #
@@ -327,7 +325,6 @@ elegantBubblesorted = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
 print("\nElegant Bubble Sort gives first {} elements as: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedEBSInputList[:printedSliceLength+1]))
 print("================================")
 
 #
@@ -340,7 +337,6 @@ insertionsorted = insertionSort(iSInputList)
 iSStopTime = time.time()
 print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (iSStopTime - iSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedISInputList[:printedSliceLength+1]))
 print("================================")
 
 #

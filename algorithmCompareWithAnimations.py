@@ -61,6 +61,7 @@ print("Comparing performance of 5 algorithms [ selectionSort + mergeSort + hybri
 print("  - using randomly generated data")
 print("  - of an array of integer values")
 print("  - with {} elements".format(inputListLength))
+print("  - first {} elements: {}".format(printedSliceLength, inputList[:printedSliceLength+1]))
 print("")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
@@ -573,7 +574,6 @@ selectionSorted, sSPlotData = selectionSort(sSInputList)
 sSStopTime = time.time()
 print("Selection Sort gives first {} values as: {}".format(printedSliceLength, selectionSorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (sSStopTime - sSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedSSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = selectionSort.__name__  # get the function name as a string
 sSListMinValue = selectionSorted[0]
@@ -592,7 +592,6 @@ mergesorted = mergeSort(mSInputList)
 mSStopTime = time.time()
 print("\nMerge Sort gives first {} elements as: {}".format(printedSliceLength, mergesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (mSStopTime - mSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedMSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = mergeSort.__name__  # get the function name as a string
 mSListMinValue = mergesorted[0]
@@ -611,7 +610,6 @@ hybridBubblesorted, hBSPlotData  = hybridBubbleSort(hBSInputList)
 hBSStopTime = time.time()
 print("\nHybrid Bubble Sort gives first {} elements as: {}".format(printedSliceLength, hybridBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (hBSStopTime - hBSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedHBSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = hybridBubbleSort.__name__  # get the function name as a string
 hBSListMinValue = hybridBubblesorted[0]
@@ -630,7 +628,6 @@ elegantBubblesorted, eBSPlotData = elegantBubbleSort(eBSInputList)
 eBSStopTime = time.time()
 print("\nElegant Bubble Sort gives first {} elements as: {}".format(printedSliceLength, elegantBubblesorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (eBSStopTime - eBSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedEBSInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = elegantBubbleSort.__name__  # get the function name as a string
 eBSListMinValue = elegantBubblesorted[0]
@@ -649,7 +646,6 @@ insertionsorted, iSPlotData = insertionSort(iSInputList)
 iSStopTime = time.time()
 print("\nInsertion Sort gives first {} elements as: {}".format(printedSliceLength, insertionsorted[:printedSliceLength+1]))
 print("runtime: %f seconds" % (iSStopTime - iSStartTime))
-print("input's first {} values: {}".format(printedSliceLength, unsortedISInputList[:printedSliceLength+1]))
 # animation creation
 algorithmName = insertionSort.__name__  # get the function name as a string
 iSListMinValue = insertionsorted[0]
