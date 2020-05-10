@@ -366,7 +366,7 @@ def insertionSort(inputList):
 #
 
 
-def augmentList(currentList: list, inputListLength: list):
+def augmentList(currentList: list, inputListLength: int):
     currentListLength = len(currentList)
     if currentListLength != inputListLength:
         padLength = inputListLength - currentListLength
