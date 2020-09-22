@@ -78,65 +78,6 @@ def createList(listRangeStart, listRangeStop, listRangeStep):
   createdList = listShuffler(createdList)
   return createdList
 
-
-
-#
-# indexSplitter()
-#   - gives the floor of the division between inputListUpperIndex and inputListLowerIndex (i.e. a // b )
-#   - alternative is to give the ceiling
-#   - we are instead going with floor so as to more easily control the startIndex for rightSubList 
-#           + i.e. if splitIndex = 2 and hence the last index for the leftSubList
-#           + then startIndex for rightSubList is splitIndex += 1
-#   - def indexSplitter(inputListLowerIndex: int, inputListUpperIndex: int):
-#           numerator = inputListLowerIndex + inputListUpperIndex
-#           denumerator = 2
-#           splitIndex, quotient = divmod(numerator, denumerator)
-#           adjustedSplitIndex = value + bool(quotient)
-#           return adjustedSplitIndex
-
-
-def indexSplitter(inputListLowerIndex: int, inputListUpperIndex: int):
-    nuMerator = inputListLowerIndex + inputListUpperIndex
-    deNumerator = 2
-    splitIndex = nuMerator // deNumerator
-    return splitIndex
-
-#
-# checkOrderedListEquivalence() a brutal bruteforce check for whether two lists are identical
-# - in terms of:
-#   + types of elements
-#   + number of elements
-#   + order of elements
-# - assumes that the lists `r` and `k` are ordered
-# - it however cannot check order of elements: since sets are random
-# - it works best if the lists are already consisting of unique elements
-#   + hence removal of duplicated elements (during intersection) would not be a problem
-# - criteria of equivalence:
-#   + len(set(r).intersection(k)) == len(set(k)) [solves for when set(r) is {} but set(k) is not]
-#   + len(set(r)) == len(set(k))  [solves for the duplication issue]
-#   + r == k [solves for element-wise comparison and order]
-#   + len(r) == len(k) [also solves for duplication issues]
-
-
-def checkOrderedListEquivalence(r: list, k: list):
-
-    # intersection test parameters
-    resultSet = set(r).intersection(k)
-    rSet = set(r)
-    kSet = set(k)
-    resultSetLength = len(resultSet)
-    rSetLength = len(rSet)
-    kSetLength = len(kSet)
-
-    # list test parameters
-    rLength = len(r)
-    kLength = len(k)
-
-    # Test for equivalence
-    if (resultSetLength == kSetLength) and (rSetLength == kSetLength) and (r == k) and (rLength == kLength):
-        return True
-    return False
-
 #
 # calcPercentage()
 #
