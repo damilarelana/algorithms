@@ -3,12 +3,48 @@ import time
 import math
 import copy
 import secrets
+import datetime
 import numpy as np
+from calendar import monthrange
+from calendar import weekday
+
+
+# define getDate()
+# - uses a try-except-finally to catch input edge-cases
+# - calls input() to get user defined integer value
+# - returns the user defined integer value [when all goes accordingly to plan]
+
+
+def getDate(inputStringType: string):
+    try:
+        inputIntegerString = input("please enter {} in format 2009-12-21:".format(inputStringType))
+        inputInteger = int(inputIntegerString)  # convert string to integer
+        while isinstance(inputInteger, int) is False:
+            print("Input must be an integer")
+            inputIntegerString = input("please enter {} value:".format(inputStringType))
+            inputInteger = int(inputIntegerString)
+    except ValueError:
+        raise Exception("Unable to initialize the user defined integer value")
+    finally:
+        print("Successfully initialized {} value".format(inputStringType))
+    return inputInteger
+
 
 #
-# Generate Random Unsorted List
+# Initialize the date ranges
 #
-listRangeStart = 0
+startDay = getDate("Start Date")
+startMonth = getDate("Start Month")
+startYear = getDate("Start Year")
+
+endDay = getDate("end Day")
+endMonth = getDate("end Month")
+endYear = getDate("end Year")
+
+#
+# initialize Dictionaries
+#
+monthsList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 listRangeStop = 12476354
 listRangeStep = 48
 
