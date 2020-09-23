@@ -100,13 +100,21 @@ def getWedAtLastDayOfMonth(month: int, year: int, monthsDayRangeLimit: int):
 #
 # getAllWednesdayInPeriod()
 #
-def getAllWednesdayInPeriod(monthsList: list, yearsList: list):
+def getAllWednesdayInPeriod(startYear: int, startMonth: int, endYear: int, endMonth: int):
   allWednesdayInPeriodCounter = 0   # Initialize Counter
-  for year in yearsList:
-    for month in monthsList:
-      monthsDayRangeLimitTuple = monthrange(year, month)
-      monthsDayRangeLimit = monthsDayRangeLimitTuple[1]
-      allWednesdayInPeriodCounter += getAllWedInMonth(month, year, monthsDayRangeLimit)
+  currentMonth = copy.deepcopy(startMonth) # initialize current month counter to start month
+  currentYear = copy.deepcopy(startYear)# initialize current year counter to start year
+
+  while (currentYear, currentMonth) <= (endYear, endMonth): # can re-use `startYear` and `startMonth` to replace every instance of `currentMonth` and `currentYear`, other opted otherwise for readability
+    monthsDayRangeLimitTuple = monthrange(currentYear, currentMonth) # determine the number of days in current month/year 
+    monthsDayRangeLimit = monthsDayRangeLimitTuple[1]
+    allWednesdayInPeriodCounter += getAllWedInMonth(currentMonth, currentYear, monthsDayRangeLimit) # get number of Wednesdays in current month/year and add to counter
+
+    if currentMonth == 12: # check if current month is already December, if yes then next month would be in next year
+      currentMonth = 1 # reset the currentMonth in the new year
+      currentYear += 1 # increment the currentYear i.e. since it is a new year
+    else:
+      currentMonth += 1 # if currentMonth is not already December, then we can increment and still remain in current year
 
   return allWednesdayInPeriodCounter
 
@@ -114,10 +122,10 @@ def getAllWednesdayInPeriod(monthsList: list, yearsList: list):
 #
 # getValidatedWednesdayInPeriod()
 #
-def getValidatedWednesdayInPeriod(monthsList: list, yearsList: list):
+def getValidatedWednesdayInPeriod(monthsValidationList: list, yearsValidationList: list):
   validatedWednesdayInPeriodCounter = 0 # Initialize Counter
-  for year in yearsList:
-    for month in monthsList:
+  for year in yearsValidationList:
+    for month in monthsValidationList:
       monthsDayRangeLimitTuple = monthrange(year, month)
       monthsDayRangeLimit = monthsDayRangeLimitTuple[1]
       validatedWednesdayInPeriodCounter += getWedAtLastDayOfMonth(month, year, monthsDayRangeLimit)
@@ -126,18 +134,18 @@ def getValidatedWednesdayInPeriod(monthsList: list, yearsList: list):
 
 
 #
-# initialize Dictionaries
+# initialize Validation Lists
 #
-monthsList = createList(1, 13, 1) # returns [1 ... 12]
-yearsList = createList(startYear, endYear+1, 1) # returns [2001, ... , 2100]
+monthsValidationList = createList(1, 13, 1) # returns [1 ... 12]
+yearsValidationList = createList(startYear, endYear+1, 1) # returns [2001, ... , 2100]
 
 
 #
 # timed runtime
 #
 startTime = time.time()
-validatedWednesdayInPeriodCounter = getValidatedWednesdayInPeriod(monthsList, yearsList)
-allWednesdayInPeriodCounter = getAllWednesdayInPeriod(monthsList, yearsList)
+validatedWednesdayInPeriodCounter = getValidatedWednesdayInPeriod(monthsValidationList, yearsValidationList)
+allWednesdayInPeriodCounter = getAllWednesdayInPeriod(startYear, startMonth, endYear, endMonth)
 computedPercentage = calcPercentage(float(validatedWednesdayInPeriodCounter), float(allWednesdayInPeriodCounter))
 stopTime = time.time()
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -147,8 +155,8 @@ print("  * start-date: {}-{}-{}".format(startYear, startMonth, startDay))
 print("  * end-date: {}-{}-{}".format(endYear, endMonth, endDay))
 print("")
 print("it means:")
-print("  - {} wednesdays exist in total in that period".format(allWednesdayInPeriodCounter))
-print("  - {} wednesdays fall on the last days of the month".format(validatedWednesdayInPeriodCounter))
+print("  - {} wednesdays exist in total in that period of {} years".format(allWednesdayInPeriodCounter, len(yearsValidationList)))
+print("  - {} wednesdays fall on the last days of the period's months".format(validatedWednesdayInPeriodCounter))
 print("  - {:.5%} of those wednesdays fall on the last days of the mont".format(computedPercentage))
 print("runtime: %f seconds" % (stopTime - startTime))
 print("")
