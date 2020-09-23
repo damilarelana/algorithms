@@ -13,8 +13,6 @@ from calendar import weekday
 # - uses a try-except-finally to catch input edge-cases
 # - calls input() to get user defined integer value
 # - returns the user defined integer value [when all goes accordingly to plan]
-
-
 def getDate(inputStringType: str):
     try:
         inputDateString = input("please enter {} in format 2009-12-21: ".format(inputStringType))
@@ -47,8 +45,6 @@ endYear = endDateTuple[0]
 # listShuffler()
 #  - helps to avoid the problem that random.shuffle tends to shuffle in place
 #  - copy the inputList around sometimes means references [i.e. the copies] are not copied
-
-
 def listShuffler(initialList: list):
     workingList = copy.deepcopy(initialList)  # deepcopy that random sample
     randomNumber = secrets.randbits(8192)     # generate random number for random.seed()
@@ -66,7 +62,6 @@ def listShuffler(initialList: list):
 #  - starting from listRangeStart
 #  - up to but excluding listRangeStop
 #  - while taking listRangeStep at a time
-
 def createList(listRangeStart, listRangeStop, listRangeStep):
   createdList = [x for x in range(listRangeStart, listRangeStop, listRangeStep)]  # Generate Random Unsorted List
   createdList = listShuffler(createdList)
@@ -106,9 +101,7 @@ def getWedAtLastDayOfMonth(month: int, year: int, monthsDayRangeLimit: int):
 # getAllWednesdayInPeriod()
 #
 def getAllWednesdayInPeriod(monthsList: list, yearsList: list):
-  
   allWednesdayInPeriodCounter = 0   # Initialize Counter
-
   for year in yearsList:
     for month in monthsList:
       monthsDayRangeLimitTuple = monthrange(year, month)
@@ -122,7 +115,6 @@ def getAllWednesdayInPeriod(monthsList: list, yearsList: list):
 # getValidatedWednesdayInPeriod()
 #
 def getValidatedWednesdayInPeriod(monthsList: list, yearsList: list):
-  
   validatedWednesdayInPeriodCounter = 0 # Initialize Counter
   for year in yearsList:
     for month in monthsList:
