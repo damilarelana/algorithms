@@ -8,6 +8,10 @@ import datetime
 from calendar import monthrange
 from calendar import weekday
 
+#
+# formating space
+#
+print("")
 
 # define getDate()
 # - uses a try-except-finally to catch input edge-cases
@@ -15,7 +19,7 @@ from calendar import weekday
 # - returns the user defined integer value [when all goes accordingly to plan]
 def getDate(inputStringType: str):
     try:
-        inputDateString = input("please enter {} in format 2009-12-21: ".format(inputStringType))
+        inputDateString = input("enter {} in format 2009-12-21: ".format(inputStringType))
         inputDate = dt.strptime(inputDateString,'%Y-%m-%d') # convert string to datetime
         while isinstance(inputDate, datetime.date) is False:
             print("Input must be in expected datetime format")
@@ -24,7 +28,7 @@ def getDate(inputStringType: str):
     except ValueError:
         raise Exception("Unable to initialize the user defined datetime value")
     finally:
-        print("Successfully initialized {} value".format(inputStringType))
+        pass
     return inputDate.year, inputDate.month, inputDate.day
 
 
@@ -148,16 +152,17 @@ validatedWednesdayInPeriodCounter = getValidatedWednesdayInPeriod(monthsValidati
 allWednesdayInPeriodCounter = getAllWednesdayInPeriod(startYear, startMonth, endYear, endMonth)
 computedPercentage = calcPercentage(float(validatedWednesdayInPeriodCounter), float(allWednesdayInPeriodCounter))
 stopTime = time.time()
-print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("")
-print("Given the period between:")
+print("Given:")
 print("  * start-date: {}-{}-{}".format(startYear, startMonth, startDay))
 print("  * end-date: {}-{}-{}".format(endYear, endMonth, endDay))
 print("")
-print("it means:")
+print("means:")
 print("  - {} wednesdays exist in total within the period of {} years".format(allWednesdayInPeriodCounter, len(yearsValidationList)))
 print("  - {} wednesdays fall on the last days of the period's months".format(validatedWednesdayInPeriodCounter))
 print("  - {:.5%} of those wednesdays fall on the last days of the mont".format(computedPercentage))
+print("")
 print("runtime: %f seconds" % (stopTime - startTime))
 print("")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
