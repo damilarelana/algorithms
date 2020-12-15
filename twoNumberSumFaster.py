@@ -208,7 +208,8 @@ def selectGetIndexMethod():
     try:
         selectionAnswer = input("To select integer testIndex yourself enter 'Yes', otherwise enter 'No' for randomly generated value: ")
         selectionAnswerString = str(selectionAnswer)  # convert input to string
-        while (isinstance(selectionAnswerString, str) is False) or ((selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]) is False):
+        sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
+        while (isinstance(selectionAnswerString, str) is False) or ((selectionAnswerString in sampleAnswerList) is False):
             print("Response should be a 'Yes' or 'No' answer")
             selectGetIndexMethod() # recursively call selectGetIndexMethod() again
     except ValueError:
