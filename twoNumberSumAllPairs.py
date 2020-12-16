@@ -1,6 +1,5 @@
 import time
 
-
 # define twoNumberSum function
 # - takes in a user defined integer array
 # - takes in a user defined integer value
@@ -25,20 +24,6 @@ def twoNumberSum():  # inputList param is of type list
     print("Sum is of type: ", type(testInteger))
     print("    ============    \n")
 
-    # obtain test index - after passing in the length of the array
-    selectionAnswerString = selectGetIndexMethod()
-    if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
-        testIndex = getIndex(len(testArray))
-        print("\nTest Index: ", testIndex)
-        print("Index is of type: ", type(testIndex))
-        print("    ============    \n")
-    else: # not necessary to test for `No` here because selectGetIndexMethod() already handles invalid inputs [so the remain values would be `No`]
-        testIndex = getRandomIndex(len(testArray))
-        print("\nTest Index: ", testIndex)
-        print("Index is of type: ", type(testIndex))
-        print("    ============    \n")
-
-
     # compute the 2-element pairs
     resultDict = computeTwoNumSum(testArray, testInteger)
 
@@ -51,12 +36,10 @@ def twoNumberSum():  # inputList param is of type list
         print("There are {0} instances of 2-element [a, b] pairs that sum up to {1} ...".format(numOfPairs, testInteger))
         print("{0} is one of those instances".format(firstPair))
 
-
 # define computeTwoNumberSum()
 # - takes in a user defined integer array tIA
 # - takes in a user defined integer value tIV
-# - uses the user-define random index selection
-# - selects a random start index within tIA
+# - computes difference between outer element and tIV
 # - then compares to determine a match with the inner element
 # - this does NOT restrict the computation to just unique elements of tIA
 #    + if an element occurs multiple times, then the [a, b] pair for it would be repeated
@@ -76,6 +59,9 @@ def computeTwoNumSum(tIA: list, tIV: int):
     }
 
     # loop array elements to check if they sum up to `tIV`
+    # this approach is a grid-search to find all possible pairing combinations
+    # the while loop approach is faster (as it avoids a nested for-loop) but not suitable for a grid search
+    #   - that only solves for just 1 instance of having a match and not all possible instances
     for t in tIA:
         testDiff = tIV - t
         innerList = tIA[listIndex:]
@@ -110,6 +96,9 @@ def computeTwoNumSumOptionTwo(tIA: list, tIV: int):
     }
 
     # loop array elements to check if they sum up to `tIV`
+    # this approach is a grid-search to find all possible pairing combinations
+    # the while loop approach is faster (as it avoids a nested for-loop) but not suitable for a grid search
+    #   - that only solves for just 1 instance of having a match and not all possible instances
     for t in tIA:
         innerList = tIA[listIndex:]
         for i in innerList:
@@ -149,6 +138,7 @@ def getArray():
 # - calls input() to get user defined integer value
 # - returns the user defined integer value [when all goes accordingly to plan]
 
+
 def getInteger():
     try:
         inputIntegerString = input("please enter an integer value: ")
@@ -162,61 +152,6 @@ def getInteger():
     finally:
         print("Successfully initialized the *user defined integer value*")
     return inputInteger
-
-
-# define getIndex()
-# - uses a try-except-finally to catch input edge-cases
-# - calls input() to get user defined integer value
-# - with input being a valid integer, it checks to ensure it is in the required range(listLength)
-# - returns the user defined integer value [when all goes accordingly to plan]
-
-def getIndex(lLength: int):
-    try:
-        inputIndexString = input("please enter an integer index value: ")
-        inputIndex = int(inputIndexString)  # convert string to integer
-        while isinstance(inputIndex, int) is False:
-            print("Index must be an integer")
-            getIndex(lLength: int) # recursively call getIndex again
-        if (inputIndex in range(lLength)) is False:
-            print("Index must be within the range of the list")
-            getIndex(lLength: int) # recursively call getIndex again
-    except ValueError:
-        raise Exception("Unable to initialize the user defined integer index value")
-    finally:
-        print("Successfully initialized the *user defined integer index value*")
-    return inputIndex
-
-#
-# getRandomIndex()
-#  - helps to pick a random integer within a range of numbers that represent the indices of an array
-#  - lowest possible integer is '0' even if the original number was 0.1
-#  - it does not use ceil() because this can lead to the index being out of range when the random number choice is len(Array)-1
-
-def getRandomIndex(lLength: int):
-    randomSeedBits = secrets.randbits(8192)     # generate random integer number [for random.seed()] that contains 8192 bits in it
-    random.seed(randomSeedBits)     # improve the randomizer by calling random.seed() i.e. make the randomizer stronger
-    return random.randint(0, lLength - 1) # use the randomizer to generate and return a random integer in the range '0' to 'len(testArray) - 1'
-
-
-# define selectGetIndexMethod()
-# - uses a try-except-finally to catch input edge-cases
-# - gives user option to either randomly select test index value or have the use provide it as an input
-# - via option to answer 'Yes' or 'No'
-# - returns any of the `Yes` or `No` variations in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
-
-def selectGetIndexMethod():
-    try:
-        selectionAnswer = input("To select integer testIndex yourself enter 'Yes', otherwise enter 'No' for randomly generated value: ")
-        selectionAnswerString = str(selectionAnswer)  # convert input to string
-        sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
-        while (isinstance(selectionAnswerString, str) is False) or ((selectionAnswerString in sampleAnswerList) is False):
-            print("Response should be a 'Yes' or 'No' answer")
-            selectGetIndexMethod() # recursively call selectGetIndexMethod() again
-    except ValueError:
-        raise Exception("Unable to parse the user defined string value")
-    finally:
-        print("Successfully parsed the *user defined string value*")
-    return selectionAnswerString
 
 # define parseInputArrayString() function
 # - assumes user leveraged string format: [1, 2, 3, 4] or [1,2,3,4] or [1, 2,3, 4] ...

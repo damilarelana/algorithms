@@ -98,6 +98,10 @@ def computeThreeNumSum(tIA: list, tIV: int):
     #   + where the length is decreasing 1 each time you go down a loop
     #   + since you have excluded the test element `from previous loop`
 
+    # this approach is a grid-search to find all possible pairing combinations
+    # the while loop approach is faster (as it avoids a nested for-loop) but not suitable for a grid search
+    #   - that only solves for just 1 instance of having a match and not all possible instances
+
     for t in tIA:
         intermediatetIV = tIV - t
         intermediateList = tIA[intermediateListIndex:]
