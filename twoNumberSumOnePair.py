@@ -1,5 +1,7 @@
 import time
-
+import copy
+import secrets
+import random
 
 # define twoNumberSum function
 # - takes in a user defined integer array
@@ -56,7 +58,8 @@ def twoNumberSum():  # inputList param is of type list
 
 
 # define computeTwoNumberSum()
-# - assumes the list has been pre-sorted in ascending manner i.e. default
+# - assumes the list has been pre-sorted in ascending manner i.e. default 
+# - pre-sorting helps to divide and conquer
 # - assumes the sum has to be constituted by two indices i.e. even if the same value exists in two indices
 #    + i.e. we are not looking for when the sum is the multiple of just 1 index element
 # - takes in a user defined integer array: tIA
@@ -67,21 +70,20 @@ def twoNumberSum():  # inputList param is of type list
 
 
 def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):
-    startIndex = tIndex  # index to obtain smaller/smaller innerList as we loop
+    startIndex = copy.deepcopy(tIndex)  # deepcopy that random sampletIndex  # index to obtain smaller/smaller innerList as we loop
     lastIndex =  len(tIA) - 1
     resultPair = tuple()  # initialize tuple placeholder for matched pairs
 
     # loop array elements to check if they sum up to `tIV`
-    # this hear works perfectly for either when startIndex = 0 (i.e. the ideal state) or startIndex > 0 (i.e. the divide and conquer part)
-    while startIndex < lastIndex:
+    # first we divide and conquer by searching in slice tIA[startIndex:lastIndex+1]
+    #   - assuming that startIndex is NOT 0 i.e. startIndex > 0
+    while startIndex < lastIndex and startIndex != 0:
         tempSum = tIA[startIndex] + tIA[lastIndex]
         if tempSum == tIV:
             resultPair = (tIA[startIndex], tIA[lastIndex])
-            print("Successfully found a pair ({}, {}) in the list slice [{}:{}]".format(tIA[startIndex], tIA[lastIndex], startIndex, lastIndex + 1))
+            print("Successfully found a pair ({}, {}) at tIA[{}] and tIA[{}]".format(tIA[startIndex], tIA[lastIndex], startIndex, lastIndex))
             return resultPair
         
-        # this assumes original list is pre-sorted
-        # pre-sorting helps to divide and conquer the search such that
         # if the tempSum is larger than tIV then it means
         #   - indices that provide a match (the startIndex to give tIV) would have to be lower than lastIndex
         #   - thus we should `let startIndex remain unchanged`, but `start decreasing lastIndex` decrementally 1 step at a time`
@@ -95,72 +97,44 @@ def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):
         else:
             startIndex += 1
 
-    # this loop solves for when the search does not find the pairs in the initial range startIndex - lastIndex
-    #   - where startIndex is user selected tIndex
-    #   - where lastIndex was continuing to decrement from the previous while loop
-    #   - e.g. when lastIndex decreases to the point of equaling startIndex i.e. startIndex = lastIndex
-    
-    # decrement lastIndex since we are not looking for a match when startIndex = lastIndex gives us tIV
-    #   - the sum tIV cannot be muultiple of one element
-    #   - lastIndex >= 0 helps to ensure that we are only dealing with real list [indices that start from 0]
-
-    lastIndex -= 1
-    while startIndex > lastIndex and lastIndex >= 0:
-        tempSum = tIA[startIndex] + tIA[lastIndex]
+    # this loop solves for when the search does not find the pairs in the initial slice tIA[startIndex:lastIndex+1]
+    #   - we then test the remaining slice i.e. tIA[0:startIndex] (note we can also overlap the slices by using the slice tIA[0:startIndex + 1])
+    #   - where newLastIndex = startIndex - 1 or newLastIndex = startIndex
+    #   - newStartIndex = 0
+    newLastIndex = copy.deepcopy(tIndex)
+    newStartIndex = 0
+    while newStartIndex < newLastIndex:
+        tempSum = tIA[newStartIndex] + tIA[newLastIndex]
         if tempSum == tIV:
-            resultPair = (tIA[startIndex], tIA[lastIndex])
+            resultPair = (tIA[newStartIndex], tIA[newLastIndex])
+            print("Successfully found a pair ({}, {}) at tIA[{}] and tIA[{}]".format(tIA[startIndex], tIA[lastIndex], startIndex, lastIndex))
             return resultPair
         
-        # this assumes original list is pre-sorted
-        # pre-sorting helps to divide and conquer the search such that
-        # if the tempSum is larger than tIV then it means
-        #   - indices that provide a match (the startIndex to give tIV) would have to be lower than lastIndex
-        #   - thus we should `let startIndex remain unchanged`, but `start decreasing lastIndex` decrementally 1 step at a time`
-        #   - i.e. let `lastIndex -= 1`
-        # otherwise if tempSum is smaller than tIV
-        #   - indices that provide a match (the startIndex to give tIV) would have to be higher than startIndex [since lastIndex is already the biggest value in list]
-        #   - thus we should `let lastIndex remain unchanged`, but `start increasing lastIndex`incrementally 1 step at a time`
-        #   - i.e. let `startIndexIndex -= 1`
         if tempSum > tIV: # notice that "==" is already handled by the previous loop the returns a result
-            lastIndex -= 1
+            newLastIndex -= 1
         else:
-            startIndex += 1
+            newStartIndex += 1
     
+    # this is a fail save loop that uses the whole list tIA[0:lastIndex+1]
+    #   - in case the matching pairs on adjacent slices 
+    failSafeLastIndex = len(tIA) - 1
+    failSafeStartIndex = 0
+    while failSafeStartIndex < failSafeLastIndex:
+        tempSum = tIA[failSafeStartIndex] + tIA[failSafeLastIndex]
+        if tempSum == tIV:
+            resultPair = (tIA[failSafeStartIndex], tIA[failSafeLastIndex])
+            print("Successfully found a pair ({}, {}) at tIA[{}] and tIA[{}]".format(tIA[failSafeStartIndex], tIA[failSafeLastIndex], failSafeStartIndex, failSafeLastIndex))
+            return resultPair
+        
+        if tempSum > tIV: # notice that "==" is already handled by the previous loop the returns a result
+            failSafeLastIndex -= 1
+        else:
+            failSafeStartIndex += 1
+        
     return resultPair
 
-# define computeTwoNumberSumOptionTwo()
-# - takes in a user defined integer array tIA
-# - takes in a user defined integer value tIV
-# - computes sum between outer element and inner element
-# - then compares to determine a match with tIV
-# - this does NOT restrict the computation to just unique elements of tIA
-#    + if an element occurs multiple times, then the [a, b] pair for it would be repeated
-
-
-def computeTwoNumSumOptionTwo(tIA: list, tIV: int):
-    listIndex = 1  # index to obtain smaller/smaller innerList as we loop
-    keyDict = 0  # key to store the matching pairs in a dictionary
-
-    resultPair = list()  # initialize placeholder for matched pairs
-
-    # initialize dict, with `index 0` being an empty list
-    # - if subsequent pairs are found, `index 0` would be overwritten
-    # - if not pairs are found, then we still have our `empty List []` as first value
-    resultDict = {
-        keyDict: resultPair,
-    }
-
-    # loop array elements to check if they sum up to `tIV`
-    for t in tIA:
-        innerList = tIA[listIndex:]
-        for i in innerList:
-            testSum = t + i
-            if testSum == tIV:
-                resultPair = [t, i]
-                resultDict[keyDict] = resultPair  # append to the dictionary
-                keyDict += 1  # increase dictionary index
-        listIndex += 1
-    return resultDict[0]
+def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int, resultPair: tuple):
+    pass
 
 
 # define getArray()
@@ -174,10 +148,10 @@ def computeTwoNumSumOptionTwo(tIA: list, tIV: int):
 def getArray():
     try:
         print("\nUsing the format [1, 2, 3, 4] or [1,2,3,4] or [1, 2,3, 4] ...")
-        inputArrayString = input("please enter an integer array: ")
+        inputArrayString = input("Enter an integer array: ")
         while checkEmptyList(inputArrayString):
             print("Array cannot be empty")
-            inputArrayString = input("Enter an integer array: ")
+            getArray() # recursive call
         inputArray = parseInputArrayString(inputArrayString)
     except ValueError:
         raise Exception("Unable to initialize the user defined array")
@@ -192,16 +166,15 @@ def getArray():
 
 def getInteger():
     try:
-        inputIntegerString = input("please enter an integer value: ")
+        inputIntegerString = input("Enter a test value for 'Sum of Integers': ")
         inputInteger = int(inputIntegerString)  # convert string to integer
         while isinstance(inputInteger, int) is False:
             print("Input must be an integer")
-            inputIntegerString = input("please enter an integer value: ")
-            inputInteger = int(inputIntegerString)
+            getInteger() # recursive call
     except ValueError:
-        raise Exception("Unable to initialize the user defined integer value")
+        raise Exception("Unable to initialize the user defined test value for 'Sum of Integers'")
     finally:
-        print("Successfully initialized the *user defined integer value*")
+        print("Successfully initialized the *user defined test value for 'Sum of Integers'*")
     return inputInteger
 
 
@@ -213,18 +186,18 @@ def getInteger():
 
 def getIndex(lLength: int):
     try:
-        inputIndexString = input("please enter an integer index value: ")
+        inputIndexString = input("Enter an integer test initiation index: ")
         inputIndex = int(inputIndexString)  # convert string to integer
         while isinstance(inputIndex, int) is False:
             print("Index must be an integer")
-            getIndex(lLength: int) # recursively call getIndex again
+            getIndex(lLength) # recursive call
         if (inputIndex in range(lLength)) is False:
             print("Index must be within the range of the list")
-            getIndex(lLength: int) # recursively call getIndex again
+            getIndex(lLength)
     except ValueError:
-        raise Exception("Unable to initialize the user defined integer index value")
+        raise Exception("Unable to initialize the user defined integer test initiation index")
     finally:
-        print("Successfully initialized the *user defined integer index value*")
+        print("Successfully initialized the *user defined integer test initiation index*")
     return inputIndex
 
 #
