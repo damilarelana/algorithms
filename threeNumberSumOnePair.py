@@ -8,49 +8,52 @@ import random
 # - takes in a user defined integer value
 # - pre-sorts the list in place before usage
 # - checks if any two elements of array sums up to integer value
-# - does NOT bother about all 2-element `[a, b]` pairs that sum up to integer value, in a dict
+# - does NOT bother about all 3-element `[a, b, c]` pairs that sum up to integer value
 # - focuses only on just 1 uniquer instance
 # - returns
-#       + an empty `()`, when no 2-element pairs sums up to integer value
+#       + an empty `()`, when no 3-element pairs sums up to integer value
 
 
 
-def twoNumberSum():  # inputList param is of type list
-
-    # obtain test array
-    testArray = getArray()
-    testArray.sort() # this pre-sorts it in place
-    print("\nTest Array: ", testArray)
-    print("Test Array is of type: ", type(testArray))
-    print("    ============    \n")
-
-    # obtain test integer
-    testInteger = getInteger()
-    print("\nTest Sum: ", testInteger)
-    print("Sum is of type: ", type(testInteger))
-    print("    ============    \n")
-
-    # obtain test index - after passing in the length of the array
-    selectionAnswerString = selectGetIndexMethod()
-    if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
-        testIndex = getIndex(len(testArray))
-        print("\nTest Index: ", testIndex)
-        print("Index is of type: ", type(testIndex))
-        print("    ============    \n")
-    else: # not necessary to test for `No` here because selectGetIndexMethod() already handles invalid inputs [so the remain values would be `No`]
-        testIndex = getRandomIndex(len(testArray))
-        print("\nTest Index: ", testIndex)
-        print("Index is of type: ", type(testIndex))
-        print("    ============    \n")
-
+def threeNumberSum(testArray: list, testSum: int, testIndex: int):  # inputList param is of type list
 
     # compute the 2-element pairs
-    finalPair = computeTwoNumSum(testArray, testInteger, testIndex)
+    finalTriple = computeThreeNumSum(testArray, testSum, testIndex)
 
     # return the results
-    if not finalPair:  # checks if an empty tuple was returned i.e. no pairs found
-        print("No 2-element (a, b) pairs of {0} sums up to the integer value {1}".format(testArray, testInteger))
+    if not finalTriple:  # checks if an empty tuple was returned i.e. no pairs found
+        print("No 3-element (a, b, c) pairs of {0} sums up to the integer value {1}".format(testArray, testSum))
+    else:
+        (finalTripleValueOne, finalTripleValueTwo, finalTripleValueThree) = finalTriple
+        print("Successfully found a set of integer triples ({}, {}, {}), that sums up to {}".format(finalTripleValueOne, finalTripleValueTwo. finalTripleValueThree, testSum))
     
+# define computeThreeNumberSum()
+# - assumes the list has been pre-sorted in ascending manner i.e. default 
+# - pre-sorting helps to divide and conquer
+# - assumes the sum has to be constituted by two indices i.e. even if the same value exists in two indices
+#    + i.e. we are not looking for when the sum is the multiple of just 1 index element
+# - takes in a user defined integer array: tIA
+# - takes in a user defined integer value: tIV
+# - takes in a user defined (or randomly selected) tIndex to start search from
+# - this restricts the computation to just one instance of a matching pair
+#    + even if similar matching pairs exist at different indices
+
+
+def computeThreeNumSum(tIA: list, tIV: int, tIndex: int):
+    # outer loop element test range is 'len(tIA) - 2'
+    #   - ensures we can handle when the list is `[1, 2, 3]` i.e. leave at least 2 elements when iterating for the first element
+    #   - so that the last 2 elements can also be used to determine sum of their pairs
+    outLoopLength = len(tIA - 2)
+    returnedTriple = tuple()
+    for t in range(0, outLoopLength:
+        intermediatetIV = tIV - tIA[t]  # determine the intermediate test value for 'Sum of Integers' applicable to the slice to be used for intermediate sum of pairs
+        intermediateStartIndex = t + 1
+        returnedPair = computeTwoNumSum(tIA, intermediatetIV, intermediateStartIndex) # an intermediateList is not created because one of the values in a matching triple might be in the discarded part of the slice
+        if returnedPair:
+            (returnedPairValueOne, returnedPairValueTwo) = returnedPair
+            returnedTriple = (tIA[t], returnedPairValueOne, returnedPairValueTwo)
+            return returnedTriple
+    return returnedTriple
 
 # define computeTwoNumberSum()
 # - assumes the list has been pre-sorted in ascending manner i.e. default 
@@ -68,6 +71,9 @@ def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):
     startIndex = copy.deepcopy(tIndex)  # deepcopy that random sampletIndex  # index to obtain smaller/smaller innerList as we loop
     lastIndex =  len(tIA) - 1
     resultPair = tuple()  # initialize tuple placeholder for matched pairs
+    returnedPair = tuple()
+    newReturnedPair = tuple()
+    failSafeReturnedPair = tuple() 
 
     # loop array elements to check if they sum up to `tIV`
     # first we divide and conquer by searching in slice tIA[startIndex:lastIndex+1]
@@ -275,8 +281,35 @@ def checkEmptyList(inputArrayString: str):
 # - to allow code to be run as either standalone or re-usable code
 
 def main():
+
+    # obtain test array
+    testArray = getArray()
+    testArray.sort() # this pre-sorts it in place
+    print("\nTest Array: ", testArray)
+    print("Test Array is of type: ", type(testArray))
+    print("    ============    \n")
+
+    # obtain test integer
+    testSum = getInteger()
+    print("\nTest Sum: ", testSum)
+    print("Sum is of type: ", type(testSum))
+    print("    ============    \n")
+
+    # obtain test index - after passing in the length of the array
+    selectionAnswerString = selectGetIndexMethod()
+    if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
+        testIndex = getIndex(len(testArray))
+        print("\nTest Index: ", testIndex)
+        print("Index is of type: ", type(testIndex))
+        print("    ============    \n")
+    else: # not necessary to test for `No` here because selectGetIndexMethod() already handles invalid inputs [so the remain values would be `No`]
+        testIndex = getRandomIndex(len(testArray))
+        print("\nTest Index: ", testIndex)
+        print("Index is of type: ", type(testIndex))
+        print("    ============    \n")
+
     start_time = time.time()
-    twoNumberSum()
+    threeNumberSum(testArray, testSum, testIndex)
     print("Time: {} seconds".format((time.time() - start_time)))
 
 

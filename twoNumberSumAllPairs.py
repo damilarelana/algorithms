@@ -19,21 +19,21 @@ def twoNumberSum():  # inputList param is of type list
     print("    ============    \n")
 
     # obtain test integer
-    testInteger = getInteger()
-    print("\nTest Sum: ", testInteger)
-    print("Sum is of type: ", type(testInteger))
+    testSum = getInteger()
+    print("\nTest Sum: ", testSum)
+    print("Sum is of type: ", type(testSum))
     print("    ============    \n")
 
     # compute the 2-element pairs
-    resultDict = computeTwoNumSum(testArray, testInteger)
+    resultDict = computeTwoNumSum(testArray, testSum)
 
     # return the results
     if checkEmptyList(str(resultDict[0])):  # checkEmptyList() checks if resultDict[0] is an empty list - str([]) is same as "[]"
-        print("No 2-element [a, b] pairs of {0} sums up to the integer value {1}".format(testArray, testInteger))
+        print("No 2-element [a, b] pairs of {0} sums up to the integer value {1}".format(testArray, testSum))
     else:
         numOfPairs = len(resultDict)
         firstPair = resultDict[0]
-        print("There are {0} instances of 2-element [a, b] pairs that sum up to {1} ...".format(numOfPairs, testInteger))
+        print("There are {0} instances of 2-element [a, b] pairs that sum up to {1} ...".format(numOfPairs, testSum))
         print("{0} is one of those instances".format(firstPair))
 
 # define computeTwoNumberSum()

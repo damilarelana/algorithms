@@ -23,21 +23,21 @@ def threeNumSum():  # inputList param is of type list
     print("    ============    \n")
 
     # obtain test integer
-    testInteger = getInteger()
-    print("\nTest Sum: ", testInteger)
-    print("Sum is of type: ", type(testInteger))
+    testSum = getInteger()
+    print("\nTest Sum: ", testSum)
+    print("Sum is of type: ", type(testSum))
     print("    ============    \n")
 
     # compute the 3-element triplets
-    resultDict = computeThreeNumSum(testArray, testInteger)
+    resultDict = computeThreeNumSum(testArray, testSum)
 
     # return the results
     if checkEmptyList(str(resultDict[0])):  # checkEmptyList() checks if resultDict[0] is an empty list - str([]) is same as "[]"
-        print("No 3-element [a, b, c] triplets of {0} sums up to the integer value {1}".format(testArray, testInteger))
+        print("No 3-element [a, b, c] triplets of {0} sums up to the integer value {1}".format(testArray, testSum))
     else:
         numOfTriplets = len(resultDict)
         firstTriplet = resultDict[0]
-        print("There are {0} instances of 3-element [a, b, c] triplets that sum up to {1} ...".format(numOfTriplets, testInteger))
+        print("There are {0} instances of 3-element [a, b, c] triplets that sum up to {1} ...".format(numOfTriplets, testSum))
         print("{0} is one of those instances, in sorted form".format(firstTriplet))
 
     # constructor a 2-dimensional array using the dictionary values

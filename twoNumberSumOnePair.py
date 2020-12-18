@@ -15,41 +15,13 @@ import random
 
 
 
-def twoNumberSum():  # inputList param is of type list
-
-    # obtain test array
-    testArray = getArray()
-    testArray.sort() # this pre-sorts it in place
-    print("\nTest Array: ", testArray)
-    print("Test Array is of type: ", type(testArray))
-    print("    ============    \n")
-
-    # obtain test integer
-    testInteger = getInteger()
-    print("\nTest Sum: ", testInteger)
-    print("Sum is of type: ", type(testInteger))
-    print("    ============    \n")
-
-    # obtain test index - after passing in the length of the array
-    selectionAnswerString = selectGetIndexMethod()
-    if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
-        testIndex = getIndex(len(testArray))
-        print("\nTest Index: ", testIndex)
-        print("Index is of type: ", type(testIndex))
-        print("    ============    \n")
-    else: # not necessary to test for `No` here because selectGetIndexMethod() already handles invalid inputs [so the remain values would be `No`]
-        testIndex = getRandomIndex(len(testArray))
-        print("\nTest Index: ", testIndex)
-        print("Index is of type: ", type(testIndex))
-        print("    ============    \n")
-
-
+def twoNumberSum(testArray: list, testSum: int, testIndex: int):  # inputList param is of type list
     # compute the 2-element pairs
-    finalPair = computeTwoNumSum(testArray, testInteger, testIndex)
+    finalPair = computeTwoNumSum(testArray, testSum, testIndex)
 
     # return the results
     if not finalPair:  # checks if an empty tuple was returned i.e. no pairs found
-        print("No 2-element (a, b) pairs of {0} sums up to the integer value {1}".format(testArray, testInteger))
+        print("No 2-element (a, b) pairs of {0} sums up to the integer value {1}".format(testArray, testSum))
     
 
 # define computeTwoNumberSum()
@@ -65,47 +37,49 @@ def twoNumberSum():  # inputList param is of type list
 
 
 def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):
-    startIndex = copy.deepcopy(tIndex)  # deepcopy that random sampletIndex  # index to obtain smaller/smaller innerList as we loop
-    lastIndex =  len(tIA) - 1
-    resultPair = tuple()  # initialize tuple placeholder for matched pairs
-
+    
     # loop array elements to check if they sum up to `tIV`
     # first we divide and conquer by searching in slice tIA[startIndex:lastIndex+1]
     #   - assuming that startIndex is NOT 0 i.e. startIndex > 0
-    newLastIndex = copy.deepcopy(tIndex)
-    if startIndex < lastIndex and startIndex != 0:
-        returnedPair = getTwoSumPairs(tIA, tIV, startIndex, lastIndex, resultPair)
-        if not returnedPair is False: # meaning a pair was found so 'not returnedPair' is 'not True' i.e. False
+    startIndex = copy.deepcopy(tIndex)  # deepcopy that random sampletIndex  # index to obtain smaller/smaller innerList as we loop
+    lastIndex =  len(tIA) - 1
+    if startIndex != 0: # this can sometimes help to speed up the search [but not always guaranteed to work]
+        returnedPair = getTwoSumPairs(tIA, tIV, startIndex, lastIndex) # using another if startIndex < lastIndex before this, is redundant since getTwoSumPairs already does that
+        if (not returnedPair) is False: # meaning a pair was found so 'not returnedPair' is 'not True' i.e. False
             return returnedPair
-    
-    if not returnedPair: # only runs if search with previous slice is still empty
-        # this loop solves for when the search does not find the pairs in the initial slice tIA[startIndex:lastIndex+1]
+        # with returnedPair still being an empty tuple() means the range [startIndex:lastIndex+1] did not give a match in the initial slice tIA[startIndex:lastIndex+1]
+        # we need to start another search from [0:startIndex+1]
         #   - we then test the remaining slice i.e. tIA[0:startIndex] (note we can also overlap the slices by using the slice tIA[0:startIndex + 1])
         #   - where newLastIndex = startIndex - 1 or newLastIndex = startIndex
         #   - newStartIndex = 0
-        newResultPair = copy.deepcopy(resultPair)
-        newLastIndex = copy.deepcopy(tIndex)
-        newStartIndex = 0
-        if newStartIndex < newLastIndex:
-            newReturnedPair = getTwoSumPairs(tIA, tIV, newStartIndex, newLastIndex, newResultPair)
-            if not newReturnedPair is False: # meaning a pair was found so 'not newReturnedPair' is 'not True' i.e. False
+        else:
+            newLastIndex = copy.deepcopy(tIndex) + 1
+            newStartIndex = 0
+            newReturnedPair = getTwoSumPairs(tIA, tIV, newStartIndex, newLastIndex)
+            if (not newReturnedPair) is False: # meaning a pair was found so 'not newReturnedPair' is 'not True' i.e. False
                 return newReturnedPair
-
-    
-    if not newReturnedPair: # only runs if both search with both slices return empty
+            else: # this means search withing both slices as failed and we now need to search across both slices
+                firstFailSafeLastIndex = len(tIA) - 1
+                firstFailSafeStartIndex = 0
+                firstFailSafeReturnedPair = getTwoSumPairs(tIA, tIV, firstFailSafeStartIndex, firstFailSafeLastIndex)
+                if (not firstFailSafeReturnedPair) is False: # meaning a pair was found so 'not failSafeReturnedPair' is 'not True' i.e. False
+                    return firstFailSafeReturnedPair
+                firstFailSafeReturnedPair = tuple() 
+                return firstFailSafeReturnedPair # this is the catch-all for when that matching pairs are not found
+    else: # the search jumps here immediately if startIndex is 0
         # this is a fail save loop that uses the whole list tIA[0:lastIndex+1]
         #   - in case the matching pairs on adjacent slices 
-        failSafeResultPair = copy.deepcopy(resultPair)
-        failSafeLastIndex = len(tIA) - 1
-        failSafeStartIndex = 0
-        if failSafeStartIndex < failSafeLastIndex:
-            failSafeReturnedPair = getTwoSumPairs(tIA, tIV, failSafeStartIndex, failSafeLastIndex, failSafeResultPair)
-            if not failSafeReturnedPair is False: # meaning a pair was found so 'not failSafeReturnedPair' is 'not True' i.e. False
-                return failSafeReturnedPair
+        lastFailSafeLastIndex = len(tIA) - 1
+        lastFailSafeStartIndex = 0
+        lastFailSafeReturnedPair = getTwoSumPairs(tIA, tIV, lastFailSafeStartIndex, lastFailSafeLastIndex)
+        if (not lastFailSafeReturnedPair) is False: # meaning a pair was found so 'not failSafeReturnedPair' is 'not True' i.e. False
+            return lastFailSafeReturnedPair
+        lastFailSafeReturnedPair = tuple() 
+        return lastFailSafeReturnedPair # this is the catch-all for when that matching pairs are not found
 
-    return resultPair # return the empty tuple which has not been changed since the pairs were not found
 
-def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int, resultPair: tuple):
+def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int):
+    resultPair = tuple()
     while startIndex < lastIndex:
         tempSum = tIA[startIndex] + tIA[lastIndex]
         if tempSum == tIV:
@@ -125,7 +99,6 @@ def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int, resultP
             lastIndex -= 1
         else:
             startIndex += 1
-
     return resultPair
 
 
@@ -270,13 +243,39 @@ def checkEmptyList(inputArrayString: str):
         ",": True,  # handles empty string array of types "[, ]" etc.
     }.get(parsedStringWithNoWhitespaces, False)
 
-
 # define main() function
 # - to allow code to be run as either standalone or re-usable code
 
 def main():
+
+    # obtain test array
+    testArray = getArray()
+    testArray.sort() # this pre-sorts it in place
+    print("\nTest Array: ", testArray)
+    print("Test Array is of type: ", type(testArray))
+    print("    ============    \n")
+
+    # obtain test integer
+    testSum = getInteger()
+    print("\nTest Sum: ", testSum)
+    print("Sum is of type: ", type(testSum))
+    print("    ============    \n")
+
+    # obtain test index - after passing in the length of the array
+    selectionAnswerString = selectGetIndexMethod()
+    if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
+        testIndex = getIndex(len(testArray))
+        print("\nTest Index: ", testIndex)
+        print("Index is of type: ", type(testIndex))
+        print("    ============    \n")
+    else: # not necessary to test for `No` here because selectGetIndexMethod() already handles invalid inputs [so the remain values would be `No`]
+        testIndex = getRandomIndex(len(testArray))
+        print("\nTest Index: ", testIndex)
+        print("Index is of type: ", type(testIndex))
+        print("    ============    \n")
+
     start_time = time.time()
-    twoNumberSum()
+    twoNumberSum(testArray, testSum, testIndex)
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
