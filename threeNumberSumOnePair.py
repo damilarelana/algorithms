@@ -2,6 +2,7 @@ import time
 import copy
 import secrets
 import random
+import pdb
 
 # define twoNumberSum function
 # - takes in a user defined integer array
@@ -25,7 +26,7 @@ def threeNumberSum(testArray: list, testSum: int, testIndex: int):  # inputList 
         print("No 3-element (a, b, c) pairs of {0} sums up to the integer value {1}".format(testArray, testSum))
     else:
         (finalTripleValueOne, finalTripleValueTwo, finalTripleValueThree) = finalTriple
-        print("Successfully found a set of integer triples ({}, {}, {}), that sums up to {}".format(finalTripleValueOne, finalTripleValueTwo. finalTripleValueThree, testSum))
+        print("Successfully found a triple ({}, {}, {}), that sums up to {}".format(finalTripleValueOne, finalTripleValueTwo, finalTripleValueThree, testSum))
     
 # define computeThreeNumberSum()
 # - assumes the list has been pre-sorted in ascending manner i.e. default 
@@ -43,9 +44,9 @@ def computeThreeNumSum(tIA: list, tIV: int, tIndex: int):
     # outer loop element test range is 'len(tIA) - 2'
     #   - ensures we can handle when the list is `[1, 2, 3]` i.e. leave at least 2 elements when iterating for the first element
     #   - so that the last 2 elements can also be used to determine sum of their pairs
-    outLoopLength = len(tIA - 2)
+    outLoopLength = len(tIA)- 2
     returnedTriple = tuple()
-    for t in range(0, outLoopLength:
+    for t in range(0, outLoopLength):
         intermediatetIV = tIV - tIA[t]  # determine the intermediate test value for 'Sum of Integers' applicable to the slice to be used for intermediate sum of pairs
         intermediateStartIndex = t + 1
         returnedPair = computeTwoNumSum(tIA, intermediatetIV, intermediateStartIndex) # an intermediateList is not created because one of the values in a matching triple might be in the discarded part of the slice
@@ -67,56 +68,53 @@ def computeThreeNumSum(tIA: list, tIV: int, tIndex: int):
 #    + even if similar matching pairs exist at different indices
 
 
-def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):
-    startIndex = copy.deepcopy(tIndex)  # deepcopy that random sampletIndex  # index to obtain smaller/smaller innerList as we loop
-    lastIndex =  len(tIA) - 1
-    resultPair = tuple()  # initialize tuple placeholder for matched pairs
-    returnedPair = tuple()
-    newReturnedPair = tuple()
-    failSafeReturnedPair = tuple() 
-
+def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):    
     # loop array elements to check if they sum up to `tIV`
     # first we divide and conquer by searching in slice tIA[startIndex:lastIndex+1]
     #   - assuming that startIndex is NOT 0 i.e. startIndex > 0
-    newLastIndex = copy.deepcopy(tIndex)
-    if startIndex < lastIndex and startIndex != 0:
-        returnedPair = getTwoSumPairs(tIA, tIV, startIndex, lastIndex, resultPair)
-        if not returnedPair is False: # meaning a pair was found so 'not returnedPair' is 'not True' i.e. False
+    startIndex = copy.deepcopy(tIndex)  # deepcopy that random sampletIndex  # index to obtain smaller/smaller innerList as we loop
+    lastIndex =  len(tIA) - 1
+    if startIndex != 0: # this can sometimes help to speed up the search [but not always guaranteed to work]
+        returnedPair = getTwoSumPairs(tIA, tIV, startIndex, lastIndex) # using another if startIndex < lastIndex before this, is redundant since getTwoSumPairs already does that
+        if (not returnedPair) is False: # meaning a pair was found so 'not returnedPair' is 'not True' i.e. False
             return returnedPair
-    
-    if not returnedPair: # only runs if search with previous slice is still empty
-        # this loop solves for when the search does not find the pairs in the initial slice tIA[startIndex:lastIndex+1]
+        # with returnedPair still being an empty tuple() means the range [startIndex:lastIndex+1] did not give a match in the initial slice tIA[startIndex:lastIndex+1]
+        # we need to start another search from [0:startIndex+1]
         #   - we then test the remaining slice i.e. tIA[0:startIndex] (note we can also overlap the slices by using the slice tIA[0:startIndex + 1])
         #   - where newLastIndex = startIndex - 1 or newLastIndex = startIndex
         #   - newStartIndex = 0
-        newResultPair = copy.deepcopy(resultPair)
-        newLastIndex = copy.deepcopy(tIndex)
-        newStartIndex = 0
-        if newStartIndex < newLastIndex:
-            newReturnedPair = getTwoSumPairs(tIA, tIV, newStartIndex, newLastIndex, newResultPair)
-            if not newReturnedPair is False: # meaning a pair was found so 'not newReturnedPair' is 'not True' i.e. False
+        else:
+            newLastIndex = copy.deepcopy(tIndex) + 1
+            newStartIndex = 0
+            newReturnedPair = getTwoSumPairs(tIA, tIV, newStartIndex, newLastIndex)
+            if (not newReturnedPair) is False: # meaning a pair was found so 'not newReturnedPair' is 'not True' i.e. False
                 return newReturnedPair
-
-    
-    if not newReturnedPair: # only runs if both search with both slices return empty
+            else: # this means search withing both slices as failed and we now need to search across both slices
+                firstFailSafeLastIndex = len(tIA) - 1
+                firstFailSafeStartIndex = 0
+                firstFailSafeReturnedPair = getTwoSumPairs(tIA, tIV, firstFailSafeStartIndex, firstFailSafeLastIndex)
+                if (not firstFailSafeReturnedPair) is False: # meaning a pair was found so 'not failSafeReturnedPair' is 'not True' i.e. False
+                    return firstFailSafeReturnedPair
+                firstFailSafeReturnedPair = tuple() 
+                return firstFailSafeReturnedPair # this is the catch-all for when that matching pairs are not found
+    else: # the search jumps here immediately if startIndex is 0
         # this is a fail save loop that uses the whole list tIA[0:lastIndex+1]
         #   - in case the matching pairs on adjacent slices 
-        failSafeResultPair = copy.deepcopy(resultPair)
-        failSafeLastIndex = len(tIA) - 1
-        failSafeStartIndex = 0
-        if failSafeStartIndex < failSafeLastIndex:
-            failSafeReturnedPair = getTwoSumPairs(tIA, tIV, failSafeStartIndex, failSafeLastIndex, failSafeResultPair)
-            if not failSafeReturnedPair is False: # meaning a pair was found so 'not failSafeReturnedPair' is 'not True' i.e. False
-                return failSafeReturnedPair
+        lastFailSafeLastIndex = len(tIA) - 1
+        lastFailSafeStartIndex = 0
+        lastFailSafeReturnedPair = getTwoSumPairs(tIA, tIV, lastFailSafeStartIndex, lastFailSafeLastIndex)
+        if (not lastFailSafeReturnedPair) is False: # meaning a pair was found so 'not failSafeReturnedPair' is 'not True' i.e. False
+            return lastFailSafeReturnedPair
+        lastFailSafeReturnedPair = tuple() 
+        return lastFailSafeReturnedPair # this is the catch-all for when that matching pairs are not found
 
-    return resultPair # return the empty tuple which has not been changed since the pairs were not found
-
-def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int, resultPair: tuple):
+def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int):
+    resultPair = tuple()
     while startIndex < lastIndex:
         tempSum = tIA[startIndex] + tIA[lastIndex]
         if tempSum == tIV:
             resultPair = (tIA[startIndex], tIA[lastIndex])
-            print("Successfully found a pair ({}, {}) at tIA[{}] and tIA[{}]".format(tIA[startIndex], tIA[lastIndex], startIndex, lastIndex))
+            print("Successfully found a pair ({}, {}) at tIA[{}] and tIA[{}], for the sum {}".format(tIA[startIndex], tIA[lastIndex], startIndex, lastIndex, tIV))
             return resultPair
         
         # if the tempSum is larger than tIV then it means
@@ -131,7 +129,6 @@ def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int, resultP
             lastIndex -= 1
         else:
             startIndex += 1
-
     return resultPair
 
 
