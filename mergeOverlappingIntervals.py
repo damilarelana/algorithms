@@ -30,7 +30,7 @@ def mergeIntervals(testList: list):
     for i in range(1, len(testList)):
         # test the intervals within newList compared to the 
         lastIndexNewList = len(newList) - 1 # the lastIndex of the newList is constantly changing
-        if getattr(newList[lastIndexNewList],'end') >= (testList[i].start): # if endtimestamp of current last interval (of newList) is greater than starttimestamp current test interval of test List, then there is an overlap
+        if getattr(newList[lastIndexNewList],'end') >= getattr(testList[i],'start'): # if endtimestamp of current last interval (of newList) is greater than starttimestamp current test interval of test List, then there is an overlap
             setattr(newList[lastIndexNewList], 'end', max(testList[i].end, newList[lastIndexNewList].end)), # since there is an overlap, then choose largest endtimestamp (between current last interval [of newList] and current test interval of testList)
         else: # if there is no overlap, then just append the current test interval object to the newlist
             newList.append( Interval( 
