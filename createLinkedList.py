@@ -60,10 +60,12 @@ class LinkedList:
 
     def printList(self):
         currentNode = self.head
+        outputString = ""
         while not (currentNode is None): # iterates through all the notes and prints the data they contain
-            print(currentNode.getData(), end=" ")
+            outputString += str(currentNode.getData()) + " "
             currentNode = currentNode.getNext()
-
+        return outputString
+            
 # define class Node
 # - representing the nodes of the linkedlist
 class Node:
@@ -81,12 +83,14 @@ class Node:
         self.next = newNext
 
 
-# define createLinkedList()
+# define CreateLinkedList()
 #   - takes in a a list with elements being integer values
 def createLinkedList(integerList: list):
     linkedList = LinkedList() # create shell of linkedlist
-    integerList.reverse() # reverse the list elements in place
-    for i in integerList:   # populate linkedlist in reverse order i.e. least significant number is placed just after the head
+    # next line populates the linkedlist in reverse order i.e. least significant number is placed just after the head
+    # because of FIFO meaning the last in is the one closer to the head i.e. the least significant bit (or the last element of the original list in this case)
+    # so there is no need to `integerList.reverse()`
+    for i in integerList:  
         linkedList.insertNode(i)
     return linkedList
 
@@ -143,10 +147,12 @@ def main():
 
     start_time = time.time()
     firstLinkedList = createLinkedList(testListOne)
+    firstLinkedListString = firstLinkedList.printList()
     secondLinkedList = createLinkedList(testListTwo)
+    secondLinkedListString = secondLinkedList.printList()
 
-    print("\n1st Linked List is {}".format(firstLinkedList))
-    print("\n2nd Linked List is {}".format(secondLinkedList))
+    print("1st Linked List {} contains nodes {}".format(firstLinkedList, firstLinkedListString))
+    print("2nd Linked List {} contains nodes {}".format(secondLinkedList, secondLinkedListString))
     print("\nTime: {} seconds".format((time.time() - start_time)))
     print("    ============    \n")
 

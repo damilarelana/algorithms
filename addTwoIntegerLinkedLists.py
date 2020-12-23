@@ -1,4 +1,6 @@
 import time
+from algorithms.createLinkedList import createLinkedList as c
+from algorithms.createLinkedList import getTestData as g
 
 # define class Interval
 # - that takes in a start and end timestamp to determine the internal
