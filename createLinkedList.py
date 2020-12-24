@@ -7,10 +7,11 @@ class LinkedList:
     def __init__(self, head=None): # LinkedList instance object initializer
         self.head = head
 
-    def insertNode(self, data): # data here means value we want to put at the head of the new linkedlist
+    def insertNode(self, data): # data here means value we want to put at the head of the new linkedlist (assumes the data is NOT None)
         newNode = Node(data)
-        newNode.setNext(self.head) # make the previous head to be the next node to this
-        self.head = newNode # make this the new head
+        if not (data is None): # helps avoid resetting the head when the data is None
+            newNode.setNext(self.head) # make the previous head to be the next node to this i.e. assuming the data is NOT None
+        self.head = newNode # make this the new head. if data == None, then this behaves as if you just reinitialized the LinkedList
 
     def getNode(self, data): # data here means value of the node we want
         currentNode = self.head
@@ -151,8 +152,12 @@ def main():
     secondLinkedList = createLinkedList(testListTwo)
     secondLinkedListString = secondLinkedList.printList()
 
+    randomLinkedList = createLinkedList(list())
+    randomLinkedListString = randomLinkedList.printList()
+
     print("1st Linked List {} contains nodes {}".format(firstLinkedList, firstLinkedListString))
     print("2nd Linked List {} contains nodes {}".format(secondLinkedList, secondLinkedListString))
+    print("random Linked List {} contains nodes {}".format(randomLinkedList, randomLinkedListString))
     print("\nTime: {} seconds".format((time.time() - start_time)))
     print("    ============    \n")
 

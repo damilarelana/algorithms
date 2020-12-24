@@ -1,21 +1,12 @@
 import time
-from algorithms.createLinkedList import createLinkedList as c
-from algorithms.createLinkedList import getTestData as g
+import algorithms.createLinkedList as c
 
-# define class Interval
-# - that takes in a start and end timestamp to determine the internal
-# - has no methods
-# - object is used so as to save state
-class Interval:
-    def __init__(self, start: int, end: int): # instance object initializer
-        self.start = start
-        self.end = end
 
-# mergeIntervals() 
-# - takes in an input list of objects i.e. testList (in the function scope) === tIntervals (in the global scope)
-# - where each object represents a timestamp interval
-# - compares the objects and uses the result to populate another new list
-def mergeIntervals(testList: list):
+def addIntegerLinkedList(firstInteger: c.LinkedList, secondInteger: c.LinkedList):
+
+    newLinkedList = c.LinkedList() # default head value is None
+    lastNode = c.Node() # default data argument is None
+    carryValue = 0 # value carried over when adding two other numbers e.g. 9 + 8 = 17 - which in reality was 7 and 1 carried to the left
 
     # check if list is empty and exit accordingly
     # return the empty list
