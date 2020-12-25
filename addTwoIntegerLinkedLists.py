@@ -1,6 +1,6 @@
 import time
 import algorithms.createLinkedList as c
-
+from IPython.display import display
 
 def addIntegerNodes(nodeFirstInteger: c.Node, nodeSecondInteger c.Node):
 
@@ -8,8 +8,9 @@ def addIntegerNodes(nodeFirstInteger: c.Node, nodeSecondInteger c.Node):
     lastNode = c.Node() # default data argument is None
     carryValue = 0 # value carried over when adding two other numbers e.g. 9 + 8 = 17 - which in reality was 7 and 1 carried to the left
 
-    # check if list is empty and exit accordingly
-    # return the empty list
+    while ( (nodeFirstInteger != None) or (nodeSecondInteger != None) or (carryValue > 0) ):
+
+
     if ((not testList) is True) or (len(testList) == 0) or (testList == None):
         return testList
 
@@ -38,8 +39,22 @@ def main():
 
     # acquire test LinkedList data
     testListOne, testListTwo = c.getTestData()
+    
     firstLinkedList = c.createLinkedList(testListOne)
+    firstNodeFirstLinkedList = firstLinkedList.getNode() # not using an argument with the getNode(), returns the first node
+
     secondLinkedList = c.createLinkedList(testListTwo)
+    firstNodeSecondLinkedList = secondLinkedList.getNode() # not using an argument with the getNode(), returns the first node
+
+    # start processing
+    newLinkedList = addIntegerNodes(firstNodeFirstLinkedList, firstNodeSecondLinkedList) # passing the first nodes of each linkedlist
+    display(newLinkedList)
+
+    randomLinkedList = createLinkedList() # empty LinkedList
+    randomLinkedListString = randomLinkedList.printList() # print content of empty LinkedList
+    randomLinkedListNumOfNodes = randomLinkedList.countAllNodes() # print number of nodes in empty LinkedList
+    randomLinkedListEmptyValue = randomLinkedList.getNode()# prints the first returned value (as data=None due to not being supplied) 
+
     print("1st Linked List {} contains nodes {}".format(firstLinkedList, firstLinkedList.printList()))
     print("2nd Linked List {} contains nodes {}".format(secondLinkedList, secondLinkedList.printList()))
 

@@ -164,6 +164,10 @@ def main():
     firstLinkedListString = firstLinkedList.printList()
     firstLinkedListNumOfNodes = firstLinkedList.countAllNodes() # want to start the counting from head
 
+    firstLinkedListHeadGetData = firstLinkedList.head.getData()
+    firstLinkedListGetNode = firstLinkedList.getNode()
+
+
     secondLinkedList = createLinkedList(testListTwo)
     secondLinkedListString = secondLinkedList.printList()
     secondLinkedListNumOfNodes = secondLinkedList.countAllNodes()
@@ -171,11 +175,14 @@ def main():
     randomLinkedList = createLinkedList() # empty LinkedList
     randomLinkedListString = randomLinkedList.printList() # print content of empty LinkedList
     randomLinkedListNumOfNodes = randomLinkedList.countAllNodes() # print number of nodes in empty LinkedList
-    randomLinkedListEmptyValue = randomLinkedList.getNode()# prints the first returned value (as data=None due to not being supplied) 
+    randomLinkedListEmptyValue = randomLinkedList.head.getData() # prints the first returned value (as data=None due to not being supplied) 
 
     print("1st Linked List {} contains {} nodes, and corresponding node values: {}".format(firstLinkedList, firstLinkedListNumOfNodes, firstLinkedListString))
     print("2nd Linked List {} contains {} nodes, and corresponding node values: {}".format(secondLinkedList, secondLinkedListNumOfNodes, secondLinkedListString))
     print("random Linked List {} contains {} nodes, corresponding node values: {}, and empty value: {}".format(randomLinkedList, randomLinkedListNumOfNodes, randomLinkedListString, randomLinkedListEmptyValue))
+
+    print("1st Linked List's head is {} and getNode() gives {}".format(firstLinkedListHeadGetData, firstLinkedListGetNode))
+
     print("\nTime: {} seconds".format((time.time() - start_time)))
     print("    ============    \n")
 
