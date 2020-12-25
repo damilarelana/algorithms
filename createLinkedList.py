@@ -137,7 +137,7 @@ def parseInputIntegers(inputIntegers: int):  # inputString is of type string
 
 
 # getTestData()
-def getTestData():
+def getInputData():
     # obtain 1st test integers
     print("========================    \n")
     testIntegerOne = getIntegers()
@@ -156,16 +156,16 @@ def getTestData():
 
     return testListOne, testListTwo
 
-def main():
-    testListOne, testListTwo = getTestData()
+# computeLinkedListData()
+def computeLinkedListData():
+    testListOne, testListTwo = getInputData()
 
-    start_time = time.time()
     firstLinkedList = createLinkedList(testListOne)
     firstLinkedListString = firstLinkedList.printList()
     firstLinkedListNumOfNodes = firstLinkedList.countAllNodes() # want to start the counting from head
 
-    firstLinkedListHeadGetData = firstLinkedList.head.getData()
-    firstLinkedListGetNode = firstLinkedList.getNode()
+    firstLinkedListHeadGetData = firstLinkedList.head.getData() # this should give first node value e.g. 4 (if the linked list was storing 4 3 2 1)
+    firstLinkedListGetNode = firstLinkedList.getNode(firstLinkedListHeadGetData) # this should return 'None' i.e. since 'data == None' thus making it iterate through all nodes where data != None, except the tail
 
 
     secondLinkedList = createLinkedList(testListTwo)
@@ -175,16 +175,23 @@ def main():
     randomLinkedList = createLinkedList() # empty LinkedList
     randomLinkedListString = randomLinkedList.printList() # print content of empty LinkedList
     randomLinkedListNumOfNodes = randomLinkedList.countAllNodes() # print number of nodes in empty LinkedList
-    randomLinkedListEmptyValue = randomLinkedList.head.getData() # prints the first returned value (as data=None due to not being supplied) 
+    if not (randomLinkedList.head is None):
+        randomLinkedListEmptyValue = randomLinkedList.head.getData() # prints the first returned value (as data=None due to not being supplied) 
+    else:
+        randomLinkedListEmptyValue = None
 
     print("1st Linked List {} contains {} nodes, and corresponding node values: {}".format(firstLinkedList, firstLinkedListNumOfNodes, firstLinkedListString))
+    print("1st Linked List's head node value is {} and getNode() gives actual node as {}".format(firstLinkedListHeadGetData, firstLinkedListGetNode))
     print("2nd Linked List {} contains {} nodes, and corresponding node values: {}".format(secondLinkedList, secondLinkedListNumOfNodes, secondLinkedListString))
     print("random Linked List {} contains {} nodes, corresponding node values: {}, and empty value: {}".format(randomLinkedList, randomLinkedListNumOfNodes, randomLinkedListString, randomLinkedListEmptyValue))
 
-    print("1st Linked List's head is {} and getNode() gives {}".format(firstLinkedListHeadGetData, firstLinkedListGetNode))
 
+def main():
+
+    start_time = time.time()
+    computeLinkedListData()
     print("\nTime: {} seconds".format((time.time() - start_time)))
-    print("    ============    \n")
+    print("====================================\n")
 
 if __name__ == "__main__":
     main()

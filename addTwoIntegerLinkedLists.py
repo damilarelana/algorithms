@@ -9,7 +9,9 @@ def addIntegerNodes(nodeFirstInteger: c.Node, nodeSecondInteger c.Node):
     carryValue = 0 # value carried over when adding two other numbers e.g. 9 + 8 = 17 - which in reality was 7 and 1 carried to the left
 
     while ( (nodeFirstInteger != None) or (nodeSecondInteger != None) or (carryValue > 0) ):
-
+        
+        # extract 
+        if 
 
     if ((not testList) is True) or (len(testList) == 0) or (testList == None):
         return testList
@@ -35,28 +37,41 @@ def addIntegerNodes(nodeFirstInteger: c.Node, nodeSecondInteger c.Node):
 
 # main()
 
-def main():
+# getLinkedListData()
+def getLinkedListData():
 
     # acquire test LinkedList data
     testListOne, testListTwo = c.getTestData()
     
-    firstLinkedList = c.createLinkedList(testListOne)
-    firstNodeFirstLinkedList = firstLinkedList.getNode() # not using an argument with the getNode(), returns the first node
+    firstLinkedList = c.createLinkedList(testListOne) # create firstLinkedList
+    firstLinkedListString = firstLinkedList.printList()
+    firstLinkedListNumOfNodes = firstLinkedList.countAllNodes() # want to start the counting from head
+    print("1st Linked List {} contains {} nodes, and corresponding node values: {}".format(firstLinkedList, firstLinkedListNumOfNodes, firstLinkedListString))
+    if not (firstLinkedList.head is None): # extract first node within the firstLinkedList
+        firstNodeFirstLinkedList = firstLinkedList.getNode(firstLinkedList.head.getData()) # prints the first returned value (as data=None due to not being supplied) 
+    else:
+        firstNodeFirstLinkedList = None
 
-    secondLinkedList = c.createLinkedList(testListTwo)
-    firstNodeSecondLinkedList = secondLinkedList.getNode() # not using an argument with the getNode(), returns the first node
+    secondLinkedList = c.createLinkedList(testListTwo) # create secondLinkedList
+    secondLinkedListString = secondLinkedList.printList()
+    secondLinkedListNumOfNodes = secondLinkedList.countAllNodes()
+    print("2nd Linked List {} contains {} nodes, and corresponding node values: {}".format(secondLinkedList, secondLinkedListNumOfNodes, secondLinkedListString))
+    if not (secondLinkedList.head is None): # extract first node within the secondLinkedList
+        firstNodeSecondLinkedList = secondLinkedList.getNode(secondLinkedList.head.getData()) # prints the first returned value (as data=None due to not being supplied) 
+    else:
+        firstNodeSecondLinkedList = None
+
+    return firstNodeFirstLinkedList, firstNodeSecondLinkedList
+
+
+def main():
+
+    # get LinkedList data
+    firstNodeFirstLinkedList, firstNodeSecondLinkedList = getLinkedListData()
 
     # start processing
     newLinkedList = addIntegerNodes(firstNodeFirstLinkedList, firstNodeSecondLinkedList) # passing the first nodes of each linkedlist
     display(newLinkedList)
-
-    randomLinkedList = createLinkedList() # empty LinkedList
-    randomLinkedListString = randomLinkedList.printList() # print content of empty LinkedList
-    randomLinkedListNumOfNodes = randomLinkedList.countAllNodes() # print number of nodes in empty LinkedList
-    randomLinkedListEmptyValue = randomLinkedList.getNode()# prints the first returned value (as data=None due to not being supplied) 
-
-    print("1st Linked List {} contains nodes {}".format(firstLinkedList, firstLinkedList.printList()))
-    print("2nd Linked List {} contains nodes {}".format(secondLinkedList, secondLinkedList.printList()))
 
     start_time = time.time()
 
