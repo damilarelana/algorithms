@@ -2,7 +2,7 @@ import time
 import algorithms.createLinkedList as c
 
 
-def addIntegerLinkedList(firstInteger: c.LinkedList, secondInteger: c.LinkedList):
+def addIntegerNodes(nodeFirstInteger: c.Node, nodeSecondInteger c.Node):
 
     newLinkedList = c.LinkedList() # default head value is None
     lastNode = c.Node() # default data argument is None
@@ -31,22 +31,20 @@ def addIntegerLinkedList(firstInteger: c.LinkedList, secondInteger: c.LinkedList
                 getattr(testList[i], 'end')
             ))
     return newList # return the now populated newList
-#
-# printListOfObjects()
-def printListOfObjects(listOfIntervalObjects: list):
-    for intervalObject in listOfIntervalObjects:
-        print("[" + str(intervalObject.start) + ", " + str(intervalObject.end) + "]", end=" ") # 'end=" " is used to replace the default \n that comes with print()'
-    return
+
 # main()
 
 def main():
 
-    # initialize test intervals tInterval
-    tIntervals = [Interval(1, 5), Interval(3, 1), Interval(4,6), Interval(6,8), Interval(10,12), Interval(11,15)] # defines a list of tInterval objects
+    # acquire test LinkedList data
+    testListOne, testListTwo = c.getTestData()
+    firstLinkedList = c.createLinkedList(testListOne)
+    secondLinkedList = c.createLinkedList(testListTwo)
+    print("1st Linked List {} contains nodes {}".format(firstLinkedList, firstLinkedList.printList()))
+    print("2nd Linked List {} contains nodes {}".format(secondLinkedList, secondLinkedList.printList()))
 
     start_time = time.time()
-    newMergedList = mergeIntervals(tIntervals)
-    printListOfObjects(newMergedList)
+
     print("\nTime: {} seconds".format((time.time() - start_time)))
 
 
