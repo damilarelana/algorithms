@@ -136,7 +136,7 @@ def parseInputIntegers(inputIntegers: int):  # inputString is of type string
     return listOfInt  # return a list with each integer digit as element of the list
 
 
-# getTestData()
+# getInputData()
 def getInputData():
     # obtain 1st test integers
     print("========================    \n")
@@ -171,6 +171,7 @@ def computeLinkedListData():
     secondLinkedList = createLinkedList(testListTwo)
     secondLinkedListString = secondLinkedList.printList()
     secondLinkedListNumOfNodes = secondLinkedList.countAllNodes()
+
     
     randomLinkedList = createLinkedList() # empty LinkedList
     randomLinkedListString = randomLinkedList.printList() # print content of empty LinkedList
