@@ -152,9 +152,9 @@ def listShuffler(initialList: list):
 
 def main():
 
-    start_time = time.time()
     testArray =  getInputData()
     listShuffler(testArray) # shuffle the list in place to make the testing more realistic
+    start_time = time.time()
     repeatedNumber, repeatedHashValue = findRepeatNumber(testArray)
     print("Given {}, the first repeated number: {} was found with a hashvalue: {}".format(testArray, repeatedNumber, repeatedHashValue))
     print("\nTime: {} seconds".format((time.time() - start_time)))
