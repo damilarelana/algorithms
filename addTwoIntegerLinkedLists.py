@@ -72,14 +72,27 @@ def getLinkedListData():
     else:
         firstNodeSecondLinkedList = None
 
-    return firstNodeFirstLinkedList, firstNodeSecondLinkedList
+    return firstNodeFirstLinkedList, firstNodeSecondLinkedList, firstLinkedListString, secondLinkedListString
+
+
+# parseStringToInteger()
+#   - reverses the newLinkedListString
+#   - removes the spaces
+#   - type casts it as an integer value
+def parseStringToInteger(inputString: str):  # 
+    reversedString = inputString[::-1] # reverse the string to get proper arrangement of most/least significant bits
+    listOfString = reversedString.split(" ")  # extract each string elements into a list
+    listOfString = [s.strip() for s in listOfString]  # remove whitespaces around each element - just to be safe
+    numberString = ''.join(listOfString)
+    number = int(numberString)
+    return number # return the integer
 
 # main()
 
 def main():
 
     # get LinkedList data
-    firstNodeFirstLinkedList, firstNodeSecondLinkedList = getLinkedListData()
+    firstNodeFirstLinkedList, firstNodeSecondLinkedList, firstLinkedListString, secondLinkedListString = getLinkedListData()
 
     start_time = time.time()
 
@@ -87,7 +100,12 @@ def main():
     newLinkedList = addIntegerNodes(firstNodeFirstLinkedList, firstNodeSecondLinkedList) # passing the first nodes of each linkedlist
     newLinkedListString = newLinkedList.printList()
     newLinkedListNumOfNodes = newLinkedList.countAllNodes()
-    print("Adding two integer linked lists gives {} that contains {} nodes, and corresponding node values: {}".format(newLinkedList, newLinkedListNumOfNodes, newLinkedListString))
+
+    firstIntegerValue = parseStringToInteger(firstLinkedListString)
+    secondIntegerValue = parseStringToInteger(secondLinkedListString)
+    sumValue = parseStringToInteger(newLinkedListString)
+    print("Adding two integer linked lists gives {}, with {} nodes and node values: {}".format(newLinkedList, newLinkedListNumOfNodes, newLinkedListString))
+    print("This aligns with the expectation that: {} + {} = {}".format(firstIntegerValue, secondIntegerValue, sumValue))
     print("\nTime: {} seconds".format((time.time() - start_time)))
 
 
