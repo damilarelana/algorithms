@@ -5,7 +5,7 @@ from IPython.display import display
 def addIntegerNodes(nodeFirstInteger: c.Node, nodeSecondInteger: c.Node):
 
     newLinkedList = c.LinkedList() # default head value is None
-    # lastNode = c.Node() # default data argument is None (ensures there is a coupling of )
+    lastNode = c.Node() # default data argument is None (ensures there is a coupling of )
     carryValue = 0 # high multiple value carried over when adding two other numbers e.g. 9 + 8 = 17 - meaning we carry over 1 (i.e. 10 multiples while having remainder 7
 
     while ( (nodeFirstInteger != None) or (nodeSecondInteger != None) or (carryValue > 0) ): # these are checking the node object themselves being none and not their value
