@@ -206,17 +206,6 @@ def getRandomIndex(lLength: int):
 # - via option to answer 'Yes' or 'No'
 # - returns any of the `Yes` or `No` variations in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
 
-# def selectInputMethod():
-#     try:
-#         sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
-#         selectionAnswer = input("To enter your own test integer arrays, enter 'Yes', OTHERWISE enter 'No' for default test integer arrays: ")
-#         selectionAnswerString = str(selectionAnswer)  # convert input to string
-#         while not ((isinstance(selectionAnswerString, str) is True) and ((selectionAnswerString in sampleAnswerList) is True)):
-#             print("Response should be a 'Yes' or 'No' answer")
-#             selectInputMethod() # recursively call again
-#     except ValueError:
-#         raise Exception("Unable to parse the user defined string value")
-#     return selectionAnswerString
 def selectInputMethod():
     sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
     while True:
