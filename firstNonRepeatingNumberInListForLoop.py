@@ -4,24 +4,50 @@ import secrets
 import random
 
 # define twoNumberSum function
-# - takes in a user defined integer array
-# - takes in a user defined integer value
-# - pre-sorts the list in place before usage
-# - checks if any two elements of array sums up to integer value
-# - does NOT bother about all 2-element `[a, b]` pairs that sum up to integer value, in a dict
-# - focuses only on just 1 uniquer instance
-# - returns
-#       + an empty `()`, when no 2-element pairs sums up to integer value
+# - takes in a user defined integer inputArray
+# - takes in a user defined integer value to start search from
+# - returns a non-repeating number that
+#       + is an element of the inputArray
+#       + is not repeated in the same inputArray - even at least once
+#       + there is thus no twoNumberSum that is === 2 * number
+# - returns `None`, when no non-repeating `returnValue` is found in the inputArray
 
 
 
-def twoNumberSum(testArray: list, testSum: int, testIndex: int):  # inputList param is of type list
-    # compute the 2-element pairs
-    finalPair = computeTwoNumSum(testArray, testSum, testIndex)
+def twoNumberSum(testArray: list, testSums: list, testIndex: int):  # inputList param is of type list
 
-    # return the results
-    if not finalPair:  # checks if an empty tuple was returned i.e. no pairs found
-        print("No 2-element (a, b) pairs of {0} sums up to the integer value {1}".format(testArray, testSum))
+    # iterate through the different Sums
+    messagingFlag = False
+    for tIV in testSums:
+
+        # compute the 2-element pairs
+        # - note that finalPair = (tIA[startIndex], tIA[lastIndex]) i.e. 
+        #   + pair of matching elements of the testArray
+        finalPair = computeTwoNumSum(testArray, tIV, testIndex)
+
+        # checks if an empty tuple was returned i.e.
+        if (not finalPair): # no pairs found means non-repeating number exists for that particular x for which 2*x = tIV
+            nonRepeatedNumber = tIV // 2 # decompose the tIV to constituent value integer value [since tIV = 2*number originally]
+            print("The first non-repeating number {} was found in the array {}".format(nonRepeatedNumber, testArray))
+            messagingFlag = True
+            break # loop
+
+        # [where finalPair finds a match to tIV]
+        # test for when a match is possible when it is only due to a nonRepeatingNumber
+        # - if tIV = 20 (for when x > 0 or x < 0 e.g. 2 * 10 = 20), this can be due to:
+        #       + 15 : 5 [do not want this also - even though it is not due to repeatedNumber as none of the number is a multiple of 10]
+        #       + 20 : 0 [do not want this also - even though it is not due to repeatedNumber as none of the number is a multiple of 10]
+        #       + 10 : 10 [do not want this - as it easily matches repeatedNumber even though the numbers are multiple of 10]
+        #       + -30 : 50 [do not want this - as it easily matches repeatedNumber as none of the number is a multiple of 1]
+
+        # - if tIV = 0 (for when x = 0 i.e. 2 * 0 = 0)
+        #       + -10 : 10 [do not want this as neither of them are multiples of 0]
+        #       +  0 : 0 [do not want this - as it easily matches repeatedNumber (0) even though the numbers are multiple of 0 ]
+
+    if (messagingFlag is False): # if you did not find any nonReaptedNumber
+        print("No non-repeating number found in the array {}".format(testArray))
+
+
     
 
 # define computeTwoNumberSum()
@@ -45,6 +71,7 @@ def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):
     lastIndex =  len(tIA) - 1
     if startIndex != 0: # this can sometimes help to speed up the search [but not always guaranteed to work]
         returnedPair = getTwoSumPairs(tIA, tIV, startIndex, lastIndex) # using another if startIndex < lastIndex before this, is redundant since getTwoSumPairs already does that
+        # print("1st slice search")
         if (not returnedPair) is False: # meaning a pair was found so 'not returnedPair' is 'not True' i.e. False
             return returnedPair
         # with returnedPair still being an empty tuple() means the range [startIndex:lastIndex+1] did not give a match in the initial slice tIA[startIndex:lastIndex+1]
@@ -53,6 +80,7 @@ def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):
         #   - where newLastIndex = startIndex - 1 or newLastIndex = startIndex
         #   - newStartIndex = 0
         else:
+            # print("2nd slice search")
             newLastIndex = copy.deepcopy(tIndex) + 1
             newStartIndex = 0
             newReturnedPair = getTwoSumPairs(tIA, tIV, newStartIndex, newLastIndex)
@@ -69,6 +97,7 @@ def computeTwoNumSum(tIA: list, tIV: int, tIndex: int):
     else: # the search jumps here immediately if startIndex is 0
         # this is a fail save loop that uses the whole list tIA[0:lastIndex+1]
         #   - in case the matching pairs on adjacent slices 
+        # print("whole array search")
         lastFailSafeLastIndex = len(tIA) - 1
         lastFailSafeStartIndex = 0
         lastFailSafeReturnedPair = getTwoSumPairs(tIA, tIV, lastFailSafeStartIndex, lastFailSafeLastIndex)
@@ -84,7 +113,6 @@ def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int):
         tempSum = tIA[startIndex] + tIA[lastIndex]
         if tempSum == tIV:
             resultPair = (tIA[startIndex], tIA[lastIndex])
-            print("Successfully found a pair ({}, {}) at tIA[{}] and tIA[{}]".format(tIA[startIndex], tIA[lastIndex], startIndex, lastIndex))
             return resultPair
         
         # if the tempSum is larger than tIV then it means
@@ -109,20 +137,19 @@ def getTwoSumPairs(tIA: list, tIV: int, startIndex: int, lastIndex: int):
 # - calls parseInputArrayString() to convert users `string` to `integer array`
 # - returns the user defined integer array value [when all goes to plan]
 
-
 def getArray():
     try:
         print("\nUsing the format [1, 2, 3, 4] or [1,2,3,4] or [1, 2,3, 4] ...")
         inputArrayString = input("Enter an integer array: ")
-        while checkEmptyList(inputArrayString):
+        while checkEmptyInputList(inputArrayString):
             print("Array cannot be empty")
             getArray() # recursive call
         inputArray = parseInputArrayString(inputArrayString)
     except ValueError:
-        raise Exception("Unable to initialize the user defined array")
-    finally:
-        print("Successfully initialized the *user defined integer array*")
+        print("Invalid user define input as integer array") # handling the exception by calling getArray() again
+        getArray() # recursive call
     return inputArray
+
 
 # define getInteger()
 # - uses a try-except-finally to catch input edge-cases
@@ -138,8 +165,6 @@ def getInteger():
             getInteger() # recursive call
     except ValueError:
         raise Exception("Unable to initialize the user defined test value for 'Sum of Integers'")
-    finally:
-        print("Successfully initialized the *user defined test value for 'Sum of Integers'*")
     return inputInteger
 
 
@@ -161,8 +186,6 @@ def getIndex(lLength: int):
             getIndex(lLength)
     except ValueError:
         raise Exception("Unable to initialize the user defined integer test initiation index")
-    finally:
-        print("Successfully initialized the *user defined integer test initiation index*")
     return inputIndex
 
 #
@@ -177,25 +200,32 @@ def getRandomIndex(lLength: int):
     return random.randint(0, lLength - 1) # use the randomizer to generate and return a random integer in the range '0' to 'len(testArray) - 1'
 
 
-# define selectGetIndexMethod()
+# define selectInputMethod()
 # - uses a try-except-finally to catch input edge-cases
 # - gives user option to either randomly select test index value or have the use provide it as an input
 # - via option to answer 'Yes' or 'No'
 # - returns any of the `Yes` or `No` variations in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
 
-def selectGetIndexMethod():
-    try:
-        selectionAnswer = input("To select integer testIndex yourself enter 'Yes', otherwise enter 'No' for randomly generated value: ")
+# def selectInputMethod():
+#     try:
+#         sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
+#         selectionAnswer = input("To enter your own test integer arrays, enter 'Yes', OTHERWISE enter 'No' for default test integer arrays: ")
+#         selectionAnswerString = str(selectionAnswer)  # convert input to string
+#         while not ((isinstance(selectionAnswerString, str) is True) and ((selectionAnswerString in sampleAnswerList) is True)):
+#             print("Response should be a 'Yes' or 'No' answer")
+#             selectInputMethod() # recursively call again
+#     except ValueError:
+#         raise Exception("Unable to parse the user defined string value")
+#     return selectionAnswerString
+def selectInputMethod():
+    sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
+    while True:
+        selectionAnswer = input("To enter your own test integer arrays, enter 'Yes', OTHERWISE enter 'No' for default test integer arrays: ")
         selectionAnswerString = str(selectionAnswer)  # convert input to string
-        sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
-        while (isinstance(selectionAnswerString, str) is False) or ((selectionAnswerString in sampleAnswerList) is False):
-            print("Response should be a 'Yes' or 'No' answer")
-            selectGetIndexMethod() # recursively call selectGetIndexMethod() again
-    except ValueError:
-        raise Exception("Unable to parse the user defined string value")
-    finally:
-        print("Successfully parsed the *user defined string value*")
-    return selectionAnswerString
+        if (isinstance(selectionAnswerString, str) is True) and ((selectionAnswerString in sampleAnswerList) is True):
+            return selectionAnswerString
+
+
 
 # define parseInputArrayString() function
 # - assumes user leveraged string format: [1, 2, 3, 4] or [1,2,3,4] or [1, 2,3, 4] ...
@@ -203,8 +233,6 @@ def selectGetIndexMethod():
 # - strips away the extra whitespaces around each element  input()
 # - converts each element from a string to an int
 # - returns an integer array
-
-
 def parseInputArrayString(inputString: str):  # inputString is of type string
     parsedString = stringStripper(inputString)
     listOfString = parsedString.split(",")  # get elements using delimiter ","
@@ -217,15 +245,16 @@ def parseInputArrayString(inputString: str):  # inputString is of type string
 #  - takes in an input string in an array format [1, 2, 3, 4]
 #  - strips away the brackets
 #  - returns a bare parsed string
-
-
 def stringStripper(inputArrayString: str):
-    inputArrayString = inputArrayString[1:]  # strip left bracket : 'index 0'
+    if inputArrayString[0] == "[": # only strip the left bracket if it even exists
+        inputArrayString = inputArrayString[1:]  # strip left bracket : 'index 0'
     lastIndex = len(inputArrayString) - 1
-    parsedArrayString = inputArrayString[: lastIndex]  # strip right bracket : last Index
-    return parsedArrayString
+    if inputArrayString[lastIndex] == "]": # only strip the right bracket if it even exists
+        inputArrayString = inputArrayString[:lastIndex]  # strip right bracket : last Index
+    return inputArrayString
 
-# define checkEmptyList() function
+
+# define checkEmptyInputList() function
 # - takes in an input string in an array format [1, 2, 3, 4]
 # - uses python dictionary to simulate a switch
 # - uses .strip() to remove whitespaces (and multiple edges-cases of it)
@@ -233,9 +262,7 @@ def stringStripper(inputArrayString: str):
 # - checks if it is empty string "[]" or "[,]"
 # - checks if it is whitespace edge-cases: [, ]"" or "[ ,]"" or "[ , ]" etc.
 # - returns a True (i.e. an empty list) or otherwise it returns a False
-
-
-def checkEmptyList(inputArrayString: str):
+def checkEmptyInputList(inputArrayString: str):
     parsedString = stringStripper(inputArrayString)  # remove the brackets
     parsedStringWithNoWhitespaces = parsedString.strip()
     return {
@@ -243,39 +270,66 @@ def checkEmptyList(inputArrayString: str):
         ",": True,  # handles empty string array of types "[, ]" etc.
     }.get(parsedStringWithNoWhitespaces, False)
 
-# define main() function
-# - to allow code to be run as either standalone or re-usable code
 
-def main():
+def getInputData():
+    selectionAnswerString = selectInputMethod()
+    if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
+        # obtain test array
+        testArray = getArray()
 
-    # obtain test array
-    testArray = getArray()
-    testArray.sort() # this pre-sorts it in place
-    print("\nTest Array: ", testArray)
-    print("Test Array is of type: ", type(testArray))
-    print("    ============    \n")
+        return testArray
 
-    # obtain test integer
-    testSum = getInteger()
-    print("\nTest Sum: ", testSum)
-    print("Sum is of type: ", type(testSum))
-    print("    ============    \n")
+    else: # not necessary to test for 'No', but here is the case for default
+        defaultArray = [1, 417, 19, 23, 17, 4, 3, 7, 3, 8, 1, 31, 42, 2, 4, 5, 6, 9, 2]
+        return defaultArray
+    
 
-    # obtain test index - after passing in the length of the array
-    selectionAnswerString = selectGetIndexMethod()
+# obtain test index - after passing in the length of the array
+def getTestIndex(testArray: list):
+    selectionAnswerString = selectInputMethod()
     if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
         testIndex = getIndex(len(testArray))
         print("\nTest Index: ", testIndex)
-        print("Index is of type: ", type(testIndex))
-        print("    ============    \n")
-    else: # not necessary to test for `No` here because selectGetIndexMethod() already handles invalid inputs [so the remain values would be `No`]
+        print("========================\n")
+    else: # not necessary to test for `No` here because selectInputMethod() already handles invalid inputs [so the remain values would be `No`]
         testIndex = getRandomIndex(len(testArray))
-        print("\nTest Index: ", testIndex)
-        print("Index is of type: ", type(testIndex))
-        print("    ============    \n")
+        print("\nRandom Test Index: ", testIndex)
+        print("========================\n")
+    return testIndex
+
+#
+# listShuffler()
+#  - helps to avoid the problem that random.shuffle tends to shuffle in place
+#  - takes in a pointer to the list to be shuffled
+#  - shuffles the list in place
+
+def listShuffler(initialList: list):
+    randomNumber = secrets.randbits(8192) # generate random number for random.seed()
+    random.seed(randomNumber) # improve the randomizer by calling random.seed()
+    random.shuffle(initialList) # shuffle the list in place just to be sure :)
+    # shuffledList = random.sample(workingList, len(workingList))  # take a random sample of list [which returns a shuffled version]
+
+# define main() function
+def main():
+
+    # test input data
+    testArray = getInputData()
+    listShuffler(testArray) # shuffle the array in place
+    testArray.sort() # pre-sort
+    testIndex = getTestIndex(testArray)
+
+    # test validation data
+    # - a number in testArray is non-repeating if
+    #       + for a number 'x' in the 'testArray'
+    #       + you CANNOT find any other number 'y' in the array 
+    #       + for which `y + x = 2x` i.e. there should be no other number y = x
+    #  - this means we can validate a non-repeating number if we
+    #       + create a testSum made of 2 times each element
+    #       + iterate with different tIV which are simply elements of the array testSums
+    testSums = [2*x for x in testArray] # 
 
     start_time = time.time()
-    twoNumberSum(testArray, testSum, testIndex)
+    twoNumberSum(testArray, testSums, testIndex)
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
