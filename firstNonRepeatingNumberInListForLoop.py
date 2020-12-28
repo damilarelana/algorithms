@@ -277,16 +277,18 @@ def getInputData():
         # obtain test array
         testArray = getArray()
 
-        return testArray
+        return testArray, selectionAnswerString
 
     else: # not necessary to test for 'No', but here is the case for default
         defaultArray = [1, 417, 19, 23, 17, 4, 3, 7, 3, 8, 1, 31, 42, 2, 4, 5, 6, 9, 2]
-        return defaultArray
+        return defaultArray, selectionAnswerString
     
 
 # obtain test index - after passing in the length of the array
-def getTestIndex(testArray: list):
-    selectionAnswerString = selectInputMethod()
+def getTestIndex(testArray: list, selectionAnswerString: str):
+    if (selectionAnswerString is None):
+        selectionAnswerString = selectInputMethod()
+
     if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
         testIndex = getIndex(len(testArray))
         print("\nTest Index: ", testIndex)
@@ -313,10 +315,10 @@ def listShuffler(initialList: list):
 def main():
 
     # test input data
-    testArray = getInputData()
+    testArray, selectionAnswerString = getInputData()
     listShuffler(testArray) # shuffle the array in place
     testArray.sort() # pre-sort
-    testIndex = getTestIndex(testArray)
+    testIndex = getTestIndex(testArray, selectionAnswerString)
 
     # test validation data
     # - a number in testArray is non-repeating if
