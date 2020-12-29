@@ -34,9 +34,13 @@ def reverseString(inputList: list):
     startIndex = 0
     lastIndex = inputListLength - 1
 
-    if checkIfEven(inputListLength):
-        demarcationIndex = inputListLength // 2
-    
+    if checkIfEven(inputListLength): # even clean split
+        demarcationIndex = inputListLength // 2 # ensures you have an even split of swappable elements
+        while (startIndex < demarcationIndex):
+            inputList[startIndex], inputList[lastIndex] = inputList[lastIndex], inputList[startIndex] # switch elements at extreme ends of the list
+            startIndex += 1 # decrement the element scope inwards by shifting startIndex upwards
+            lastIndex -= 1 # decrement the element scope inwards by shifting the lastIndex downwards
+
     if checkIfOdd(inputListLength):
         demarcationIndex = 
 
