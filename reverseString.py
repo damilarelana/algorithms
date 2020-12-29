@@ -116,7 +116,7 @@ def main():
     reversedList = reverseOrderOfListElements(testArray)
     reversedString = parseListToString(reversedList)
     print("========================\n")
-    print("Given the original string {}, the reversed string is {}".format(shuffledTestString, reversedString))
+    print("Given the original string '{}', the reversed string is '{}'".format(shuffledTestString, reversedString))
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
