@@ -46,7 +46,6 @@ def parseListToSentence(inputList: list) -> str:  #
         else:
             newSentence += str(e) + " " # add space between each string concatenation
         counter += 1  
-        print("Counter: {} - Sentence: {}".format(counter, newSentence))
     return newSentence
 
 def parseSentenceToList(inputSentence: str) -> list:  # 
