@@ -2,6 +2,7 @@ import random
 import time
 import secrets
 import random
+import pdb
 
 # checkIfEven()
 # - checks if a number is even 
@@ -33,7 +34,7 @@ def getString():
             getString() # recursive call
     except ValueError:
         raise Exception("Unable to initialize the user defined integers")
-
+    return inputString
 # 
 def parseStringToList(inputString: str) -> list:  # inputString is of type string
     l = list()
