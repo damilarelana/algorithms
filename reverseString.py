@@ -78,7 +78,7 @@ def getInputData():
         return defaultString, selectionAnswerString
 
 #
-# stirngShuffler()
+# stringShuffler()
 def stringShuffler(initialString: str):
     randomNumber = secrets.randbits(8192)
     random.seed(randomNumber)
@@ -102,17 +102,6 @@ def reverseOrderOfListElements(inputList: list):
             startIndex += 1 # decrement the element scope inwards by shifting startIndex upwards
             lastIndex -= 1 # decrement the element scope inwards by shifting the lastIndex downwards
         return inputList # return a list with all the elements swapped
-
-    # if checkIfEven(inputListLength): # even clean split
-    #     demarcationIndex = inputListLength // 2 # ensures you have an even split of swappable elements
-    #     while (startIndex < demarcationIndex):
-    #         inputList[startIndex], inputList[lastIndex] = inputList[lastIndex], inputList[startIndex] # switch elements at extreme ends of the list
-    #         startIndex += 1 # decrement the element scope inwards by shifting startIndex upwards
-    #         lastIndex -= 1 # decrement the element scope inwards by shifting the lastIndex downwards
-
-    # if checkIfOdd(inputListLength):
-    #     demarcationIndex = 
-
 
 # define main() function
 def main():
