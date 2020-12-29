@@ -25,42 +25,39 @@ def checkIfOdd(number: int) -> bool:
 
 # getInteger()
 # - used to obtain the required test data
-def getString():
+def getSentence():
     try:
-        inputString = input("Enter input string: ")
-        inputString = str(inputString)
-        while (inputString is None):
+        inputSentence = input("Enter input sentence: ")
+        inputSentence = str(inputSentence)
+        while (inputSentence is None):
             print("Input cannot be empty")
-            getString() # recursive call
+            getSentence() # recursive call
     except ValueError:
-        raise Exception("Unable to initialize the user defined integers")
-    return inputString
-# 
-def parseStringToList(inputString: str) -> list:  # inputString is of type string
-    l = list()
-    for s in inputString: # using a for loop as it is fastest and constant in terms of time complexity i.e. better than list comprehension `list = [s for s in inputString]`
-        l.append(s) # construct it one by one
-    return l # return the constructed list
+        raise Exception("Unable to initialize the user defined sentence")
+    return inputSentence
 
+def parseListToSentence(inputList: list) -> str:  # 
+    counter = 0
+    newSentence = ""
+    listLength = len(inputList)
+    for e in inputList:
+        if counter == (listLength - 1): # i.e. no need to add extra space at the end o fthe 
+            newSentence += str(e)
+        else:
+            newSentence += str(e) + " " # add space between each string concatenation
+        counter += 1  
+        print("Counter: {} - Sentence: {}".format(counter, newSentence))
+    return newSentence
 
-# 
-def parseListToString(inputList: list) -> str:  # inputString is of type string
-    s = ""
-    for l in inputList: 
-        s += str(l)
-    return s 
-
-# parseStringToInteger()
-#   - reverses the newLinkedListString
-#   - removes the spaces
-#   - type casts it as an integer value
-def parseStringToInteger(inputString: str):  # 
-    reversedString = inputString[::-1] # reverse the string to get proper arrangement of most/least significant bits
-    listOfString = reversedString.split(" ")  # extract each string elements into a list
-    listOfString = [s.strip() for s in listOfString]  # remove whitespaces around each element - just to be safe
-    numberString = ''.join(listOfString)
-    number = int(numberString)
-    return number # return the integer
+def parseSentenceToList(inputSentence: str) -> list:  # 
+    listOfSentences = inputSentence.split(" ")  # extract each string elements into a list
+    counter = 0 # counter is being used because the following were not working s.strip(), s = s.replace()
+    for s in listOfSentences: # using a for loop as it is fastest and constant in terms of time complexity i.e. better than list comprehension `list = [s for s in inputString]`
+        listOfSentences[counter].strip() # remove whitespaces around each element 
+        listOfSentences[counter] = listOfSentences[counter].replace(',', '') # remove "," around each element
+        listOfSentences[counter] = listOfSentences[counter].replace('.', '') # remove "." around each element
+        counter += 1
+    return listOfSentences
 
 
 # define selectInputMethod()
@@ -78,25 +75,16 @@ def selectInputMethod():
             return selectionAnswerString
 
 
-
 def getInputData():
     selectionAnswerString = selectInputMethod()
     if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
         # obtain test array
-        testString = getString()
-        return testString, selectionAnswerString
+        testSentence = getSentence()
+        return testSentence, selectionAnswerString
 
     else: # not necessary to test for 'No', but here is the case for default
-        defaultString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        return defaultString, selectionAnswerString
-
-#
-# stringShuffler()
-def stringShuffler(initialString: str):
-    randomNumber = secrets.randbits(8192)
-    random.seed(randomNumber)
-    shuffledString = ''.join(random.sample(initialString, len(initialString))) # shuffle the string in place just to be sure :)
-    return shuffledString
+        defaultSentence = "Banner transformed into Worldbreaker Hulk, at ComicCon 2011."
+        return defaultSentence, selectionAnswerString
 
 
 # reverseOrderOfListElements()
@@ -120,15 +108,14 @@ def reverseOrderOfListElements(inputList: list):
 def main():
 
     # test input data
-    testString, _ = getInputData()
-    shuffledTestString = stringShuffler(testString) # shuffle the string in place
-    testArray = parseStringToList(shuffledTestString)
+    testSentence, _ = getInputData()
 
     start_time = time.time()
-    reversedList = reverseOrderOfListElements(testArray)
-    reversedString = parseListToString(reversedList)
+    sentenceAsList = parseSentenceToList(testSentence)
+    reversedList = reverseOrderOfListElements(sentenceAsList)
+    reversedSentence = parseListToSentence(reversedList)
     print("========================\n")
-    print("Given the original string '{}', the reversed string is '{}'".format(shuffledTestString, reversedString))
+    print("Given the original sentence '{}', the reversed sentence is '{}'".format(testSentence, reversedSentence))
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
