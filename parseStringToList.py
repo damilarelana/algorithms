@@ -18,10 +18,10 @@ def main():
     testString = "Banner transformed into Worldbreaker Hulk, at ComicCon 2011."
     
     start_time = time.time()
-    parsedStringToList = parseListToString(testString)
+    parsedStringToList = parseStringToList(testString)
     print("========================\n")
     print("Given the List {}'".format(testString))
-    print("The generated string is '{}'".format(parsedListToString))
+    print("The generated string is '{}'".format(parsedStringToList))
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
