@@ -16,6 +16,43 @@ def getString():
         raise Exception("Unable to initialize the user defined string")
     return inputString
 
+
+def getMinSubStringLength(inputString: str):
+    inputStringLength = len(inputString)
+    try:
+        inputIntegerString = input("Enter a minimum subString length as an integer ( >= 0): ")
+        inputInteger = int(inputIntegerString)  # convert string to integer
+        while isinstance(inputInteger, int) is False:
+            print("Input must be a integer")
+            getMinSubStringLength() # recursive call
+
+        while not ((inputInteger >= 0) and (inputInteger <= inputStringLength)): # ensure the value is within required range
+            print("Input integer should be >= 0 and <= len(inputString)")
+            getMinSubStringLength() # recursive call
+
+    except ValueError:
+        raise Exception("Unable to initialize the user defined value for minimum subString length")
+    return inputInteger
+
+
+def getMaxSubStringLength(inputString: str, minSubStringLength: int):
+    inputStringLength = len(inputString)
+    try:
+        inputIntegerString = input("Enter a maximum subString length as an integer ( >= 0): ")
+        inputInteger = int(inputIntegerString)  # convert string to integer
+        while isinstance(inputInteger, int) is False:
+            print("Input must be a integer")
+            getMaxSubStringLength() # recursive call
+
+        while not ((inputInteger >= 0) and (inputInteger <= inputStringLength) and (inputInteger >= minSubStringLength)): # ensure the value is within required range
+            print("Input integer should be >= 0 and <= len(inputString) and >= minimum subString length")
+            getMinSubStringLength() # recursive call
+
+    except ValueError:
+        raise Exception("Unable to initialize the user defined value for maximum subString length")
+    return inputInteger
+
+
 def parseStringToList(inputString: str) -> list:  # 
     listOfStrings = inputString.split(" ")  # extract each string elements into a list
     counter = 0 # counter is being used because the following were not working s.strip(), s = s.replace()
@@ -63,12 +100,16 @@ def getInputData():
     selectionAnswerString = selectInputMethod()
     if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
         # obtain test array
-        testSentence = getString()
-        return testSentence, selectionAnswerString
+        testString = getString()
+        minStringLength = getMinSubStringLength(testString)
+        maxStringLength = getMaxSubStringLength(testString, minStringLength)
+        return testString, selectionAnswerString, minStringLength, maxStringLength
 
     else: # not necessary to test for 'No', but here is the case for default
-        defaultSentence = "Banner transformed into Worldbreaker Hulk, at ComicCon 2011."
-        return defaultSentence, selectionAnswerString
+        defaultSentence = "SOMETEXT"
+        minStringLength = 2
+        maxStringLength = len(defaultSentence)
+        return defaultSentence, selectionAnswerString, minStringLength, maxStringLength
 
 
 # reverseOrderOfListElements()
@@ -97,9 +138,8 @@ def getUniqueSubstrings(inputString: str, minStringLength: int, maxStringLength:
     subStringList = list() # used to store all the generated substrings
     for outerIndex in range(minStringLength, maxStringLength + 1):
         for innerIndex in range(inputStringLength - minStringLength):
-            stringSlice = inputString[innerIndex: outerIndex + 1]
+            stringSlice = inputString[innerIndex: innerIndex + outerIndex]
             subStringList.append(stringSlice)
-            print("OuterIndex: {} - InnerIndex: {}, stringSlice: {}".format(outerIndex, innerIndex, stringSlice))
 
     uniqueSubStringList = list()
     uniqueSubstringSet = set()
@@ -120,12 +160,15 @@ def getAllSubstrings(inputString: str, minStringLength: int, maxStringLength: in
     subStringList = list()
     for outerIndex in range(minStringLength, maxStringLength + 1):
         for innerIndex in range(inputStringLength - minStringLength):
-            stringSlice = inputString[innerIndex: outerIndex + 1]
+            stringSlice = inputString[innerIndex: outerIndex + outerIndex]
             subStringList.append(stringSlice)
     return subStringList
 
 
 def palindrome(testString: str):
+    testString, _, minStringLength, maxStringLength = getInputData() # get the original test data
+    _, _, allSubStringsList = getUniqueSubstrings(testString, minStringLength, maxStringLength) # get the subStrings
+
     stringAsList = parseStringToList(testString)
     sentenceFlag = isParsedStringMultiWord(stringAsList)
     if sentenceFlag == False: # easy palindrome option
@@ -139,9 +182,6 @@ def palindrome(testString: str):
 
 # define main() function
 def main():
-
-    # test input data
-    testString, _ = getInputData()
 
     start_time = time.time()
     print("========================\n")

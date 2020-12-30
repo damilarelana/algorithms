@@ -31,7 +31,7 @@ def getAllSubstrings(inputString: str, minStringLength: int, maxStringLength: in
     subStringList = list()
     for outerIndex in range(minStringLength, maxStringLength + 1):
         for innerIndex in range(inputStringLength - minStringLength):
-            stringSlice = inputString[innerIndex: outerIndex + 1]
+            stringSlice = inputString[innerIndex: outerIndex + outerIndex]
             subStringList.append(stringSlice)
     return subStringList
 
