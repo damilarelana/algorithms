@@ -53,40 +53,6 @@ def getMaxSubStringLength(inputString: str, minSubStringLength: int):
     return inputInteger
 
 
-def parseStringToList(inputString: str) -> list:  # 
-    listOfStrings = inputString.split(" ")  # extract each string elements into a list
-    counter = 0 # counter is being used because the following were not working s.strip(), s = s.replace()
-    for s in listOfStrings: # using a for loop as it is fastest and constant in terms of time complexity i.e. better than list comprehension `list = [s for s in inputString]`
-        listOfStrings[counter].strip() # remove whitespaces around each element 
-        listOfStrings[counter] = listOfStrings[counter].replace(',', '') # remove "," around each element
-        listOfStrings[counter] = listOfStrings[counter].replace('.', '') # remove "." around each element
-        counter += 1
-    return listOfStrings
-
-# checks if the input string (parsed into list) is a `sentence` with words and spacing
-#   - if a sentence with words + spacing then the ListFromParsedString would have len(list) > 0
-#   - otherwise the list would be 1
-#   - assumption is inputList is not empty i.e. len(inputList) >= 1
-def isParsedStringMultiWord(inputList: list) -> bool :
-    if len(inputList) == 1: # 
-        return False
-    else:
-        return True
-
-
-def parseListToString(inputList: list) -> str:  # 
-    counter = 0
-    newString = ""
-    listLength = len(inputList)
-    for e in inputList:
-        if counter == (listLength - 1): # i.e. no need to add extra space at the end of the 
-            newString += str(e)
-        else:
-            newString += str(e) + " " # add space between each string concatenation
-        counter += 1  
-    return newString
-
-
 def selectInputMethod():
     sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
     while True:
@@ -106,7 +72,7 @@ def getInputData():
         return testString, selectionAnswerString, minStringLength, maxStringLength
 
     else: # not necessary to test for 'No', but here is the case for default
-        defaultSentence = "SOMETEXT"
+        defaultSentence = "Was it a car or a cat I saw"
         minStringLength = 2
         maxStringLength = len(defaultSentence)
         return defaultSentence, selectionAnswerString, minStringLength, maxStringLength
@@ -165,27 +131,65 @@ def getAllSubstrings(inputString: str, minStringLength: int, maxStringLength: in
     return subStringList
 
 
-def palindrome(testString: str):
+def parseStringToList(inputString: str) -> list:  # 
+    listOfStrings = inputString.split(" ")  # extract each string elements into a list
+    counter = 0 # counter is being used because the following were not working s.strip(), s = s.replace()
+    for s in listOfStrings: # using a for loop as it is fastest and constant in terms of time complexity i.e. better than list comprehension `list = [s for s in inputString]`
+        listOfStrings[counter].strip() # remove whitespaces around each element 
+        listOfStrings[counter] = listOfStrings[counter].replace(',', '') # remove "," around each element
+        listOfStrings[counter] = listOfStrings[counter].replace('.', '') # remove "." around each element
+        counter += 1
+    return listOfStrings
+
+def parseListToString(inputList: list) -> str:  # 
+    counter = 0
+    newString = ""
+    listLength = len(inputList)
+    for e in inputList:
+        if counter == (listLength - 1): # i.e. no need to add extra space at the end of the 
+            newString += str(e)
+        else:
+            newString += str(e) + " " # add space between each string concatenation
+        counter += 1  
+    return newString
+
+def reverseString(inputString: str) -> str:
+    reversedString = ""
+    generatedList = parseStringToList(inputString) # convert original string to a list
+    reversedList = reverseOrderOfListElements(generatedList) # reverse order of the list elements
+    reversedString = parseListToString(reversedList)# convert the reversed list back to a String
+    return reversedString
+
+def palindrome():
     testString, _, minStringLength, maxStringLength = getInputData() # get the original test data
-    _, _, allSubStringsList = getUniqueSubstrings(testString, minStringLength, maxStringLength) # get the subStrings
+    uniqueSubStringsList, _, _ = getUniqueSubstrings(testString, minStringLength, maxStringLength) # get the subStrings
+    palindromeStrings = list() # initialize the palindrome container
 
-    stringAsList = parseStringToList(testString)
-    sentenceFlag = isParsedStringMultiWord(stringAsList)
-    if sentenceFlag == False: # easy palindrome option
-        pass
-    else: # tough palindrome option
-        pass
-
-    reversedList = reverseOrderOfListElements(stringAsList)
-    reversedSentence = parseListToString(reversedList)
+    # iterate through all the subStrings to test palindrome
+    for subString in uniqueSubStringsList:
+        reversedSubString = reverseString(subString) # reverse string
+        if (reversedSubString is subString):# check if reversedSubString is equivalent to the original subString
+            print("{} : {}".format(reversedSubString, subString))
+            palindromeStrings.append(subString) # store the subString as a palindrome
+    
+    return palindromeStrings, testString, minStringLength
 
 
 # define main() function
 def main():
 
     start_time = time.time()
+
+    palindromeStrings, testString, minStringLength = palindrome()
+    palindromeStringsLength = len(palindromeStrings)
+
     print("========================\n")
-    print("Given the original sentence '{}', the reversed sentence is '{}'".format(testSentence, reversedSentence))
+    print("The test String is '{}'.".format(testString))
+    if (not palindromeStrings):
+        print("{} subStrings was a palindrome string'.".format(palindromeStringsLength))
+    else:
+        print("{} subStrings were found to be a palindrome string.".format(palindromeStringsLength), end=" ")
+        print("These are: {}'.".format(palindromeStrings))
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
