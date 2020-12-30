@@ -108,7 +108,6 @@ def getUniqueSubstrings(inputString: str, minStringLength: int, maxStringLength:
             sliceLowerIndex = i 
             sliceUpperIndex = i + j
             if sliceUpperIndex <= maxStringLength: # exclude illogical slices like list[5:10] when the actual length of the array is 7 i.e. limit things to list[5:7]
-                print("sliceLowerIndex: {} - sliceUpperIndex: {} gives {}".format(sliceLowerIndex, sliceUpperIndex, inputString[sliceLowerIndex: sliceUpperIndex]))
                 stringSlice = inputString[sliceLowerIndex: sliceUpperIndex]
                 subStringList.append(stringSlice)
 
