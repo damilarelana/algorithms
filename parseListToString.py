@@ -16,12 +16,12 @@ def parseListToString(inputList: list) -> str:  #
 # define main() function
 def main():
 
-    testString = "Banner transformed into Worldbreaker Hulk, at ComicCon 2011."
+    testList = ["Banner transformed", "into Worldbreaker Hulk,", "at ComicCon 2011."]
     
     start_time = time.time()
-    parsedListToString = parseListToString(testString)
+    parsedListToString = parseListToString(testList)
     print("========================\n")
-    print("Given the List {}'".format(testString))
+    print("Given the List {}'".format(testList))
     print("The generated string is '{}'".format(parsedListToString))
     print("Time: {} seconds".format((time.time() - start_time)))
 
