@@ -72,7 +72,8 @@ def getInputData():
         return testString, selectionAnswerString, minStringLength, maxStringLength
 
     else: # not necessary to test for 'No', but here is the case for default
-        defaultSentence = "wow anna is at already at madam level"
+        # defaultSentence = "wow anna is at already at madam level"
+        defaultSentence = "aabbbaa"
         minStringLength = 2
         maxStringLength = len(defaultSentence)
         return defaultSentence, selectionAnswerString, minStringLength, maxStringLength
@@ -95,39 +96,19 @@ def reverseOrderOfListElements(inputList: list):
             lastIndex -= 1 # decrement the element scope inwards by shifting the lastIndex downwards
         return inputList # return a list with all the elements swapped
 
-# to get all subStrings include the original string
-#   - this means that:
-#       + minStringLength = 0
-#       + maxStringLength = len(inputString)
-def getUniqueSubstrings(inputString: str, minStringLength: int, maxStringLength: int):
-    inputStringLength = len(inputString)
-    subStringList = list() # used to store all the generated substrings
-    for outerIndex in range(minStringLength, maxStringLength + 1):
-        for innerIndex in range(inputStringLength - minStringLength):
-            stringSlice = inputString[innerIndex: innerIndex + outerIndex]
-            subStringList.append(stringSlice)
-
-    uniqueSubStringList = list()
-    uniqueSubstringSet = set()
-
-    for subString in subStringList: # iterate over all the substrings generated
-        if subString in uniqueSubstringSet: # check if the set already has the subString stored
-            pass # do nothing since a set only contains unique stuff
-        else: # if the subString does not exist in the set THEN add to both the set and uniqueList
-            uniqueSubStringList.append(subString) 
-            uniqueSubstringSet.add(subString)
-
-    return uniqueSubStringList, uniqueSubstringSet, subStringList
-
 # getAllSubstrings() 
 # - extracts all the substrings (even when repeated) for a specific 
 def getAllSubstrings(inputString: str, minStringLength: int, maxStringLength: int):
     inputStringLength = len(inputString)
     subStringList = list()
-    for outerIndex in range(minStringLength, maxStringLength + 1):
-        for innerIndex in range(inputStringLength - minStringLength):
-            stringSlice = inputString[innerIndex: outerIndex + outerIndex]
-            subStringList.append(stringSlice)
+    for i in range((inputStringLength+1) - minStringLength):
+        for j in range(minStringLength, maxStringLength + 1):
+            sliceLowerIndex = i 
+            sliceUpperIndex = i + j
+            if sliceUpperIndex <= maxStringLength: # exclude illogical slices like list[5:10] when the actual length of the array is 7 i.e. limit things to list[5:7]
+                print("sliceLowerIndex: {} - sliceUpperIndex: {} gives {}".format(sliceLowerIndex, sliceUpperIndex, inputString[sliceLowerIndex: sliceUpperIndex]))
+                stringSlice = inputString[sliceLowerIndex: sliceUpperIndex]
+                subStringList.append(stringSlice)
     return subStringList
 
 
@@ -154,14 +135,14 @@ def reverseString(inputString: str) -> str:
 
 def palindrome():
     testString, _, minStringLength, maxStringLength = getInputData() # get the original test data
-    uniqueSubStringsList, _, _ = getUniqueSubstrings(testString, minStringLength, maxStringLength) # get the subStrings
+    subStringList = getAllSubstrings(testString, minStringLength, maxStringLength) # get the subStrings
     palindromeStrings = list() # initialize the palindrome container
 
     # iterate through all the subStrings to test palindrome
-    for subString in uniqueSubStringsList:
+    for subString in subStringList:
         reversedSubString = reverseString(subString) # reverse string
-        print("original: {} | {}  -  reversed: {} | {}".format(subString, len(subString), reversedSubString, len(reversedSubString)))
-        if (reversedSubString  == subString):# check if reversedSubString is equivalent to the original subString
+        # print("original: {} | {}  -  reversed: {} | {}".format(subString, len(subString), reversedSubString, len(reversedSubString)))
+        if (reversedSubString.lower()  == subString.lower()): # check if reversedSubString is equivalent to the original subString AFTER converting to lower case
             palindromeStrings.append(subString) # store the subString as a palindrome
     
     return palindromeStrings, testString, minStringLength
@@ -178,9 +159,9 @@ def main():
     print("========================\n")
     print("The test String is '{}'.".format(testString))
     if (not palindromeStrings):
-        print("{} subStrings was a palindrome string'.".format(palindromeStringsLength))
+        print("{} instances of at least {} subStrings was a palindrome string'.".format(palindromeStringsLength, minStringLength))
     else:
-        print("{} subStrings were found to be a palindrome string.".format(palindromeStringsLength), end=" ")
+        print("{} instances of at least {} subStrings were found to be a palindrome string.".format(palindromeStringsLength, minStringLength), end=" ")
         print("These are: {}'.".format(palindromeStrings))
     print("Time: {} seconds".format((time.time() - start_time)))
 
