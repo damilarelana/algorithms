@@ -3,67 +3,52 @@ import time
 import secrets
 import random
 import pdb
+import hashlib
 
-# checkIfEven()
-# - checks if a number is even 
-# - returns True is valid (or False if otherwise)
-def checkIfEven(number: int) -> bool:
-    Flag = False
-    if (number % 2) == 0:
-        Flag = True
-    return Flag
-
-
-# checkIfOdd()
-# - checks if a number is Odd
-# - returns True is valid (or False if otherwise)
-def checkIfOdd(number: int) -> bool:
-    Flag = False
-    if (number % 2) == 1:
-        Flag = True
-    return Flag
-
-# getInteger()
-# - used to obtain the required test data
-def getSentence():
+def getString():
     try:
-        inputSentence = input("Enter input sentence: ")
-        inputSentence = str(inputSentence)
-        while (inputSentence is None):
+        inputString = input("Enter input string: ")
+        inputString = str(inputString)
+        while (inputString is None):
             print("Input cannot be empty")
-            getSentence() # recursive call
+            getString() # recursive call
     except ValueError:
-        raise Exception("Unable to initialize the user defined sentence")
-    return inputSentence
+        raise Exception("Unable to initialize the user defined string")
+    return inputString
 
-def parseListToSentence(inputList: list) -> str:  # 
+def parseStringToList(inputString: str) -> list:  # 
+    listOfStrings = inputString.split(" ")  # extract each string elements into a list
+    counter = 0 # counter is being used because the following were not working s.strip(), s = s.replace()
+    for s in listOfStrings: # using a for loop as it is fastest and constant in terms of time complexity i.e. better than list comprehension `list = [s for s in inputString]`
+        listOfStrings[counter].strip() # remove whitespaces around each element 
+        listOfStrings[counter] = listOfStrings[counter].replace(',', '') # remove "," around each element
+        listOfStrings[counter] = listOfStrings[counter].replace('.', '') # remove "." around each element
+        counter += 1
+    return listOfStrings
+
+# checks if the input string (parsed into list) is a `sentence` with words and spacing
+#   - if a sentence with words + spacing then the ListFromParsedString would have len(list) > 0
+#   - otherwise the list would be 1
+#   - assumption is inputList is not empty i.e. len(inputList) >= 1
+def isParsedStringMultiWord(inputList: list) -> bool :
+    if len(inputList) == 1: # 
+        return False
+    else:
+        return True
+
+
+def parseListToString(inputList: list) -> str:  # 
     counter = 0
-    newSentence = ""
+    newString = ""
     listLength = len(inputList)
     for e in inputList:
-        if counter == (listLength - 1): # i.e. no need to add extra space at the end o fthe 
-            newSentence += str(e)
+        if counter == (listLength - 1): # i.e. no need to add extra space at the end of the 
+            newString += str(e)
         else:
-            newSentence += str(e) + " " # add space between each string concatenation
+            newString += str(e) + " " # add space between each string concatenation
         counter += 1  
-    return newSentence
+    return newString
 
-def parseSentenceToList(inputSentence: str) -> list:  # 
-    listOfSentences = inputSentence.split(" ")  # extract each string elements into a list
-    counter = 0 # counter is being used because the following were not working s.strip(), s = s.replace()
-    for s in listOfSentences: # using a for loop as it is fastest and constant in terms of time complexity i.e. better than list comprehension `list = [s for s in inputString]`
-        listOfSentences[counter].strip() # remove whitespaces around each element 
-        listOfSentences[counter] = listOfSentences[counter].replace(',', '') # remove "," around each element
-        listOfSentences[counter] = listOfSentences[counter].replace('.', '') # remove "." around each element
-        counter += 1
-    return listOfSentences
-
-
-# define selectInputMethod()
-# - uses a try-except-finally to catch input edge-cases
-# - gives user option to either randomly select test index value or have the use provide it as an input
-# - via option to answer 'Yes' or 'No'
-# - returns any of the `Yes` or `No` variations in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
 
 def selectInputMethod():
     sampleAnswerList = ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes", "n", "N", "no", "nO", "No", "NO"]
@@ -78,7 +63,7 @@ def getInputData():
     selectionAnswerString = selectInputMethod()
     if selectionAnswerString in ["y", "Y", "Yes", "YeS", "YEs", "YES", "yES", "yEs", "yeS", "yes"]:
         # obtain test array
-        testSentence = getSentence()
+        testSentence = getString()
         return testSentence, selectionAnswerString
 
     else: # not necessary to test for 'No', but here is the case for default
@@ -103,16 +88,62 @@ def reverseOrderOfListElements(inputList: list):
             lastIndex -= 1 # decrement the element scope inwards by shifting the lastIndex downwards
         return inputList # return a list with all the elements swapped
 
+# to get all subStrings include the original string
+#   - this means that:
+#       + minStringLength = 0
+#       + maxStringLength = len(inputString)
+def getUniqueSubstrings(inputString: str, minStringLength: int, maxStringLength: int):
+    inputStringLength = len(inputString)
+    subStringList = list() # used to store all the generated substrings
+    for outerIndex in range(minStringLength, maxStringLength + 1):
+        for innerIndex in range(inputStringLength - minStringLength):
+            stringSlice = inputString[innerIndex: outerIndex + 1]
+            subStringList.append(stringSlice)
+            print("OuterIndex: {} - InnerIndex: {}, stringSlice: {}".format(outerIndex, innerIndex, stringSlice))
+
+    uniqueSubStringList = list()
+    uniqueSubstringSet = set()
+
+    for subString in subStringList: # iterate over all the substrings generated
+        if subString in uniqueSubstringSet: # check if the set already has the subString stored
+            pass # do nothing since a set only contains unique stuff
+        else: # if the subString does not exist in the set THEN add to both the set and uniqueList
+            uniqueSubStringList.append(subString) 
+            uniqueSubstringSet.add(subString)
+
+    return uniqueSubStringList, uniqueSubstringSet, subStringList
+
+# getAllSubstrings() 
+# - extracts all the substrings (even when repeated) for a specific 
+def getAllSubstrings(inputString: str, minStringLength: int, maxStringLength: int):
+    inputStringLength = len(inputString)
+    subStringList = list()
+    for outerIndex in range(minStringLength, maxStringLength + 1):
+        for innerIndex in range(inputStringLength - minStringLength):
+            stringSlice = inputString[innerIndex: outerIndex + 1]
+            subStringList.append(stringSlice)
+    return subStringList
+
+
+def palindrome(testString: str):
+    stringAsList = parseStringToList(testString)
+    sentenceFlag = isParsedStringMultiWord(stringAsList)
+    if sentenceFlag == False: # easy palindrome option
+        pass
+    else: # tough palindrome option
+        pass
+
+    reversedList = reverseOrderOfListElements(stringAsList)
+    reversedSentence = parseListToString(reversedList)
+
+
 # define main() function
 def main():
 
     # test input data
-    testSentence, _ = getInputData()
+    testString, _ = getInputData()
 
     start_time = time.time()
-    sentenceAsList = parseSentenceToList(testSentence)
-    reversedList = reverseOrderOfListElements(sentenceAsList)
-    reversedSentence = parseListToSentence(reversedList)
     print("========================\n")
     print("Given the original sentence '{}', the reversed sentence is '{}'".format(testSentence, reversedSentence))
     print("Time: {} seconds".format((time.time() - start_time)))
