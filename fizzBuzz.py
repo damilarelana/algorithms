@@ -8,14 +8,15 @@ import hashlib
 
 # fizzBuzz()
 def fizzBuzz(inputInteger):
-  if ((inputInteger % 3) == 0) and (not((inputInteger % 5) == 0)):
-    return "Fizz"
-  elif (not (inputInteger % 3) == 0) and ((inputInteger % 5) == 0):
-    return "Buzz"
-  elif ((inputInteger % 3) == 0) and ((inputInteger % 5) == 0):
-    return "FizzBuzz"
-  else:
-    return inputInteger
+    for i in range(1, inputInteger + 1, 1):
+        if ((i % 3) == 0) and (not((i % 5) == 0)):
+            print("Fizz")
+        elif (not (i % 3) == 0) and ((i % 5) == 0):
+            print("Buzz")
+        elif ((i % 3) == 0) and ((i % 5) == 0):
+            print("FizzBuzz")
+        else:
+            print(i)
   
 # define getInteger()
 def getInteger():
@@ -56,7 +57,8 @@ def main():
     testInteger = getInputData()
     print("========================\n")
     start_time = time.time()
-    print("For test integer {}, FizzBuzz() instance gives: {}".format(testInteger, fizzBuzz(testInteger)))
+    print("For test integer {}, FizzBuzz() instance gives ... ".format(testInteger))
+    fizzBuzz(testInteger)
     print("Time: {} seconds".format((time.time() - start_time)))
 
 
